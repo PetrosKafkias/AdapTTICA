@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.local
+*.log
+.DS_Store
+Thumbs.db
+.vercel/
+.netlify/
+.wrangler/
+
+# Local source/reference material; not required by the deployable website.
+Proposal - Climate Adaptation and Regional Resilience Pathways - Attica.pdf
+Timeline.png

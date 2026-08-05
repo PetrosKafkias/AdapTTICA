@@ -1,0 +1,29 @@
+:root {
+  --font-geologica: "Geologica Variable", "Geologica", system-ui, sans-serif;
+  --font-manrope: "Geologica Variable", "Geologica", system-ui, sans-serif;
+}
+
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-geologica) !important;
+}
+
+:where(button, a, input, select, textarea, [role="button"]):focus-visible {
+  outline: 3px solid #54d7e8 !important;
+  outline-offset: 3px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
