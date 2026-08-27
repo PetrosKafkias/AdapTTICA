@@ -11,6 +11,13 @@ Thumbs.db
 .netlify/
 .wrangler/
 
+# Local SQLite database and uploaded files: real data, not source.
+server/data/*.sqlite*
+server/uploads/*
+!server/uploads/.gitkeep
+
 # Local source/reference material; not required by the deployable website.
 Proposal - Climate Adaptation and Regional Resilience Pathways - Attica.pdf
 Timeline.png
+
+.vercel

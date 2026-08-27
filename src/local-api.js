@@ -1,6 +1,12 @@
 const API_PREFIX = "/api/v1";
 const STORAGE_KEY = "adapttica-local-api-v1";
 const configuredApiBase = String(import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+// The vendored bundle hardcodes `credentials: "same-origin"` on every
+// request, so a real backend only works served from the same origin as the
+// frontend (via the Vite dev proxy, or one combined server in production).
+// VITE_USE_REMOTE_API opts into that path; leaving it unset keeps the
+// portable, no-backend-required localStorage adapter below.
+const useRemoteApi = String(import.meta.env.VITE_USE_REMOTE_API || "").toLowerCase() === "true";
 const nativeFetch = window.fetch.bind(window);
 
 const seedNotifications = [
@@ -46,6 +52,65 @@ const seedResources = [
   { id: "resource-workshop", type: "workshop_output", title_el: "Αποτελέσματα εργαστηρίου κοινής διάγνωσης", title_en: "Shared diagnosis workshop results", description_el: "Σύνοψη προτεραιοτήτων και συμφωνημένων επόμενων βημάτων.", description_en: "A summary of priorities and agreed next steps.", author_organisation: "AdapTTICA", tags: ["Εργαστήριο", "Workshop"], file_name: "workshop-results.pdf", file_type: "application/pdf", file_size: 2450000, published_at: "2026-07-08", file_key: "workshop-results.pdf" },
 ];
 
+const seedMembers = [
+  { id: "member-petros", user_id: "member-petros", full_name: "Petros Kafkias", email: "p.kafkias@dreven.gr", role: "coordinator", joined_at: "2026-06-03T09:00:00.000Z" },
+  { id: "member-maria", user_id: "member-maria", full_name: "Maria Georgiou", email: "m.georgiou@attica.gov.gr", role: "facilitator", joined_at: "2026-06-05T10:30:00.000Z" },
+  { id: "member-dimitris", user_id: "member-dimitris", full_name: "Dimitris Kostas", email: "d.kostas@example.org", role: "participant", joined_at: "2026-06-08T11:15:00.000Z" },
+  { id: "member-eleni", user_id: "member-eleni", full_name: "Eleni Papa", email: "e.papa@example.org", role: "participant", joined_at: "2026-06-10T08:45:00.000Z" },
+];
+
+const seedDecisions = [
+  {
+    id: "decision-priority-neighbourhoods",
+    title_el: "Προτεραιότητα στις γειτονιές με τη μεγαλύτερη θερμική επιβάρυνση",
+    title_en: "Prioritise the neighbourhoods most affected by heat",
+    summary_el: "Ο δείκτης τρωτότητας του Παρατηρητηρίου θα καθοδηγήσει τη σειρά των πιλοτικών παρεμβάσεων.",
+    summary_en: "The Observatory vulnerability indicator will guide the order of pilot interventions.",
+    creator_name: "Petros Kafkias",
+    status: "approved",
+    support: 18,
+    concern: 2,
+    abstain: 1,
+    created_at: "2026-07-20T09:30:00.000Z",
+    updated_at: "2026-07-21T11:15:00.000Z",
+  },
+  {
+    id: "decision-shading-surfaces",
+    title_el: "Συνδυασμός σκίασης και διαπερατών επιφανειών",
+    title_en: "Combine shading and permeable surfaces",
+    summary_el: "Οι δύο κατηγορίες μέτρων θα αξιολογούνται ως ενιαία παρέμβαση στις πιλοτικές περιοχές.",
+    summary_en: "Both measure categories will be assessed as one intervention in pilot areas.",
+    creator_name: "Maria Georgiou",
+    status: "review",
+    support: 15,
+    concern: 3,
+    abstain: 2,
+    created_at: "2026-07-19T08:45:00.000Z",
+    updated_at: "2026-07-20T15:20:00.000Z",
+  },
+  {
+    id: "decision-pilot-areas",
+    title_el: "Επιλογή τριών πιλοτικών περιοχών",
+    title_en: "Select three pilot areas",
+    summary_el: "Η τελική επιλογή θα οριστικοποιηθεί μετά τον έλεγχο των δημογραφικών δεδομένων.",
+    summary_en: "The final selection will be confirmed after the demographic data review.",
+    creator_name: "Eleni Papa",
+    status: "draft",
+    support: 9,
+    concern: 1,
+    abstain: 3,
+    created_at: "2026-07-17T10:00:00.000Z",
+    updated_at: "2026-07-18T12:00:00.000Z",
+  },
+];
+
+const seedDecisionComments = {
+  "decision-priority-neighbourhoods": [
+    { id: "comment-1", author_name: "Maria Georgiou", body: "The evidence is clear and the proposed priority order is practical.", created_at: "2026-07-20T12:10:00.000Z" },
+    { id: "comment-2", author_name: "Dimitris Kostas", body: "Please retain the vulnerability indicator in the monitoring baseline.", created_at: "2026-07-20T14:25:00.000Z" },
+  ],
+};
+
 const defaultState = () => ({
   currentUser: null,
   users: [],
@@ -53,6 +118,9 @@ const defaultState = () => ({
   uploads: [],
   cases: seedCases,
   resources: seedResources,
+  members: seedMembers,
+  decisions: seedDecisions,
+  decisionComments: seedDecisionComments,
   workspaces: {},
 });
 
@@ -129,6 +197,11 @@ function selectedLanguage() {
   }
 }
 
+function selectedRole() {
+  const value = localStorage.getItem("adapttica-selected-role") || "user";
+  return ["user", "representative", "admin"].includes(value) ? value : "user";
+}
+
 async function localApi(request, path) {
   await new Promise((resolve) => setTimeout(resolve, 80));
   const state = readState();
@@ -136,11 +209,31 @@ async function localApi(request, path) {
 
   if (path === "/auth/login" && method === "POST") {
     const body = await requestBody(request);
-    if (!/^\S+@\S+\.\S+$/.test(body.email || "")) return fail("Enter a valid email address.", 422, { email: "Invalid email" });
-    if (String(body.password || "").length < 6) return fail("The password must contain at least 6 characters.", 422, { password: "Password is too short" });
-    const saved = state.users.find((user) => user.email === String(body.email).toLowerCase());
-    state.currentUser = normalizedUser({ ...body, platformRole: saved?.platformRole || inferRole(body.email), language: selectedLanguage() }, saved);
-    if (!saved) state.users.push(state.currentUser);
+    const requestedRole = selectedRole();
+    const email = String(body.email || "").trim().toLowerCase();
+    const password = String(body.password || "");
+    const demoAccess = !email && !password;
+
+    if (!demoAccess && !/^\S+@\S+\.\S+$/.test(email)) return fail("Enter a valid email address.", 422, { email: "Invalid email" });
+    if (!demoAccess && password.length < 6) return fail("The password must contain at least 6 characters.", 422, { password: "Password is too short" });
+
+    const demoProfiles = {
+      user: { fullName: "Demo Participant", email: "participant@demo.adapttica.local", organisation: "AdapTTICA Community" },
+      representative: { fullName: "Demo Organisation Representative", email: "representative@demo.adapttica.local", organisation: "Region of Attica" },
+      admin: { fullName: "Demo Administrator", email: "administrator@demo.adapttica.local", organisation: "AdapTTICA" },
+    };
+    const loginInput = demoAccess ? demoProfiles[requestedRole] : { ...body, email };
+    const saved = state.users.find((user) => user.email === loginInput.email);
+    state.currentUser = normalizedUser({
+      ...loginInput,
+      platformRole: requestedRole || inferRole(loginInput.email),
+      language: selectedLanguage(),
+    }, saved);
+    if (saved) {
+      state.users = state.users.map((user) => user.id === state.currentUser.id ? state.currentUser : user);
+    } else {
+      state.users.push(state.currentUser);
+    }
     writeState(state);
     return ok({ user: state.currentUser });
   }
@@ -153,7 +246,10 @@ async function localApi(request, path) {
     if (String(body.password || "").length < 8) fields.password = "Use at least 8 characters";
     if (Object.keys(fields).length) return fail("Please correct the highlighted fields.", 422, fields);
     if (state.users.some((user) => user.email === String(body.email).toLowerCase())) return fail("An account with this email already exists.", 409);
-    const user = normalizedUser({ ...body, platformRole: body.platformRole || "user" });
+    // Self-registration always starts with the least-privileged participant
+    // role. Organisation and administrator access is granted separately by
+    // an authorised administrator.
+    const user = normalizedUser({ ...body, platformRole: "user", language: selectedLanguage() });
     state.users.push(user);
     state.currentUser = user;
     writeState(state);
@@ -262,8 +358,56 @@ async function localApi(request, path) {
   }
 
   if (/^\/cases\/[^/]+\/invitations$/.test(path) && method === "POST") return ok({ existingUser: false, invitationId: crypto.randomUUID() });
-  if (/^\/cases\/[^/]+\/decisions$/.test(path) && method === "GET") return ok({ items: [] });
-  if (/^\/cases\/[^/]+\/members$/.test(path) && method === "GET") return ok({ items: [] });
+  if (/^\/cases\/[^/]+\/decisions$/.test(path) && method === "GET") return ok({ items: state.decisions });
+  if (/^\/cases\/[^/]+\/decisions$/.test(path) && method === "POST") {
+    if (!state.currentUser || !["representative", "admin"].includes(state.currentUser.platformRole)) return fail("Only a case-study coordinator can record a decision.", 403);
+    const body = await requestBody(request);
+    const decision = {
+      id: crypto.randomUUID(),
+      title_el: String(body.titleEl || "Νέα απόφαση"),
+      title_en: String(body.titleEn || body.titleEl || "New decision"),
+      summary_el: String(body.summaryEl || ""),
+      summary_en: String(body.summaryEn || body.summaryEl || ""),
+      creator_name: state.currentUser.fullName,
+      status: String(body.status || "draft"),
+      support: 0,
+      concern: 0,
+      abstain: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    state.decisions.unshift(decision);
+    writeState(state);
+    return ok({ decision });
+  }
+  if (/^\/cases\/[^/]+\/members$/.test(path) && method === "GET") return ok({ items: state.members });
+
+  const decisionCommentsMatch = path.match(/^\/decisions\/([^/]+)\/comments$/);
+  if (decisionCommentsMatch && method === "GET") return ok({ items: state.decisionComments[decisionCommentsMatch[1]] || [] });
+  if (decisionCommentsMatch && method === "POST") {
+    if (!state.currentUser) return fail("Authentication required.", 401);
+    const body = await requestBody(request);
+    const value = String(body.body || "").trim();
+    if (!value) return fail("A comment cannot be empty.", 422, { body: "A comment cannot be empty." });
+    const comment = { id: crypto.randomUUID(), author_name: state.currentUser.fullName, authorName: state.currentUser.fullName, body: value, created_at: new Date().toISOString() };
+    state.decisionComments[decisionCommentsMatch[1]] = [...(state.decisionComments[decisionCommentsMatch[1]] || []), comment];
+    writeState(state);
+    return ok({ comment });
+  }
+
+  const decisionVoteMatch = path.match(/^\/decisions\/([^/]+)\/vote$/);
+  if (decisionVoteMatch && method === "POST") {
+    if (!state.currentUser) return fail("Authentication required.", 401);
+    const body = await requestBody(request);
+    const decision = state.decisions.find((item) => item.id === decisionVoteMatch[1]);
+    if (!decision) return fail("Decision not found.", 404);
+    const value = String(body.value || "");
+    if (!["support", "concern", "abstain"].includes(value)) return fail("A valid vote is required.", 422);
+    decision[value] = Number(decision[value] || 0) + 1;
+    decision.updated_at = new Date().toISOString();
+    writeState(state);
+    return ok({ results: { support: decision.support, concern: decision.concern, abstain: decision.abstain } });
+  }
 
   if (path === "/resources" && method === "GET") return ok({ items: state.resources, total: state.resources.length });
   if (path === "/resources" && method === "POST") {
@@ -280,10 +424,35 @@ async function localApi(request, path) {
   return fail(`Local endpoint not implemented: ${method} ${path}`, 404);
 }
 
+async function forwardRegisterRequest(request) {
+  // Public registration always creates a participant account. Elevated roles
+  // are assigned through administration rather than selected by the user.
+  let body;
+  try {
+    body = await request.clone().json();
+  } catch {
+    body = {};
+  }
+  const augmented = { ...body, platformRole: "user", language: selectedLanguage() };
+  return nativeFetch(
+    new Request(request.url, {
+      method: request.method,
+      headers: request.headers,
+      credentials: request.credentials,
+      body: JSON.stringify(augmented),
+    })
+  );
+}
+
 window.fetch = async function adaptticaFetch(input, init = {}) {
   const originalRequest = input instanceof Request ? input : new Request(input, init);
   const url = new URL(originalRequest.url, window.location.origin);
   if (!url.pathname.startsWith(API_PREFIX)) return nativeFetch(input, init);
+
+  if (useRemoteApi) {
+    if (url.pathname === `${API_PREFIX}/auth/register`) return forwardRegisterRequest(originalRequest);
+    return nativeFetch(originalRequest);
+  }
 
   if (configuredApiBase) {
     const upstream = `${configuredApiBase}${url.pathname}${url.search}`;
