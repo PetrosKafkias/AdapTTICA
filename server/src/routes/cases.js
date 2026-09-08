@@ -7,6 +7,8 @@ import { audit } from "../lib/audit.js";
 import { slugify, toPublicCase, requireCaseAccess } from "../lib/caseAccess.js";
 import { caseDecisionsRouter } from "./decisions.js";
 import { caseWorkshopOutputsRouter } from "./workshopOutputs.js";
+import { caseWorkflowRouter } from "./caseWorkflow.js";
+import { casePathwaysRouter, casePortfolioImageRouter } from "./pathways.js";
 import { notifyByEmail } from "../lib/mailer.js";
 
 export const casesRouter = express.Router();
@@ -37,6 +39,13 @@ const createSchema = z.object({
   saveAsDraft: z.boolean().optional(),
   startDate: z.string().optional(),
   targetDate: z.string().optional(),
+  // A Case Study must have one Primary System (via its Impact) and one
+  // Primary Climate Impact, one or more relevant Hazards, and zero or more
+  // Linked Systems (the "one or more Hazards" rule is enforced here; the
+  // rest are optional refinements over the Impact's own typical tags).
+  impactId: z.string().trim().min(1, "A primary climate impact is required."),
+  hazardIds: z.array(z.string()).min(1, "At least one relevant hazard is required."),
+  linkedSystemIds: z.array(z.string()).optional(),
 });
 
 casesRouter.post(
@@ -51,13 +60,20 @@ casesRouter.post(
       return fail(res, "validation_error", "Please correct the highlighted fields.", fields);
     }
     const body = parsed.data;
+    const existingJourney = await req.db.get(
+      "select id from case_studies where impact_id = ? and deleted_at is null",
+      body.impactId
+    );
+    if (existingJourney) {
+      return fail(res, "conflict", "This Climate Impact already has a Resilience Journey.");
+    }
     const id = crypto.randomUUID();
     const slug = `${slugify(body.titleEn || body.titleEl)}-${id.slice(0, 4)}`;
 
     await req.db.run(
       `insert into case_studies
-         (id, slug, title, description, sectors, area, organisation_id, owner_id, status, starts_on, due_on)
-       values (?, ?, ?, ?, '{}', ?, ?, ?, ?, ?, ?)`,
+         (id, slug, title, description, sectors, area, organisation_id, owner_id, status, starts_on, due_on, impact_id)
+       values (?, ?, ?, ?, '{}', ?, ?, ?, ?, ?, ?, ?)`,
       id,
       slug,
       JSON.stringify({ el: body.titleEl, en: body.titleEn }),
@@ -67,13 +83,29 @@ casesRouter.post(
       req.user.id,
       body.saveAsDraft ? "draft" : "in_progress",
       body.startDate || null,
-      body.targetDate || null
+      body.targetDate || null,
+      body.impactId
     );
+    for (const hazardId of body.hazardIds) {
+      await req.db.run("insert into case_hazards (case_id, hazard_id) values (?, ?)", id, hazardId);
+    }
+    for (const systemId of body.linkedSystemIds || []) {
+      await req.db.run("insert into case_linked_systems (case_id, system_id) values (?, ?)", id, systemId);
+    }
     await req.db.run(
       "insert into case_members (case_id, user_id, role) values (?, ?, 'coordinator')",
       id,
       req.user.id
     );
+    for (const [phase, status] of [["phase1", "completed"], ["phase2", "current"], ["phase3", "locked"]]) {
+      await req.db.run(
+        "insert into case_phase_state (case_id, phase, status, updated_by) values (?, ?, ?, ?)",
+        id,
+        phase,
+        status,
+        req.user.id
+      );
+    }
     await audit(req.db, { actorId: req.user.id, action: "create_case", entityType: "case_study", entityId: id });
 
     const row = await req.db.get(
@@ -108,6 +140,9 @@ const patchSchema = z.object({
   areaEn: z.string().trim().optional(),
   status: z.enum(["draft", "in_progress", "under_review", "approved", "completed"]).optional(),
   targetDate: z.string().nullish(),
+  impactId: z.string().trim().nullish(),
+  hazardIds: z.array(z.string()).optional(),
+  linkedSystemIds: z.array(z.string()).optional(),
 });
 
 casesRouter.patch(
@@ -122,6 +157,14 @@ casesRouter.patch(
       return fail(res, "validation_error", "Please correct the highlighted fields.", fields);
     }
     const body = parsed.data;
+    if (body.impactId && body.impactId !== existing.impact_id) {
+      const linkedJourney = await req.db.get(
+        "select id from case_studies where impact_id = ? and id <> ? and deleted_at is null",
+        body.impactId,
+        req.params.id
+      );
+      if (linkedJourney) return fail(res, "conflict", "This Climate Impact already has a Resilience Journey.");
+    }
     const title = JSON.parse(existing.title);
     const description = JSON.parse(existing.description || "{}");
     const area = JSON.parse(existing.area || "{}");
@@ -137,6 +180,7 @@ casesRouter.patch(
          title = ?, description = ?, area = ?,
          status = coalesce(?, status),
          due_on = coalesce(?, due_on),
+         impact_id = case when ? then ? else impact_id end,
          updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
        where id = ?`,
       JSON.stringify(title),
@@ -144,8 +188,22 @@ casesRouter.patch(
       JSON.stringify(area),
       body.status ?? null,
       body.targetDate ?? null,
+      body.impactId !== undefined ? 1 : 0,
+      body.impactId ?? null,
       req.params.id
     );
+    if (body.hazardIds !== undefined) {
+      await req.db.run("delete from case_hazards where case_id = ?", req.params.id);
+      for (const hazardId of body.hazardIds) {
+        await req.db.run("insert into case_hazards (case_id, hazard_id) values (?, ?)", req.params.id, hazardId);
+      }
+    }
+    if (body.linkedSystemIds !== undefined) {
+      await req.db.run("delete from case_linked_systems where case_id = ?", req.params.id);
+      for (const systemId of body.linkedSystemIds) {
+        await req.db.run("insert into case_linked_systems (case_id, system_id) values (?, ?)", req.params.id, systemId);
+      }
+    }
     await audit(req.db, { actorId: req.user.id, action: "update_case", entityType: "case_study", entityId: req.params.id });
 
     const row = await req.db.get(
@@ -160,7 +218,8 @@ casesRouter.delete(
   "/:id",
   asyncRoute(async (req, res) => {
     req.user = await requireUser(req);
-    await requireCaseAccess(req, req.params.id, ["coordinator", "admin"]);
+    requireRole(req.user, "admin");
+    await requireCaseAccess(req, req.params.id);
     await req.db.run(
       "update case_studies set deleted_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') where id = ?",
       req.params.id
@@ -275,6 +334,27 @@ casesRouter.get(
   })
 );
 
+// Public: how many participants come from each stakeholder category, with
+// no names attached. Shown both inside Phase 2 and on the public
+// registration screen, so it must not require a session the way the member
+// list above does.
+casesRouter.get(
+  "/:id/representation",
+  asyncRoute(async (req, res) => {
+    const rows = await req.db.all(
+      `select u.stakeholder_category as category, count(*) as count
+       from case_members cm
+       join users u on u.id = cm.user_id
+       where cm.case_id = ? and u.stakeholder_category is not null
+       group by u.stakeholder_category`,
+      req.params.id
+    );
+    const counts = { public: 0, private: 0, civil: 0, research: 0 };
+    rows.forEach((row) => { if (row.category in counts) counts[row.category] = row.count; });
+    res.json({ data: { counts } });
+  })
+);
+
 const memberPatchSchema = z.object({
   userId: z.string().min(1),
   role: z.enum(["user", "representative", "coordinator"]),
@@ -335,3 +415,8 @@ casesRouter.delete(
 
 casesRouter.use("/:id/decisions", caseDecisionsRouter);
 casesRouter.use("/:id/workshop-outputs", caseWorkshopOutputsRouter);
+casesRouter.use("/:id/pathways", casePathwaysRouter);
+casesRouter.use("/:id/portfolio-image", casePortfolioImageRouter);
+// Baseline, Alternative Futures, Vision Elements, Theory of Change, and
+// Adaptation Options — the Case Study workspace's co-creation stepper.
+casesRouter.use("/:id", caseWorkflowRouter);

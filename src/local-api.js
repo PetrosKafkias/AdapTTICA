@@ -42,7 +42,7 @@ const seedNotifications = [
 const seedCases = [
   { id: "case-heat", public_id: "CS-04", title_el: "Ανθεκτικότητα στη ζέστη στη Δυτική Αθήνα", title_en: "Heat resilience in Western Athens", description_el: "Συνεργατική διαδρομή για τη μείωση της θερμικής επιβάρυνσης.", description_en: "A collaborative pathway for reducing urban heat exposure.", organisation_name: "Region of Attica", sector_name_el: "Αστικό περιβάλλον", sector_name_en: "Urban environment", area_el: "Δυτική Αθήνα", area_en: "Western Athens", status: "in_progress", member_count: 24 },
   { id: "case-flood", public_id: "CS-07", title_el: "Διαχείριση πλημμυρικού κινδύνου στη Μάνδρα", title_en: "Flood risk management in Mandra", description_el: "Συνδυασμός πράσινων υποδομών και τεκμηριωμένων παρεμβάσεων.", description_en: "Combining green infrastructure with evidence-based interventions.", organisation_name: "Region of Attica", sector_name_el: "Ύδατα & πλημμύρες", sector_name_en: "Water & floods", area_el: "Μάνδρα", area_en: "Mandra", status: "under_review", member_count: 18 },
-  { id: "case-coast", public_id: "CS-09", title_el: "Προστασία παράκτιας ζώνης στην Ανατολική Αττική", title_en: "Coastal protection in Eastern Attica", description_el: "Ενδιάμεσες και μακροπρόθεσμες επιλογές προσαρμογής.", description_en: "Near- and long-term coastal adaptation options.", organisation_name: "Municipality of Rafina-Pikermi", sector_name_el: "Παράκτιες ζώνες", sector_name_en: "Coastal zones", area_el: "Ανατολική Αττική", area_en: "Eastern Attica", status: "approved", member_count: 16 },
+  { id: "case-coast", public_id: "CS-09", title_el: "Προστασία παράκτιας ζώνης στην Ανατολική Αττική", title_en: "Coastal protection in Eastern Attica", description_el: "Ενδιάμεσες και μακροπρόθεσμες επιλογές προσαρμογής.", description_en: "Near- and long-term coastal adaptation options.", organisation_name: "Region of Attica", sector_name_el: "Παράκτιες ζώνες", sector_name_en: "Coastal zones", area_el: "Ανατολική Αττική", area_en: "Eastern Attica", status: "approved", member_count: 16 },
   { id: "case-forest", public_id: "CS-11", title_el: "Ανθεκτικότητα δασών και πρόληψη πυρκαγιών", title_en: "Forest resilience and wildfire prevention", description_el: "Κοινός σχεδιασμός πρόληψης και αποκατάστασης.", description_en: "A shared prevention and recovery plan.", organisation_name: "Forestry Department", sector_name_el: "Βιοποικιλότητα & δάση", sector_name_en: "Biodiversity & forests", area_el: "Πάρνηθα", area_en: "Parnitha", status: "completed", member_count: 21 },
 ];
 
@@ -184,7 +184,7 @@ function normalizedUser(input, existing = {}) {
 function inferRole(email) {
   const value = String(email).toLowerCase();
   if (value.includes("admin")) return "admin";
-  if (/representative|coordinator|municipality|region/.test(value)) return "representative";
+  if (/representative|coordinator|region/.test(value)) return "representative";
   return "user";
 }
 
@@ -424,6 +424,12 @@ async function localApi(request, path) {
   return fail(`Local endpoint not implemented: ${method} ${path}`, 404);
 }
 
+// The stakeholder-category dropdown injected into the register form by
+// runtime-enhancements.js has no field the vendored bundle's own submit
+// logic knows to send, so it hands its selection off here via
+// sessionStorage rather than through the request the bundle builds itself.
+const PENDING_STAKEHOLDER_CATEGORY_KEY = "adapttica-pending-stakeholder-category";
+
 async function forwardRegisterRequest(request) {
   // Public registration always creates a participant account. Elevated roles
   // are assigned through administration rather than selected by the user.
@@ -433,7 +439,9 @@ async function forwardRegisterRequest(request) {
   } catch {
     body = {};
   }
-  const augmented = { ...body, platformRole: "user", language: selectedLanguage() };
+  const stakeholderCategory = sessionStorage.getItem(PENDING_STAKEHOLDER_CATEGORY_KEY) || undefined;
+  const augmented = { ...body, platformRole: "user", language: selectedLanguage(), stakeholderCategory };
+  sessionStorage.removeItem(PENDING_STAKEHOLDER_CATEGORY_KEY);
   return nativeFetch(
     new Request(request.url, {
       method: request.method,
@@ -444,20 +452,45 @@ async function forwardRegisterRequest(request) {
   );
 }
 
+// The Knowledge Library's own resource list, cached for the DOM patches in
+// runtime-enhancements.js that need to correlate a rendered card back to its
+// tags (no id is exposed on a card, only its title). This module is
+// imported before the vendored bundle's own script tag is even appended, so
+// it is the one place early enough to catch the bundle's *first* fetch on
+// mount — installLicenceFetchInterceptor in runtime-enhancements.js only
+// gets installed after that bundle has already loaded and could fire its
+// initial request, which raced this exact cache before it moved here.
+function cacheResourceList(promise) {
+  promise
+    .then((response) => response.clone().json())
+    .then((body) => {
+      /** @type {any} */ (window).__adapttica_resourceListCache = body?.data?.items || [];
+    })
+    .catch(() => {});
+}
+
 window.fetch = async function adaptticaFetch(input, init = {}) {
   const originalRequest = input instanceof Request ? input : new Request(input, init);
   const url = new URL(originalRequest.url, window.location.origin);
   if (!url.pathname.startsWith(API_PREFIX)) return nativeFetch(input, init);
+  const isResourceList = url.pathname === `${API_PREFIX}/resources` && originalRequest.method === "GET";
 
   if (useRemoteApi) {
     if (url.pathname === `${API_PREFIX}/auth/register`) return forwardRegisterRequest(originalRequest);
+    if (isResourceList) cacheResourceList(nativeFetch(originalRequest.clone()));
     return nativeFetch(originalRequest);
   }
 
   if (configuredApiBase) {
     const upstream = `${configuredApiBase}${url.pathname}${url.search}`;
+    if (isResourceList) cacheResourceList(nativeFetch(new Request(upstream, originalRequest.clone())));
     return nativeFetch(new Request(upstream, originalRequest));
   }
 
+  if (isResourceList) {
+    const [forCache, forCaller] = [localApi(originalRequest.clone(), url.pathname.slice(API_PREFIX.length) || "/"), localApi(originalRequest, url.pathname.slice(API_PREFIX.length) || "/")];
+    cacheResourceList(forCache);
+    return forCaller;
+  }
   return localApi(originalRequest, url.pathname.slice(API_PREFIX.length) || "/");
 };

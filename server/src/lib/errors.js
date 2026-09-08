@@ -2,6 +2,8 @@ const STATUS_CODES = {
   validation_error: 400,
   unauthenticated: 401,
   forbidden: 403,
+  phase_locked: 403,
+  phase_prerequisite: 403,
   not_found: 404,
   conflict: 409,
   rate_limited: 429,

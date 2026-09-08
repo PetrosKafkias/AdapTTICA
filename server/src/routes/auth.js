@@ -16,6 +16,7 @@ const registerSchema = z.object({
   organisation: z.string().trim().optional(),
   language: z.enum(["el", "en"]).optional(),
   platformRole: z.enum(["user", "representative", "coordinator", "admin"]).optional(),
+  stakeholderCategory: z.enum(["public", "private", "civil", "research"]).optional(),
 });
 
 function fieldErrors(zodError) {
@@ -64,8 +65,8 @@ authRouter.post(
     }
 
     await req.db.run(
-      `insert into users (id, email, password_hash, full_name, platform_role, organisation_id, locale, preferences)
-       values (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `insert into users (id, email, password_hash, full_name, platform_role, organisation_id, locale, preferences, stakeholder_category)
+       values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       id,
       body.email.toLowerCase(),
       passwordHash,
@@ -73,7 +74,8 @@ authRouter.post(
       platformRole,
       organisationId,
       body.language || "el",
-      preferences
+      preferences,
+      body.stakeholderCategory || null
     );
     await audit(req.db, { actorId: id, action: "register", entityType: "user", entityId: id });
 

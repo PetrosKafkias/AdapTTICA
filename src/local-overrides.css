@@ -3,6 +3,745 @@
   --font-manrope: "Geologica Variable", "Geologica", system-ui, sans-serif;
 }
 
+/* -------------------------------------------------------------------------
+   Attica Regional Resilience Journey — single-journey information model
+   ------------------------------------------------------------------------- */
+
+.regional-native-hidden,
+.regional-home-hidden,
+.regional-nav-obsolete {
+  display: none !important;
+}
+
+.regional-journey-page {
+  width: min(1440px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 42px 0 88px;
+  color: #0b3158;
+}
+
+.regional-loading {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+  color: #58708a;
+  font-weight: 700;
+}
+
+/* The hero was pinned to a full viewport height. Once the headline shrank,
+   the content stopped filling it and the leftover turned into slack under
+   the button -- 233px between the CTA and the first card below. Let the
+   content set the height and trim the bottom padding; the breathing room
+   above the sections stays where it is. */
+.regional-home-hero {
+  min-height: 0;
+  align-items: center;
+  padding-top: clamp(44px, 6vw, 84px) !important;
+  padding-bottom: clamp(40px, 4.5vw, 60px) !important;
+}
+
+.regional-home-hero .hero-copy {
+  max-width: 780px;
+}
+
+.regional-home-hero .hero-copy h1 {
+  max-width: 760px;
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -.03em;
+}
+
+.regional-home-hero .hero-copy > p {
+  max-width: 720px;
+  font-size: clamp(1.05rem, 1.45vw, 1.3rem);
+  line-height: 1.75;
+}
+
+.regional-home-hero .button-row .btn.primary {
+  max-width: 520px;
+  white-space: normal;
+  text-align: left;
+}
+
+.regional-journey-nav {
+  gap: 8px;
+}
+
+.regional-journey-nav svg {
+  width: 18px;
+  height: 18px;
+}
+
+.regional-backbar {
+  margin-bottom: 18px;
+}
+
+.regional-back {
+  border: 0;
+  background: transparent;
+  color: #087f98;
+  font: inherit;
+  font-weight: 760;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.regional-back:hover,
+.regional-back:focus-visible {
+  color: #0b3158;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.regional-hero,
+.regional-phase-hero,
+.regional-system-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 30px;
+  background: #0c3a67;
+  color: #fff;
+  padding: clamp(26px, 3.4vw, 46px);
+  box-shadow: 0 22px 60px rgba(7, 45, 80, .15);
+}
+
+.regional-hero::after,
+.regional-phase-hero::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  right: -150px;
+  top: -210px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(100, 216, 226, .3), rgba(100, 216, 226, 0) 70%);
+  pointer-events: none;
+}
+
+.regional-eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  color: #79dce5;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+  font-size: .78rem;
+  font-weight: 850;
+}
+
+.regional-hero h1,
+.regional-phase-hero h1,
+.regional-system-hero h1 {
+  max-width: 980px;
+  margin: 0;
+  color: inherit;
+  font-size: clamp(2.1rem, 4vw, 4.35rem);
+  line-height: 1.03;
+  letter-spacing: -.045em;
+}
+
+.regional-lead,
+.regional-phase-hero p,
+.regional-system-hero p {
+  max-width: 890px;
+  margin: 22px 0 0;
+  color: #dceaf5;
+  font-size: clamp(1rem, 1.5vw, 1.24rem);
+  line-height: 1.65;
+}
+
+.regional-more-info-cta {
+  margin-top: 20px;
+}
+
+.regional-more-info-card h3 {
+  margin: 20px 0 6px;
+  font-size: 1rem;
+  color: #0b3158;
+}
+.regional-more-info-card p {
+  margin: 0;
+  color: #3e5870;
+  line-height: 1.6;
+}
+
+.regional-detail-table-card .regional-mapping-table {
+  margin-top: 14px;
+}
+
+
+.regional-platform-roles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  max-width: 900px;
+  margin-top: 34px;
+}
+
+.regional-platform-roles > div {
+  display: grid;
+  gap: 5px;
+  padding: 17px 19px;
+  border: 1px solid rgba(255, 255, 255, .17);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .08);
+}
+
+.regional-platform-roles strong { color: #fff; }
+.regional-platform-roles span { color: #bdd1e2; font-size: .88rem; }
+.regional-platform-roles > b { color: #79dce5; font-size: 1.4rem; }
+
+.regional-phase-grid {
+  display: grid;
+  /* auto-fit rather than a hard three columns: between tablet and desktop the
+     fixed grid squeezed all three cards well past a readable width. */
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 20px;
+  margin-top: 28px;
+}
+
+.regional-phase-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 26px 22px;
+  border: 1px solid #cbdce7;
+  border-radius: 20px;
+  background: #fff;
+  color: #0b3158;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+/* A status-coloured edge along the top makes the three states scannable
+   across the row without reading a single pill. */
+.regional-phase-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: #cbdce7;
+}
+.regional-phase-card-completed::before { background: #7aa63f; }
+.regional-phase-card-current::before { background: #0797ad; }
+.regional-phase-card-locked::before,
+.regional-phase-card-upcoming::before { background: #c3cfd9; }
+
+/* The phase you are actually in should win the row. */
+.regional-phase-card-current {
+  border-color: #9ad9e3;
+  box-shadow: 0 6px 22px rgba(7, 151, 173, .13);
+}
+
+.regional-phase-card:hover:not(:disabled),
+.regional-phase-card:focus-visible {
+  border-color: #0797ad;
+  box-shadow: 0 8px 26px rgba(7, 151, 173, .18);
+  transform: translateY(-2px);
+}
+.regional-phase-card:focus-visible {
+  outline: 3px solid rgba(7, 151, 173, .45);
+  outline-offset: 2px;
+}
+
+.regional-phase-card:disabled {
+  cursor: not-allowed;
+  background: #f5f8fa;
+  border-color: #dce4e9;
+  transform: none;
+}
+
+.regional-phase-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Screen readers still get "Phase 1"; the numeral carries it visually. */
+.regional-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.regional-phase-index {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #def6f8;
+  color: #056b80;
+  font-size: 1.05rem;
+  font-weight: 850;
+  line-height: 1;
+}
+.regional-phase-card-completed .regional-phase-index { background: #eaf3dc; color: #4a6d22; }
+.regional-phase-card-current .regional-phase-index { background: #0b3158; color: #fff; }
+.regional-phase-card-locked .regional-phase-index,
+.regional-phase-card-upcoming .regional-phase-index { background: #e6ecf1; color: #4a5c70; }
+
+.regional-phase-card h2 {
+  margin: 4px 0 0;
+  color: inherit;
+  font-size: clamp(1.3rem, 1.6vw, 1.6rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.regional-phase-card p {
+  margin: 0;
+  color: #4a6280;
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+/* Ruled footer: the same dead space as before, but now it reads as the
+   card's action area rather than an accident of equal heights. */
+.regional-phase-foot {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #e7edf2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #06798e;
+  font-size: .9rem;
+  font-weight: 800;
+}
+.regional-phase-arrow {
+  transition: transform .18s ease;
+}
+.regional-phase-card:hover:not(:disabled) .regional-phase-arrow {
+  transform: translateX(3px);
+}
+
+/* The lock reason is a note, not a call to action, so it stops pretending to
+   be one. Contrast raised from 2.86:1 to pass AA -- the old grey-on-grey was
+   unreadable, not merely quiet. */
+.regional-phase-foot-locked {
+  display: block;
+  color: #3f5468;
+  font-size: .82rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.regional-phase-card:disabled h2 { color: #48607a; }
+.regional-phase-card:disabled p { color: #4f6478; }
+
+.regional-status {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.regional-status-completed { color: #3f6119; background: #eaf3dc; }
+.regional-status-current { color: #05687c; background: #def6f8; }
+.regional-status-upcoming { color: #44586b; background: #eaeff3; }
+.regional-status-locked { color: #44586b; background: #e2e8ed; }
+
+.regional-phase-hero,
+.regional-system-hero {
+  min-height: 190px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.regional-phase-hero > div:first-child { max-width: 930px; }
+.regional-phase-hero h1 { font-size: clamp(1.7rem, 2.7vw, 2.6rem); }
+
+.regional-phase-status-control {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 1;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.regional-phase-status-control label { display: flex; gap: 8px; align-items: center; color: #dceaf5; font-size: .78rem; font-weight: 700; }
+.regional-phase-status-control select { border: 1px solid rgba(255,255,255,.34); border-radius: 10px; background: #fff; color: #0b3158; padding: 7px 9px; }
+
+.regional-section,
+.regional-ownership,
+.regional-locked-panel,
+.regional-login-panel,
+.regional-implementation-note {
+  margin-top: 20px;
+  border: 1px solid #d4e2ea;
+  border-radius: 24px;
+  background: #fff;
+  padding: clamp(20px, 2.4vw, 30px);
+}
+
+.regional-section-head > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 16px;
+  align-items: center;
+}
+
+.regional-section-head h2,
+.regional-tab-panel > h2,
+.regional-ownership h2 {
+  margin: 0;
+  color: #0b3158;
+  font-size: clamp(1.55rem, 2.5vw, 2.35rem);
+  letter-spacing: -.03em;
+}
+
+.regional-section-head p {
+  grid-column: 2;
+  max-width: 820px;
+  margin: 8px 0 0;
+  color: #5b7086;
+  line-height: 1.65;
+}
+
+.regional-section-number {
+  grid-row: 1 / span 2;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dff5f7;
+  color: #087f98;
+  font-size: .85rem;
+  font-weight: 850;
+}
+
+.regional-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.regional-evidence-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  min-height: 0;
+  padding: 20px;
+  border: 1px solid #d6e3ea;
+  border-radius: 18px;
+  background: #f8fbfc;
+}
+
+.regional-doc-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #087f98;
+  background: #dff5f7;
+  font-size: 1.3rem;
+}
+
+.regional-evidence-card h3 { margin: 3px 0 9px; color: #0b3158; font-size: 1.06rem; }
+.regional-evidence-card p { margin: 0 0 18px; color: #5a7188; line-height: 1.55; font-size: .92rem; }
+.regional-text-link,
+.regional-text-button { border: 0; background: transparent; color: #078ca5; font: inherit; font-weight: 800; padding: 0; cursor: pointer; text-decoration: none; }
+.regional-text-link:hover,
+.regional-text-button:hover { color: #0b3158; text-decoration: underline; text-underline-offset: 3px; }
+
+.regional-confirmed-systems {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.regional-system-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 18px;
+  min-height: 230px;
+  padding: 24px;
+  border: 1px solid #cbdde7;
+  border-radius: 20px;
+  background: #fff;
+  color: #0b3158;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.regional-system-card:hover,
+.regional-system-card:focus-visible { border-color: #0797ad; background: #f4fcfd; outline: 3px solid rgba(7,151,173,.12); outline-offset: 2px; }
+.regional-system-copy { display: flex; min-width: 0; height: 100%; flex-direction: column; }
+.regional-system-copy small { color: #7b8fa2; font-size: .75rem; font-weight: 850; letter-spacing: .08em; }
+.regional-system-copy strong { margin-top: 15px; font-size: 1.35rem; line-height: 1.2; }
+.regional-system-copy > span { margin-top: 10px; color: #5a7188; font-size: .92rem; line-height: 1.55; }
+.regional-system-copy b { margin-top: auto; padding-top: 20px; color: #078ca5; font-size: .88rem; }
+.regional-card-arrow { color: #078ca5; font-size: 1.5rem; }
+
+
+.regional-phase-footer { display: flex; justify-content: flex-end; margin-top: 22px; }
+.regional-phase-footer .btn { min-height: 48px; padding-inline: 22px; }
+.regional-forum-login { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-top: 22px; padding: 18px 20px; border: 1px solid #d6e3ea; border-radius: 14px; background: #fff; }
+.regional-forum-login p { margin: 0; color: #5b7086; }
+
+.regional-system-hero { justify-content: flex-start; }
+.regional-system-hero > .regional-system-icon { width: 68px; height: 68px; background: #dff5f7; }
+.regional-system-hero > div { max-width: 930px; }
+.regional-system-hero h1 { font-size: clamp(2rem, 3.8vw, 3.9rem); }
+
+.regional-tabs {
+  position: sticky;
+  top: 72px;
+  z-index: 4;
+  display: flex;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 6px;
+  border: 1px solid #d4e2ea;
+  border-radius: 16px;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(12px);
+}
+
+.regional-tabs button {
+  flex: 1;
+  min-height: 46px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #506982;
+  font: inherit;
+  font-weight: 760;
+  cursor: pointer;
+}
+
+.regional-tabs button:hover { background: #eef8fa; color: #0b3158; }
+.regional-tabs button.active { background: #0c3a67; color: #fff; }
+.regional-tab-intro { max-width: 800px; color: #5a7188; line-height: 1.6; }
+
+.regional-risk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.regional-risk-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 22px 24px;
+  border: 1px solid #d2e0e8;
+  border-radius: 19px;
+  background: #fff;
+  color: #0b3158;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.regional-risk-card:hover,
+.regional-risk-card:focus-visible {
+  border-color: #0797ad;
+  background: #f4fcfd;
+  box-shadow: 0 4px 14px rgba(11, 49, 88, .08);
+}
+.regional-risk-card-main { display: flex; flex-direction: column; gap: 6px; }
+.regional-risk-card-title { font-size: 1.15rem; font-weight: 800; }
+.regional-risk-card-desc { font-size: .88rem; font-weight: 500; color: #5a7188; line-height: 1.45; }
+.regional-risk-card-cta { flex: 0 0 auto; padding-top: 3px; color: #078ca5; font-size: .85rem; font-weight: 700; white-space: nowrap; }
+
+.regional-mapping-table { width: 100%; border-collapse: collapse; margin-top: 22px; }
+.regional-mapping-table th,
+.regional-mapping-table td { padding: 15px; border-bottom: 1px solid #dce6ec; text-align: left; vertical-align: top; }
+.regional-mapping-table th { color: #536b81; background: #f3f7f9; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+
+.regional-workshop-output { display: grid; grid-template-columns: 220px 1fr; gap: 22px; align-items: center; margin-top: 22px; padding: 18px; border-radius: 17px; background: #f4f7f9; }
+.regional-output-preview { min-height: 130px; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(135deg,#5d45b5,#7f69d6); color: #fff; font-weight: 900; letter-spacing: .12em; }
+
+.regional-phase-system-picker h2 { margin: 0 0 8px; }
+.regional-phase-system-picker > p { margin: 0 0 22px; color: #5a7188; }
+.regional-phase-system-picker .regional-confirmed-systems {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.regional-phase-system-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #cdeaef;
+  background: linear-gradient(135deg, #eaf8fa, #f4fbfc);
+  box-shadow: 0 1px 0 rgba(11, 49, 88, .03);
+}
+.regional-phase-system-icon {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #fff;
+  color: #087f98;
+  box-shadow: inset 0 0 0 1px #cdeaef;
+}
+.regional-phase-system-icon svg { width: 24px; height: 24px; }
+.regional-phase-system-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.regional-phase-system-copy small {
+  color: #4a8a97;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.regional-phase-system-copy strong {
+  color: #0b3158;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.regional-phase-system-change {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.regional-ownership {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  row-gap: 18px;
+  column-gap: 24px;
+  align-items: start;
+}
+.regional-ownership > div:first-child {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+  /* The number marks the section, so it belongs beside the title rather than
+     centred against the block as a whole -- where it ended up level with the
+     question instead. */
+  align-items: start;
+}
+.regional-ownership > div:first-child > .regional-section-number {
+  margin-top: 2px;
+}
+.regional-representation-counts {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+  gap: 8px;
+}
+.regional-ownership h2 { font-size: 1.45rem; }
+.regional-ownership p { grid-column: 2; margin: 5px 0 0; color: #5a7188; line-height: 1.5; }
+.regional-representation-count {
+  display: grid;
+  gap: 2px;
+  padding: 14px 12px;
+  border-radius: 10px;
+  background: #f3f7f9;
+  text-align: center;
+}
+.regional-representation-count strong { font-size: 1.5rem; color: #0b3158; }
+.regional-representation-count span { color: #6f8295; font-size: .74rem; font-weight: 700; }
+
+.regional-embedded-workspace { margin-top: 24px; }
+.regional-embedded-workspace.case-workspace-pane { padding: 0; background: transparent; border: 0; box-shadow: none; }
+.regional-embedded-workspace .case-workspace-steps { position: sticky; top: 72px; z-index: 4; }
+.regional-embedded-workspace .case-workspace-step-content { margin-top: 14px; }
+
+.regional-locked-panel,
+.regional-login-panel { min-height: 280px; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
+.regional-locked-panel { flex-direction: row; gap: 20px; text-align: left; background: #f2f5f7; color: #5a6e82; }
+.regional-locked-panel > span,
+.regional-lock-icon { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 50%; background: #e1e8ed; font-size: 1.5rem; }
+.regional-locked-panel h2,
+.regional-login-panel h2 { margin: 0 0 8px; color: #183d60; }
+.regional-locked-panel p,
+.regional-login-panel p { max-width: 650px; margin: 0 0 20px; color: #65798e; line-height: 1.6; }
+.regional-implementation-note { display: flex; gap: 16px; align-items: start; background: #f6f8fa; }
+.regional-implementation-note > span { color: #0797ad; font-weight: 900; }
+.regional-implementation-note h2 { margin: 0 0 7px; font-size: 1.15rem; }
+.regional-implementation-note p { margin: 0; color: #65798e; line-height: 1.55; }
+.regional-journey-page > .regional-platform-roles { margin-inline: auto; color: #fff; padding: 24px; border-radius: 20px; background: #0c3a67; }
+
+@media (max-width: 1180px) {
+  .public-header nav,
+  .app-header nav { gap: 2px !important; }
+  .public-header nav button,
+  .app-header nav button { padding-inline: 9px !important; font-size: .76rem !important; }
+  .regional-phase-grid { grid-template-columns: 1fr; }
+  .regional-phase-card { min-height: 0; }
+  .regional-ownership { grid-template-columns: 1fr; }
+  .regional-ownership > div:first-child,
+  .regional-ownership .regional-representation-counts {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .regional-home-hero { grid-template-columns: 1fr !important; }
+  .regional-home-hero .hero-visual { min-height: 420px; }
+}
+
+@media (max-width: 820px) {
+  .regional-journey-page { width: min(100% - 28px, 720px); padding-top: 24px; }
+  .regional-hero,
+  .regional-phase-hero,
+  .regional-system-hero { border-radius: 22px; padding: 28px 22px; }
+  .regional-phase-hero { min-height: 360px; flex-direction: column; align-items: flex-start; justify-content: flex-end; }
+  .regional-phase-status-control { position: static; order: -1; align-self: stretch; justify-content: space-between; }
+  .regional-platform-roles { grid-template-columns: 1fr; gap: 8px; }
+  .regional-platform-roles > b { transform: rotate(90deg); justify-self: center; }
+  .regional-evidence-grid,
+  .regional-confirmed-systems,
+  .regional-risk-grid { grid-template-columns: 1fr; }
+  .regional-tabs { overflow-x: auto; justify-content: flex-start; }
+  .regional-tabs button { flex: 0 0 auto; padding-inline: 18px; }
+  .regional-workshop-output { grid-template-columns: 1fr; }
+  .regional-representation-counts { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 540px) {
+  .regional-journey-page { width: calc(100% - 20px); }
+  .regional-home-hero .hero-copy h1 { font-size: 1.95rem; }
+  .regional-phase-card { padding: 20px 20px 18px; }
+  .regional-system-card { grid-template-columns: auto 1fr; }
+  .regional-card-arrow { display: none; }
+  .regional-system-hero { display: block; }
+  .regional-system-hero > .regional-system-icon { margin-bottom: 20px; }
+  .regional-phase-footer .btn { width: 100%; }
+  .regional-forum-login { align-items: stretch; flex-direction: column; }
+}
+
 html,
 body,
 button,
@@ -130,6 +869,20 @@ dialog,
   display: none !important;
 }
 
+/* The vendor bundle's `.header-actions button{color:#fff}` rule colours
+   every button in the header white for the navy bar it sits on. Any
+   `.popover` opened from the header is a light card (profile, notifications,
+   and any future one) but its buttons still match that selector, so they
+   inherited invisible white-on-white text. The language popover above was
+   patched by class name before this was traced to its real, shared cause;
+   this covers every popover under the header in one rule instead of
+   special-casing each one — confirmed broken on both `.profile-popover`
+   ("View profile", "Sign out") and `.notifications-popover`
+   ("Mark all as read"). */
+.header-actions .popover button {
+  color: var(--ink, #122b45) !important;
+}
+
 .platform-section.section-shell {
   border: 0 !important;
   box-shadow: none !important;
@@ -197,6 +950,13 @@ dialog,
   display: none !important;
 }
 
+/* Marketing homepage hero stat card ("24 active participants / from 11
+   organisations") — purely decorative and absolutely positioned over the
+   hero photo, so hiding it leaves no gap to fill. */
+.floating-card.fc-top {
+  display: none !important;
+}
+
 /* The notification-bell badge is a hardcoded "3" in the bundle with no
    real data behind it; runtime-enhancements.js overwrites its text with
    the real unread count and adds this class at zero instead of removing
@@ -213,6 +973,41 @@ dialog,
    moment a resource actually has one. */
 .resource-pills span:empty {
   display: none !important;
+}
+
+.auth-representation-counts {
+  margin: 4px 0 22px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f3f7f9;
+}
+.auth-representation-counts p {
+  margin: 0 0 10px;
+  color: #4a6280;
+  font-size: .85rem;
+  font-weight: 700;
+}
+.auth-representation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+  gap: 8px;
+}
+.auth-representation-grid > div {
+  display: grid;
+  gap: 2px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+}
+.auth-representation-grid strong {
+  font-size: 1.3rem;
+  color: #0b3158;
+}
+.auth-representation-grid span {
+  color: #6f8295;
+  font-size: .68rem;
+  font-weight: 700;
 }
 
 .auth-role-selector {
@@ -1258,4 +2053,4240 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
    the bundle's own rules). Give it a bit of breathing room. */
 .case-hero-copy p {
   margin-bottom: 14px;
+}
+
+/* The marketing footer's "Platform"/"Support" link columns space each
+   link out with a 10px flex gap plus, at narrower widths, a 34-40px
+   min-height per button — together that reads as a much bigger gap than
+   the 10px alone suggests. Tighten both. */
+.site-footer > div {
+  gap: 4px !important;
+}
+
+.site-footer button {
+  min-height: auto !important;
+  padding: 4px 0 !important;
+}
+
+/* ===========================================================================
+   Priority Systems / Challenges / Pathways explorer (systems-explorer.js).
+   A full-viewport custom overlay — see the module's own header comment for
+   why this doesn't rely on the bundle's own view routing.
+   ========================================================================= */
+
+.systems-explorer-nav-button {
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.systems-explorer-nav-button svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+
+
+/* Native <main>'s own (React-owned) children are hidden rather than
+   removed while the explorer page is showing — same reconciliation-safety
+   rule as everywhere else this file patches over a React-owned tree. */
+.systems-explorer-native-hidden {
+  display: none !important;
+}
+
+/* Lives *inside* the page's own <main> now (see getOverlay() in
+   systems-explorer.js) instead of a full-viewport overlay, so it inherits
+   main's width/grid-column and the real header/footer stay visible and
+   usable around it — matches every other page on the site instead of
+   blacking it out. */
+.systems-explorer-page {
+  animation: systems-explorer-fade-in 160ms ease;
+}
+
+@keyframes systems-explorer-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.systems-explorer-shell {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 34px 0 80px;
+}
+
+.systems-explorer-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.systems-explorer-close {
+  margin-left: auto;
+  background: #fff;
+  border: 1px solid var(--line, #e2e6e9);
+}
+
+.systems-explorer-heading {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Clickable ancestor trail (Priority Systems / Water / <Challenge>) that
+   replaces the old single "Back to X" pill + static eyebrow badge — every
+   level is a real jump, not just the one directly above. */
+.systems-explorer-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.systems-explorer-crumb-back-icon {
+  color: var(--teal, #078da3);
+  flex: 0 0 auto;
+  margin-right: 2px;
+}
+
+.systems-explorer-crumb {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--teal, #078da3);
+  cursor: pointer;
+}
+
+.systems-explorer-crumb:hover,
+.systems-explorer-crumb:focus-visible {
+  text-decoration: underline;
+}
+
+.systems-explorer-crumb-sep {
+  color: var(--muted, #a3b1ba);
+  font-size: 13px;
+}
+
+.systems-explorer-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy, #08345f);
+  margin: 0;
+}
+
+.systems-explorer-subtitle {
+  color: var(--muted, #667a8c);
+  max-width: 640px;
+  margin: -8px 0 20px;
+}
+
+.systems-explorer-loading,
+.systems-explorer-error,
+.systems-explorer-empty {
+  color: var(--muted, #667a8c);
+  padding: 24px 0;
+}
+
+.systems-explorer-empty-inline {
+  color: var(--muted, #667a8c);
+  font-size: 13px;
+}
+
+/* A richer stand-in for a bare "nothing here yet" line — used for the
+   Challenges grid and the Pathways list, the two truly-blank landing
+   states in this explorer (as opposed to e.g. the Futures tab, which
+   already shows a working "general vision" panel even with zero futures). */
+.systems-explorer-empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 48px 32px;
+  background: linear-gradient(180deg, #f7fbfc, #fff);
+  border: 1px dashed var(--line, #cfd8dd);
+  border-radius: 20px;
+}
+
+.systems-explorer-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #e5f7f8;
+  color: var(--teal, #078da3);
+  margin-bottom: 10px;
+}
+
+.systems-explorer-empty-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.systems-explorer-empty-state h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.systems-explorer-empty-state p {
+  margin: 0;
+  color: var(--muted, #667a8c);
+  max-width: 440px;
+  font-size: 14px;
+}
+
+.systems-explorer-empty-state .btn {
+  margin-top: 14px;
+}
+
+.systems-explorer-empty-note {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.systems-explorer-error {
+  color: #b3261e;
+}
+
+/* Deliberately NOT reusing the bundle's own .feature-grid class here (only
+   .feature-card, for the card's own visual styling) — addGuideFeatureCard()
+   in runtime-enhancements.js does an unscoped document.querySelector(
+   ".feature-grid") and would inject the homepage's guide card into
+   whichever matches first, including these. */
+.systems-grid,
+.challenges-grid,
+.pathways-grid {
+  display: grid;
+  /* min() keeps the 260px track on desktop but lets a single column shrink
+     to the viewport on small screens instead of forcing a horizontal
+     scrollbar the moment the container drops below 260px + padding. */
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 24px;
+}
+
+.pathways-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+  margin-top: 16px;
+}
+
+@media (max-width: 760px) {
+  .systems-grid,
+  .challenges-grid,
+  .pathways-grid {
+    gap: 16px;
+  }
+}
+
+/* .feature-card's own min-height (270px, set globally further up this file)
+   is sized for the native homepage cards' longer copy — left as-is here it
+   stretches these compact, mostly-empty cards (icon + title + one line)
+   into a wall of dead space. Scoped down just for this grid rather than
+   changed globally, since other .feature-card users still want the taller
+   card. */
+.systems-grid .feature-card,
+.challenges-grid .feature-card {
+  min-height: unset !important;
+  padding: 22px !important;
+  gap: 10px !important;
+}
+
+.system-card,
+.challenge-card {
+  cursor: pointer;
+}
+
+/* System tiles sit on a cool grey explorer canvas. Keep the complete card
+   surface white (not only its CTA) so each system reads as one clear,
+   elevated interactive unit. */
+.systems-grid .system-card,
+.systems-grid .system-card:focus-visible {
+  background: #fff !important;
+}
+
+.systems-grid .system-card:hover,
+.systems-grid .system-card:focus-visible {
+  background: #f5fbfc !important;
+  border-color: var(--teal, #078da3) !important;
+}
+
+.systems-grid .system-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--teal, #078da3) 28%, transparent);
+  outline-offset: 3px;
+}
+
+.system-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* A same-size, same-shape stand-in for the bundle's own .feature-icon —
+   that native class only gets its 54x54 circular sizing under a
+   .feature-grid ancestor (`.feature-grid .feature-icon{width:54px;...}`),
+   which this grid deliberately doesn't use (see the note above). Without
+   that scope .feature-icon carries no size/shape at all, so as a flex child
+   of .feature-card's default align-items:stretch it stretched into the
+   awful full-width bar this whole redesign started from. */
+.system-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.system-card-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.horizontal-badge {
+  margin: 0;
+}
+
+/* Emergency Response / Civil Protection is cross-cutting, not just another
+   same-size primary system — sorted first (renderSystemsGrid) and spans
+   the full grid row so it reads as connected to every other system rather
+   than a 10th equal-weight tile. */
+.system-card-horizontal {
+  grid-column: 1 / -1;
+  display: flex !important;
+  flex-direction: row !important;
+  /* Five children shared one non-wrapping row, so at anything below a very
+     wide viewport the title and description were squeezed into one-word-per
+     -line slivers. Wrapping lets them reflow onto a second line instead of
+     collapsing, and the flex-basis floors below stop them shrinking past a
+     readable measure in the first place. */
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 16px;
+}
+
+/* The icon and the "horizontal system" badge share one wrapper, so the
+   wrapper was as wide as the badge and pushed the title far from its icon.
+   display:contents dissolves the wrapper into the card's own flex row, which
+   lets the icon sit directly beside the title and moves the badge after the
+   name it describes. */
+.system-card-horizontal .system-card-head {
+  display: contents;
+}
+
+.system-card-horizontal .system-card-icon {
+  order: 0;
+}
+
+.system-card-horizontal h3 {
+  margin: 0;
+  order: 1;
+  flex: 0 1 auto;
+  min-width: 12ch;
+}
+
+.system-card-horizontal .horizontal-badge {
+  order: 2;
+  flex: 0 0 auto;
+}
+
+.system-card-horizontal .system-card-desc {
+  order: 3;
+}
+
+.system-card-horizontal .system-card-stats {
+  order: 4;
+}
+
+.system-card-horizontal .system-card-footer {
+  order: 5;
+}
+
+.system-card-horizontal .system-card-desc {
+  /* Grow into free space, but never narrower than a readable line. */
+  flex: 1 1 34ch;
+  min-width: 28ch;
+  margin: 0;
+}
+
+.system-card-horizontal .system-card-stats {
+  flex: 0 0 auto;
+}
+
+.system-card-horizontal .system-card-footer {
+  flex: 0 0 auto;
+  margin-top: 0;
+  margin-left: auto;
+}
+
+/* Narrow viewports: stop pretending it is a row. The horizontal system reads
+   as a normal (full-width) card, with the floors lifted so nothing overflows. */
+@media (max-width: 760px) {
+  /* Stay a wrapping row rather than a column, so the icon keeps its place
+     beside the system name. Everything below it takes a full-width line. */
+  .system-card-horizontal {
+    align-items: center;
+    gap: 10px 12px;
+  }
+
+  .system-card-horizontal h3 {
+    flex: 1 1 10ch;
+    min-width: 0;
+  }
+
+  .system-card-horizontal .horizontal-badge {
+    /* Sized by its own text and allowed to wrap after the name. A
+       flex-basis of 100% would put it on its own line but also stretch the
+       pill across the whole card, which is what it must not do. */
+    flex: 0 0 auto;
+    align-self: center;
+  }
+
+  .system-card-horizontal .system-card-desc,
+  .system-card-horizontal .system-card-stats,
+  .system-card-horizontal .system-card-footer {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .system-card-horizontal .system-card-footer {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+}
+
+.system-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.system-card-count {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f5f7;
+  color: var(--navy, #08345f);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 999px;
+}
+
+.system-card-arrow {
+  display: flex;
+  color: var(--line, #c3d0d6);
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.system-card-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.feature-card:hover .system-card-arrow {
+  color: var(--teal, #078da3);
+  transform: translateX(3px);
+}
+
+.challenge-card-desc {
+  color: var(--muted, #667a8c);
+  font-size: 14px;
+}
+
+.challenge-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.hazard-chip {
+  font-size: 10px;
+}
+
+.systems-explorer-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.systems-explorer-section-head h2,
+.systems-explorer-section-head h3 {
+  margin: 0;
+}
+
+.systems-explorer-panel {
+  background: #fff;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 24px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px #082f580f;
+}
+
+
+.systems-explorer-field {
+  display: grid;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.systems-explorer-field input,
+.systems-explorer-field textarea {
+  font: inherit;
+  font-weight: 400;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.systems-explorer-field textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.systems-explorer-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-weight: 400;
+}
+
+.systems-explorer-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+/* Replace the oversized, inconsistently-rendered native checkbox with a
+   small custom one that matches the pill's own rounded, brand-navy style. */
+.systems-explorer-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  flex: none;
+  border: 1.5px solid var(--line, #c7ced3);
+  border-radius: 4px;
+  background: #fff;
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.systems-explorer-checkbox input[type="checkbox"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  transform: scale(0);
+  transition: transform 0.1s ease;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  background: #fff;
+}
+
+.systems-explorer-checkbox input[type="checkbox"]:checked {
+  background: #082f58;
+  border-color: #082f58;
+}
+
+.systems-explorer-checkbox input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.systems-explorer-checkbox input[type="checkbox"]:focus-visible {
+  outline: 2px solid #078da3;
+  outline-offset: 2px;
+}
+
+/* The bundle's own .modal-backdrop is z-index:120 — lower than the
+   .systems-explorer-overlay it needs to appear above (200), so every
+   modal opened from within the explorer (new challenge/future/pathway,
+   edit Theory of Change) would otherwise render invisibly behind it. */
+.systems-explorer-modal-backdrop {
+  z-index: 250 !important;
+}
+
+/* The bundle pins its own modals with `overflow: hidden !important`, which
+   beat this rule despite the higher specificity and left long forms with
+   content below the fold and no way to reach it. Ours scroll. */
+.systems-explorer-modal-backdrop .modal-card {
+  max-height: 85vh !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+.systems-explorer-tabs {
+  margin-bottom: 20px;
+}
+
+.systems-explorer-baseline-grid,
+.systems-explorer-toc-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.systems-explorer-baseline-row b,
+.systems-explorer-toc-row b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--navy, #08345f);
+}
+
+.systems-explorer-baseline-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.systems-explorer-toc-row p {
+  margin: 0;
+  color: #334;
+}
+
+.systems-explorer-case-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.systems-explorer-link-button {
+  color: var(--teal, #078da3);
+  font-weight: 700;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.p2r-phase-badge {
+  margin-bottom: 16px;
+}
+
+.alternative-future-block h3 {
+  margin: 0 0 8px;
+}
+
+.vision-elements-container,
+.alternative-futures-list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 14px;
+}
+
+.vision-element-propose-form {
+  display: grid;
+  gap: 8px;
+}
+
+.vision-element-propose-form textarea {
+  min-height: 60px;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 10px;
+  padding: 10px;
+  font: inherit;
+}
+
+.vision-element-card {
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #fff;
+}
+
+.vision-element-merged {
+  opacity: 0.6;
+}
+
+.vision-element-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.vision-element-author {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.vision-element-body {
+  margin: 0 0 10px;
+}
+
+.vision-element-image {
+  display: block;
+  max-width: 100%;
+  margin: 8px 0 12px;
+  border-radius: 10px;
+  border: 1px solid #dde5ec;
+}
+
+.vision-element-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vision-element-actions .btn.small {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.vision-element-replies {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line, #e2e6e9);
+  display: grid;
+  gap: 8px;
+}
+
+.vision-element-reply {
+  margin: 0;
+  font-size: 13px;
+}
+
+.vision-element-reply-form {
+  display: flex;
+  gap: 8px;
+}
+
+.vision-element-reply-form input {
+  flex: 1;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.pathway-card .output-body {
+  gap: 8px;
+}
+
+.pathway-transformative {
+  font-size: 13px;
+  color: var(--muted, #667a8c);
+}
+
+.comparison-body {
+  margin-top: 6px;
+}
+
+.systems-explorer-table-wrapper {
+  overflow-x: auto;
+}
+
+.systems-explorer-comparison-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 480px;
+}
+
+.systems-explorer-comparison-table th,
+.systems-explorer-comparison-table td {
+  border: 1px solid var(--line, #e2e6e9);
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.systems-explorer-criterion-label {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.systems-explorer-rate-btn {
+  margin-left: 8px;
+  border: 0;
+  background: none;
+  color: #e8a53d;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Compare & Prioritise: the calculated (from-measures) number sits above
+   the optional stakeholder whole-pathway overlay, per the journey doc's
+   "Measure-level assessment -> Calculated Pathway profile -> Stakeholder
+   discussion of the whole Pathway" flow. */
+.compare-cell-calculated {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.compare-cell-stakeholder {
+  margin-left: 0;
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+/* Step 5: the per-measure "Αξιολόγηση μέτρου" panel appended to each
+   Adaptation Option card. */
+.measure-assessment-panel {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line, #e2e6e9);
+}
+
+.measure-assessment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.measure-assessment-label {
+  font-size: 13px;
+}
+
+.systems-explorer-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 2px solid var(--line, #e2e6e9);
+}
+
+.systems-explorer-timeline li {
+  position: relative;
+  padding: 0 0 18px 20px;
+}
+
+.systems-explorer-timeline li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal, #078da3);
+}
+
+.systems-explorer-timeline b {
+  display: block;
+}
+
+.systems-explorer-timeline-meta {
+  color: var(--muted, #667a8c);
+  font-size: 12px;
+}
+
+/* Case Study workspace: step activation badges + open/close controls
+   (spec: "Understand that Alternative Futures is currently active"). */
+.case-step-badge {
+  margin-left: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.case-step-badge-not_started {
+  background: #eef1f3;
+  color: var(--muted, #667a8c);
+}
+
+.case-step-badge-active {
+  background: #e5f7f8;
+  color: var(--teal, #078da3);
+}
+
+.case-step-badge-closed {
+  background: #fdece9;
+  color: #b3261e;
+}
+
+.case-step-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+/* One reusable Contribution Card: highlight state, and the Coordinator's
+   contextual "more actions" menu (merge/highlight/group/synthesis toggle)
+   kept out of the main button row so it doesn't overload every card. */
+.vision-element-highlighted {
+  border: 1px solid #e8a53d;
+  box-shadow: 0 0 0 1px #e8a53d33;
+}
+
+.vision-element-curator-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line, #e2e6e9);
+}
+
+.baseline-suggestion-pending {
+  background: #fff2df;
+  color: #a96616;
+}
+
+.baseline-suggestion-accepted {
+  background: #edf4e8;
+  color: #5f7c3a;
+}
+
+.baseline-suggestion-rejected {
+  background: #fdece9;
+  color: #b3261e;
+}
+
+/* Compare & Prioritise: an inline 1-5 rating popover replacing a bare
+   prompt(), plus a short optional justification. */
+.rating-popover-host {
+  position: relative;
+}
+
+.rating-popover {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 24px #08345f29;
+  display: grid;
+  gap: 8px;
+  width: 220px;
+  text-align: left;
+}
+
+.rating-scale {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.rating-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--line, #e2e6e9);
+  background: #fff;
+  color: var(--navy, #08345f);
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.rating-dot.selected {
+  background: var(--teal, #078da3);
+  border-color: var(--teal, #078da3);
+  color: #fff;
+}
+
+.rating-popover textarea {
+  font: inherit;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 8px;
+  padding: 6px 8px;
+  min-height: 50px;
+  resize: vertical;
+}
+
+@media (max-width: 700px) {
+  .systems-explorer-shell {
+    width: min(100% - 32px, 1180px);
+    padding: 20px 0 60px;
+  }
+
+  .systems-explorer-title {
+    font-size: 22px;
+  }
+}
+
+/* Case Study workspace co-creation stepper -- an extra tab injected into
+   the native .case-tabs bar (unscoped native class, styles it exactly
+   like the 5 real tabs) plus a sibling pane appended after the native
+   .detail-grid. Hidden via a class, never unmounted, matching the
+   React-reconciliation-safety rule used throughout this codebase. */
+.case-workspace-native-hidden {
+  display: none !important;
+}
+
+.case-workspace-pane {
+  margin-top: 18px;
+}
+
+.case-workspace-steps {
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+/* The P2R Journey phase strip -- picking a phase filters the step tabs
+   below it down to just that phase's own steps (journey doc: never show
+   every tool at once). */
+.case-workspace-phases {
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.case-phase-badge {
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.case-phase-badge-completed {
+  background: #edf4e8;
+  color: #5f7c3a;
+}
+
+.case-phase-badge-current {
+  background: #e5f7f8;
+  color: var(--teal, #078da3);
+}
+
+.case-phase-badge-upcoming {
+  background: #eef1f3;
+  color: var(--muted, #667a8c);
+}
+
+/* Opening a P2R journey swaps the impact-focus panel for the stepper,
+   inside the Priority System page rather than navigating away. */
+.system-journey-back {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.system-journey-header {
+  margin-bottom: 18px;
+}
+
+.system-journey-header h2 {
+  margin: 4px 0 0;
+}
+
+.system-journey-host .case-workspace-pane {
+  margin-top: 0;
+}
+
+/* Phase 1 free-text context rows (context / vulnerabilities / affected
+   assets / RCCAP measures) read as prose next to the tag-pill rows. */
+.baseline-context-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink, #08345f);
+}
+
+.impact-chip {
+  border: 1px solid var(--line, #e2e6e9);
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 0 8px 8px 0;
+}
+
+.impact-chip.active {
+  background: var(--navy, #08345f);
+  color: #fff;
+  border-color: var(--navy, #08345f);
+}
+
+.impacts-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.impact-detail-panel h4 {
+  margin: 18px 0 8px;
+}
+
+.impact-case-bucket {
+  margin-bottom: 12px;
+}
+
+.impact-case-bucket > b {
+  display: block;
+  font-size: 12px;
+  color: var(--muted, #667a8c);
+  margin-bottom: 4px;
+}
+
+.system-card-desc {
+  color: var(--muted, #667a8c);
+  font-size: 13px;
+}
+
+.system-card-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted, #667a8c);
+}
+
+.system-card-stat::after {
+  content: "·";
+  margin-left: 6px;
+}
+
+.system-card-stat:last-child::after {
+  content: "";
+  margin-left: 0;
+}
+
+/* Selected Priority System — journey hub
+   ---------------------------------------
+   The system page is an orientation-and-routing surface, not a dashboard
+   of every workspace tool. It leads from a selected system to one climate
+   impact and then into its single Resilience Journey. */
+.system-journey-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+  padding: clamp(30px, 5vw, 56px);
+  margin-bottom: 26px;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(71, 193, 205, 0.25), transparent 34%),
+    linear-gradient(135deg, #082f58 0%, #0a4a72 100%);
+  color: #fff;
+  overflow: hidden;
+}
+
+.system-journey-hero-copy {
+  min-width: 0;
+}
+
+.system-journey-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  color: #bfeef1;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.system-journey-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #77d7df;
+}
+
+.system-journey-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.system-journey-hero h1 {
+  margin: 0;
+  max-width: 760px;
+  color: #fff;
+  font-size: clamp(38px, 6vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.system-journey-hero-copy > p {
+  max-width: 700px;
+  margin: 18px 0 24px;
+  color: #d9e9f1;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.system-journey-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.system-journey-stats span {
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.system-route-card {
+  display: grid;
+  gap: 4px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  background: rgba(2, 26, 50, 0.42);
+  backdrop-filter: blur(10px);
+}
+
+.system-route-card h2 {
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: 15px;
+}
+
+.system-route-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 54px;
+  padding: 8px 0;
+}
+
+.system-route-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 46px;
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.system-route-index {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 31px;
+  height: 31px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  color: #d5e6ef;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.system-route-step-complete .system-route-index {
+  border-color: #8dd2a2;
+  background: #8dd2a2;
+  color: #08345f;
+}
+
+.system-route-step-current .system-route-index {
+  border-color: #66d4df;
+  background: #66d4df;
+  color: #08345f;
+  box-shadow: 0 0 0 5px rgba(102, 212, 223, 0.14);
+}
+
+.system-route-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.system-route-copy b {
+  color: #fff;
+  font-size: 13px;
+}
+
+.system-route-copy small {
+  color: #b9cfdb;
+  font-size: 11px;
+}
+
+.system-reference-section {
+  margin-bottom: 34px;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid #c9dce4;
+  border-radius: 26px;
+  background: #fff;
+}
+
+.system-reference-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.system-reference-kicker,
+.system-impact-focus-label {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #078da3;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.system-reference-header h2,
+.system-impact-selector-head h2,
+.system-impact-focus h2,
+.system-impact-cases-head h2,
+.system-method-header h3 {
+  margin: 0;
+  color: #08345f;
+  letter-spacing: -0.025em;
+}
+
+.system-reference-header p,
+.system-impact-selector-head p,
+.system-impact-cases-head p,
+.system-method-header p {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: #5f7487;
+  line-height: 1.6;
+}
+
+.system-reference-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid #dce7eb;
+}
+
+.system-reference-card {
+  min-width: 0;
+  padding: 24px 24px 4px 0;
+}
+
+.system-reference-card + .system-reference-card {
+  padding-left: 24px;
+  border-left: 1px solid #dce7eb;
+}
+
+.system-reference-number {
+  display: block;
+  margin-bottom: 12px;
+  color: #0794a8;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.system-reference-card h3 {
+  margin: 0 0 8px;
+  color: #08345f;
+  font-size: 15px;
+}
+
+.system-reference-card p {
+  margin: 0;
+  color: #526b7d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.system-impact-selector-section {
+  margin: 0 0 24px;
+}
+
+.system-impact-selector-head {
+  margin-bottom: 18px;
+}
+
+.system-impact-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.system-impact-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 250px;
+  padding: 22px;
+  border: 1.5px solid #cbdbe2;
+  border-radius: 20px;
+  background: #fff;
+  color: #08345f;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.system-impact-choice:hover {
+  border-color: #078da3;
+  background: #f2fbfc;
+}
+
+.system-impact-choice:active {
+  background: #e5f7f8;
+}
+
+.system-impact-choice:focus-visible {
+  outline: 3px solid #27bfd0;
+  outline-offset: 3px;
+}
+
+.system-impact-choice.active {
+  border-color: #0a4a72;
+  background: #0a3d67;
+  color: #fff;
+}
+
+.system-impact-relationship {
+  align-self: flex-start;
+  margin-bottom: 14px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #e7f7f8;
+  color: #078da3;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.system-impact-choice.active .system-impact-relationship {
+  background: rgba(120, 222, 230, 0.16);
+  color: #9de7ec;
+}
+
+.system-impact-choice-title {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.system-impact-choice-description {
+  display: -webkit-box;
+  margin-top: 8px;
+  overflow: hidden;
+  color: #5c7283;
+  font-size: 13px;
+  line-height: 1.55;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.system-impact-choice.active .system-impact-choice-description {
+  color: #d2e4ed;
+}
+
+.system-impact-choice-hazards,
+.system-evidence-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.system-evidence-tag {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #edf3f6;
+  color: #466276;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.system-impact-choice.active .system-evidence-tag {
+  background: rgba(255, 255, 255, 0.11);
+  color: #fff;
+}
+
+.system-impact-choice-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 12px;
+}
+
+.system-impact-choice-footer strong {
+  color: #078da3;
+}
+
+.system-impact-choice.active .system-impact-choice-footer strong {
+  color: #7ce0e7;
+}
+
+.system-impact-focus-container {
+  margin-top: 26px;
+}
+
+.system-impact-focus {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(250px, 0.75fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: start;
+  padding: clamp(26px, 5vw, 46px);
+  border-radius: 26px;
+  background: linear-gradient(135deg, #edf9fa 0%, #f7fbfc 100%);
+  border: 1px solid #bee0e4;
+}
+
+.system-impact-focus-copy > p {
+  max-width: 720px;
+  margin: 12px 0 0;
+  color: #516d7e;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.system-impact-evidence {
+  padding: 20px;
+  border: 1px solid #c9dfe4;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.system-impact-evidence h3 {
+  margin: 0 0 14px;
+  color: #08345f;
+  font-size: 14px;
+}
+
+.system-evidence-group + .system-evidence-group {
+  margin-top: 16px;
+}
+
+.system-evidence-group > b {
+  color: #536e80;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.system-evidence-group .system-evidence-tags {
+  margin-top: 7px;
+}
+
+.system-impact-cases {
+  margin-top: 34px;
+}
+
+.system-impact-cases-head {
+  margin-bottom: 18px;
+}
+
+.system-journey-case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.system-journey-case {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid #cedce3;
+  border-radius: 22px;
+  background: #fff;
+  color: #08345f;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.system-journey-case:hover {
+  border-color: #078da3;
+  background: #f7fcfc;
+}
+
+.system-journey-case:active {
+  background: #edf9fa;
+}
+
+.system-journey-case:focus-visible {
+  outline: 3px solid #27bfd0;
+  outline-offset: 3px;
+}
+
+.system-journey-case-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.system-case-status {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #e5f7f8;
+  color: #087f93;
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.system-case-status-under_review {
+  background: #fff1d9;
+  color: #9a650b;
+}
+
+.system-case-status-approved,
+.system-case-status-completed {
+  background: #edf5e8;
+  color: #577a34;
+}
+
+.system-case-status-draft {
+  background: #edf1f3;
+  color: #607483;
+}
+
+.system-journey-case-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: #6a7e8d;
+  font-size: 11px;
+}
+
+.system-journey-case-title {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.system-journey-case-description {
+  display: block;
+  margin-top: 8px;
+  color: #607586;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.system-case-phase-track {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 22px 0 18px;
+}
+
+.system-case-phase {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 9px;
+  border-radius: 12px;
+  background: #f1f4f6;
+}
+
+.system-case-phase-complete {
+  background: #eff6eb;
+}
+
+.system-case-phase-current {
+  background: #e5f7f8;
+  box-shadow: inset 0 0 0 1px #92d9df;
+}
+
+.system-case-phase-index {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: #d7e0e5;
+  color: #526c7d;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.system-case-phase-complete .system-case-phase-index {
+  background: #75a84c;
+  color: #fff;
+}
+
+.system-case-phase-current .system-case-phase-index {
+  background: #078da3;
+  color: #fff;
+}
+
+.system-case-phase-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.system-case-phase-copy b {
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.system-case-phase-copy small {
+  color: #718390;
+  font-size: 9px;
+}
+
+.system-journey-case-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  color: #078da3;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.system-journey-case-cta svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 160ms ease;
+}
+
+.system-journey-case:hover .system-journey-case-cta svg {
+  transform: translateX(4px);
+}
+
+.system-method-section {
+  margin-top: 32px;
+  padding: clamp(28px, 4vw, 44px);
+  border-radius: 26px;
+  background: #082f58;
+  color: #fff;
+}
+
+.system-method-header h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(24px, 2.4vw, 34px);
+}
+
+.system-method-header p {
+  max-width: 720px;
+  margin: 0;
+  color: #c8dae4;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.system-method-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.system-method-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  background: #123f6b;
+  box-shadow: 0 18px 34px rgba(0, 20, 42, 0.16);
+}
+
+.system-method-number {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: #65d0d9;
+  color: #08345f;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.system-method-card h4 {
+  margin: 0 0 7px;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.system-method-question {
+  display: block;
+  margin-bottom: 14px;
+  color: #8ee7ed;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.system-method-description {
+  margin: 0 0 20px;
+  color: #c8dae4;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.system-method-phase {
+  display: block;
+  margin: auto 0 12px;
+  color: #83dfe6;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+}
+
+.system-method-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 20px;
+  color: #d7e5ed;
+  font-size: 12px;
+}
+
+.system-method-status strong {
+  color: #fff;
+  font-size: inherit;
+}
+
+.system-method-status-complete strong { color: #b9ee9c; }
+.system-method-status-current strong { color: #8ee7ed; }
+.system-method-status-upcoming strong { color: #d7e5ed; }
+
+.system-method-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.system-method-action-primary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  color: #08345f;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.system-method-action-primary:hover {
+  background: #e8f9fa;
+  transform: translateY(-1px);
+}
+
+.system-method-action-primary:focus-visible,
+.system-method-action-secondary:focus-visible {
+  outline: 3px solid #65d0d9;
+  outline-offset: 3px;
+}
+
+.system-method-action-primary svg {
+  flex: none;
+  width: 17px;
+  height: 17px;
+}
+
+.system-method-action-secondary {
+  color: #bdebf0;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .system-journey-hero,
+  .system-impact-focus {
+    grid-template-columns: 1fr;
+  }
+
+  .system-route-card {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .system-route-card h2 {
+    grid-column: 1 / -1;
+  }
+
+  .system-route-step {
+    align-items: flex-start;
+  }
+
+  .system-route-step:not(:last-child)::after {
+    left: calc(100% - 2px);
+    top: 23px;
+    width: calc(100% - 32px);
+    height: 1px;
+  }
+
+  .system-reference-grid,
+  .system-method-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-case-phase-track {
+    grid-template-columns: 1fr;
+  }
+
+  .system-case-phase-copy b {
+    white-space: normal;
+  }
+
+  .system-reference-card,
+  .system-reference-card + .system-reference-card {
+    padding: 20px 0;
+    border-left: 0;
+    border-bottom: 1px solid #dce7eb;
+  }
+
+  .system-reference-card:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .system-method-card p {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .system-journey-hero {
+    padding: 26px 22px;
+    border-radius: 24px;
+  }
+
+  .system-journey-hero h1 {
+    font-size: 38px;
+  }
+
+  .system-route-card {
+    grid-template-columns: 1fr;
+  }
+
+  .system-route-card h2 {
+    grid-column: auto;
+  }
+
+  .system-route-step:not(:last-child)::after {
+    left: 15px;
+    top: 46px;
+    width: 1px;
+    height: 16px;
+  }
+
+  .system-impact-choice-grid,
+  .system-journey-case-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+}
+
+/* A pathway is a SEQUENCE of measures, not a set: the create/edit form lets
+   the author order them, and the card renders that order as numbered steps. */
+.pathway-sequence-list,
+.pathway-sequence-readout {
+  margin: 6px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 4px;
+}
+
+.pathway-sequence-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pathway-sequence-title {
+  flex: 1;
+  font-size: 13px;
+}
+
+.pathway-sequence-controls {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.pathway-sequence-controls .btn {
+  padding: 2px 8px;
+  line-height: 1.2;
+}
+
+.pathway-section-label {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted, #667a8c);
+}
+
+.pathway-sequence-category {
+  flex: none;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--line, #d7e2e8);
+}
+
+.pathway-category-group {
+  margin-top: 10px;
+}
+
+.pathway-category-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--teal, #078da3);
+  margin-bottom: 2px;
+}
+
+/* Phase 3, Tab 1 — Identify & Assess Adaptation Options. */
+.case-options-tab-body {
+  margin-top: 18px;
+}
+
+.option-card .decision-status-pill {
+  margin-right: 6px;
+}
+
+.option-info-modal {
+  max-width: 640px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.option-evidence-section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line, #e2e6e9);
+}
+
+.option-evidence-section h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.option-evidence-source {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--muted, #667a8c);
+}
+
+.option-collective-wrap {
+  margin-top: 10px;
+}
+
+.option-collective-table {
+  margin-top: 6px;
+}
+
+.option-assessment-details {
+  margin-top: 12px;
+}
+
+.option-assessment-details summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--teal, #078da3);
+}
+
+.option-assessment-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.option-assessment-criterion {
+  display: grid;
+  gap: 4px;
+}
+
+.option-assessment-criterion span {
+  font-weight: 500;
+  color: var(--muted, #667a8c);
+  font-size: 12px;
+}
+
+.option-priority-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.option-priority-row {
+  padding: 12px 14px;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.option-priority-explanation {
+  margin-top: 6px;
+  display: grid;
+  gap: 2px;
+}
+
+.option-priority-explanation h5 {
+  margin: 0 0 4px;
+  color: var(--teal, #078da3);
+}
+
+.option-priority-explanation p {
+  margin: 0;
+  font-size: 13px;
+}
+
+/* Adaptation pathways developed under a Climate Impact, surfaced on the
+   Priority System page (Pentsiou #1) and linking back to their own journey. */
+.system-impact-pathways {
+  margin-top: 24px;
+}
+
+.system-pathway-title {
+  display: block;
+  font-weight: 700;
+}
+
+.system-pathway-origin {
+  display: block;
+  font-size: 12px;
+  color: var(--muted, #667a8c);
+}
+
+/* A closed activity hides its contribution controls: the Coordinator's
+   "close contributions" must actually stop new input, not just relabel a
+   badge. Curators keep their curation menu so they can still synthesise. */
+.case-step-closed .vision-element-propose-form,
+.case-step-closed .vision-element-reply-form,
+.case-step-closed .case-step-body > .btn.secondary:not(.vision-element-curator-menu .btn) {
+  display: none;
+}
+
+/* Pentsiou #13: a criterion the user scores 1-5 must explain what it means.
+   The dotted underline signals the definition is available on hover/focus. */
+.has-criterion-help {
+  border-bottom: 1px dotted var(--muted, #667a8c);
+  cursor: help;
+}
+
+/* ---------------------------------------------------------------------
+   Dedicated Case Study page: context chips, then the P2R workspace, with
+   the bundle's own tabs demoted below as supporting material. The page has
+   to answer "what challenge, and where are we in the process?" at a glance.
+   --------------------------------------------------------------------- */
+.case-context-bar {
+  /* A wrapping flex row sized every group to its own content, which left a
+     ragged gap wherever one group (Linked systems) was much wider than its
+     neighbours. An auto-fit grid keeps the columns aligned instead. */
+  display: grid;
+  /* min() lets the last column shrink to the container instead of holding
+     a 180px floor that forces cramped two-up chips on a phone. */
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  align-items: start;
+  gap: 16px 24px;
+  /* Breathing room from the hero above and the role banner below. */
+  margin: 22px 0 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 14px;
+  background: #f8fafb;
+}
+
+.case-context-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.case-context-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted, #667a8c);
+}
+
+.case-context-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.case-context-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line, #e2e6e9);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy, #08345f);
+}
+
+/* A "Linked systems" group can hold many chips; let it span the grid rather
+   than forcing an unbalanced column. */
+.case-context-group:has(.case-context-chips > :nth-child(4)) {
+  grid-column: span 2;
+}
+
+@media (max-width: 760px) {
+  .case-context-bar {
+    gap: 12px 18px;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .case-context-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .case-context-group:has(.case-context-chips > :nth-child(4)) {
+    grid-column: span 1;
+  }
+}
+
+/* Stakeholder contributions must be attributable: who said it, in what
+   capacity, and when -- a bare name reads as anonymous chatter. */
+.contribution-reply {
+  padding: 10px 12px;
+  border-left: 2px solid var(--line, #e2e6e9);
+  margin: 8px 0 0;
+}
+
+.contribution-reply-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.contribution-reply-author {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.contribution-reply-role {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #eef5f7;
+  color: var(--teal, #078da3);
+}
+
+.contribution-reply-org,
+.contribution-reply-time {
+  font-size: 11px;
+  color: var(--muted, #667a8c);
+}
+
+.contribution-reply-body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* An open discussion should look open, so it is obvious the panel is live. */
+.contribution-thread-open {
+  box-shadow: inset 3px 0 0 var(--teal, #078da3);
+}
+
+/* The optional translation is secondary by design: collapsed, quiet, and
+   clearly separated from the fields the contributor actually has to fill. */
+.modal-translation-block {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line, #e2e6e9);
+}
+
+.modal-translation-block > summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted, #667a8c);
+  list-style: none;
+  padding: 4px 0;
+}
+
+.modal-translation-block > summary::-webkit-details-marker {
+  display: none;
+}
+
+.modal-translation-block > summary::before {
+  content: "+ ";
+  font-weight: 800;
+}
+
+.modal-translation-block[open] > summary::before {
+  content: "– ";
+}
+
+.modal-translation-block[open] > summary {
+  margin-bottom: 6px;
+}
+
+/* The full-width support bar read as a stray green rule above the actions.
+   Make it a slim, clearly-labelled meter instead. */
+/* Create buttons lead with a plus so the primary action of each step reads
+   as "add something", not as just another secondary control. */
+.btn-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-with-icon > svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+
+/* Pathway cards inherited no background, so they showed the page grey, and a
+   lone card stretched by auto-fit would otherwise run to an unreadable line
+   length. */
+.pathway-card {
+  background: #fff;
+  max-width: 620px;
+}
+
+/* User Journey (2026): concise P2R methodology directly below the hero. */
+.system-card-head { justify-content: flex-start; align-items: center; }
+.system-card-head h3 { margin: 0 !important; }
+.system-card-challenges { display: flex; align-items: center; gap: .45rem; margin-top: 1rem; color: #6d7d89; }
+.system-card-challenges > b { color: inherit; font-size: .78rem; }
+.system-card-challenges > strong { display: grid; min-width: 1.55rem; height: 1.55rem; padding-inline: .35rem; place-items: center; border-radius: 999px; background: #e9eef1; color: #5d6f7c; font-size: .75rem; }
+.system-card-cta { color: #008ca3; font-size: .78rem; font-weight: 800; }
+.system-card .system-card-arrow { color: #008ca3; }
+.homepage-journey-visual { background: #fff; }
+.hero-photo.homepage-journey-visual-frame {
+  --journey-visual-inset: clamp(18px, 2vw, 30px);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  background: #fff !important;
+}
+.homepage-journey-visual-frame > img {
+  display: block;
+  position: absolute;
+  inset: var(--journey-visual-inset);
+  width: calc(100% - 2 * var(--journey-visual-inset)) !important;
+  height: calc(100% - 2 * var(--journey-visual-inset)) !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center;
+}
+
+/* The recovered hero keeps its full desktop measurements (64px heading,
+   70px column gap and a 560px visual) until 1050px. On a typical laptop
+   that pushes the transition cycle below the first viewport and makes the
+   two columns compete for space. Scale the whole composition together. */
+@media (min-width: 1051px) and (max-width: 1320px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.08fr) minmax(380px, .92fr);
+    gap: clamp(28px, 3vw, 42px);
+    min-height: 0;
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  .hero-copy h1 {
+    margin: 10px 0 20px;
+    font-size: clamp(46px, 4.35vw, 56px);
+    line-height: 1.06;
+  }
+  .hero-copy > p {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .hero-copy .button-row { margin-top: 24px; }
+  .hero-visual.homepage-journey-visual {
+    height: clamp(370px, 34vw, 430px);
+    padding: 10px;
+    border-radius: 26px;
+    transform: none;
+  }
+  .hero-photo.homepage-journey-visual-frame {
+    --journey-visual-inset: 18px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 1050px) {
+  .hero {
+    gap: 28px;
+    min-height: 0;
+    padding-top: 42px;
+    padding-bottom: 42px;
+  }
+  .hero-visual.homepage-journey-visual {
+    width: min(100%, 560px);
+    height: auto;
+    aspect-ratio: 3159 / 3356;
+    justify-self: center;
+    padding: 10px;
+    border-radius: 24px;
+    transform: none;
+  }
+  .hero-photo.homepage-journey-visual-frame {
+    --journey-visual-inset: 16px;
+    border-radius: 17px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-visual.homepage-journey-visual {
+    width: min(100%, 440px);
+  }
+}
+
+/* The selected challenge is orientation context, not another full page.
+   Keep the key evidence visible while reducing the vertical jump before the
+   user reaches the resilience journeys. */
+.system-impact-focus-container { margin-top: 18px; }
+.system-impact-focus {
+  grid-template-columns: minmax(0, 1.25fr) minmax(420px, .75fr);
+  gap: clamp(20px, 2.4vw, 32px);
+  align-items: center;
+  padding: 20px 24px;
+  border-radius: 20px;
+}
+.system-impact-focus-copy > p {
+  margin-top: 5px;
+  font-size: .88rem;
+  line-height: 1.45;
+}
+.system-impact-focus-label { margin-bottom: 5px; }
+.system-impact-evidence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  padding: 0 0 0 20px;
+  border: 0;
+  border-left: 1px solid #c9dfe4;
+  border-radius: 0;
+  background: transparent;
+}
+.system-impact-evidence h3 {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+.system-evidence-group + .system-evidence-group { margin-top: 0; }
+.system-evidence-group .system-evidence-tags { margin-top: 5px; }
+.system-impact-cases { margin-top: 24px; }
+.system-impact-focus-container > .system-impact-cases { display: none !important; }
+.system-impact-cases-head { margin-bottom: 12px; }
+.system-impact-cases-head p { max-width: 760px; margin-top: 5px; line-height: 1.45; }
+.system-journey-case { padding: 20px; border-radius: 18px; }
+.system-journey-case-head { margin-bottom: 10px; }
+.system-journey-case-title { font-size: 1.08rem; }
+.system-journey-case-description { margin-top: 5px; line-height: 1.45; }
+.system-case-phase-track { margin: 16px 0 14px; }
+
+.system-case-output-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -4px 0 16px;
+  padding: 9px 11px;
+  border-radius: 12px;
+  background: #edf8f9;
+  color: #526b7d;
+  font-size: .7rem;
+}
+.system-case-output-summary b { color: #087f93; }
+.system-journey-hero { grid-template-columns: minmax(0, 820px) !important; }
+.case-baseline-purpose { max-width: 760px; margin: .5rem 0 1.5rem; color: #52697c; font-size: 1.02rem; line-height: 1.6; }
+.case-baseline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.case-baseline-header > h3 { margin: 0; }
+.case-baseline-download {
+  display: inline-flex !important;
+  align-items: center;
+  gap: .45rem;
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+@media (max-width: 1120px) {
+  .system-impact-focus { grid-template-columns: 1fr; }
+  .system-impact-evidence {
+    padding: 14px 0 0;
+    border-left: 0;
+    border-top: 1px solid #c9dfe4;
+  }
+}
+
+@media (max-width: 900px) {
+  .system-journey-case-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .system-impact-focus { padding: 18px; }
+  .system-impact-evidence { grid-template-columns: 1fr; }
+  .system-case-output-summary { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .case-baseline-header { align-items: flex-start; flex-direction: column; }
+}
+
+/* Consolidated Impact context: all contextual metadata lives in the image
+   hero, instead of a second card beneath it. */
+.case-hero {
+  position: relative;
+}
+
+/* The single P2R navigator. It owns phase selection and status management;
+   individual activity tabs never repeat phase status controls. */
+.case-journey-header {
+  margin-bottom: 14px;
+  padding: clamp(18px, 2.4vw, 28px);
+  border-radius: 22px;
+  background: var(--navy, #0b3a67);
+  color: #fff;
+}
+
+.case-journey-header > h2 {
+  margin: 0 0 5px;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.case-journey-header > p {
+  margin: 0 0 18px;
+  color: #d6e7f3;
+}
+
+.case-workspace-phases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.case-journey-phase-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 15px;
+  background: rgb(255 255 255 / 8%);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.case-journey-phase-card:has(.case-journey-phase-open.active) {
+  border-color: #78dce6;
+  background: rgb(38 133 160 / 34%);
+}
+
+.case-journey-phase-open {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 9px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.case-journey-phase-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.case-journey-phase-number {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #75dbe5;
+  color: #08385d;
+  font-weight: 850;
+}
+
+.case-journey-phase-label {
+  min-width: 0;
+  color: #d9eaf4;
+  font-size: 11px;
+  font-weight: 720;
+  line-height: 1.35;
+}
+
+.case-journey-phase-head .case-phase-badge {
+  margin-left: 0;
+  white-space: nowrap;
+}
+
+.case-journey-phase-question {
+  color: #fff;
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.25;
+}
+
+.case-journey-phase-summary {
+  color: #d5e5ef;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.case-journey-phase-open:hover:not(:disabled),
+.case-journey-phase-open:focus-visible:not(:disabled) {
+  color: #8ee8f0;
+}
+
+.case-journey-phase-open:focus-visible {
+  outline: 2px solid #8ee8f0;
+  outline-offset: 4px;
+}
+
+.case-journey-phase-open:disabled {
+  color: #b8c7d3;
+  cursor: not-allowed;
+}
+
+.case-journey-phase-open:disabled .case-journey-phase-number {
+  background: #42596d;
+  color: #d3dde5;
+}
+
+.case-journey-phase-open.active {
+  color: #8ee8f0;
+}
+
+.case-phase-badge-locked {
+  background: #26384a;
+  color: #fff;
+}
+
+.case-phase-lock-note {
+  margin: 2px 0 0;
+  color: #c7d2dc;
+  font-size: 11px;
+  font-weight: 520;
+  line-height: 1.4;
+}
+
+.case-phase-status-control {
+  display: grid;
+  gap: 4px;
+  margin-top: auto;
+  color: #c9dce9;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.case-phase-status-control select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid rgb(255 255 255 / 28%);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--navy, #0b3a67);
+  font: inherit;
+  text-transform: none;
+}
+
+.case-workspace-steps {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: thin;
+}
+
+.case-workspace-steps button {
+  flex: 0 0 auto;
+}
+
+.regional-embedded-workspace .case-workspace-steps {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding: 7px;
+  border: 1px solid var(--line, #d7e2e8);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.regional-embedded-workspace .case-workspace-steps button {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  min-height: 46px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #405970;
+  font-weight: 750;
+  cursor: pointer;
+  transition: border-color .18s ease, background-color .18s ease, color .18s ease;
+}
+
+.regional-embedded-workspace .case-workspace-steps button:hover:not(:disabled),
+.regional-embedded-workspace .case-workspace-steps button:focus-visible {
+  border-color: #8fcbd4;
+  background: #eef9fa;
+  color: #0b3a67;
+}
+
+.regional-embedded-workspace .case-workspace-steps button.active {
+  border-color: #0d496f;
+  background: #0d496f;
+  color: #fff;
+}
+
+.regional-embedded-workspace .case-workspace-steps button:disabled {
+  opacity: .52;
+  cursor: not-allowed;
+}
+
+.case-step-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.case-step-sequence {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dff4f6;
+  color: #087e96;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.case-workspace-steps button.active .case-step-sequence {
+  background: #67d6df;
+  color: #083b60;
+}
+
+.case-step-state {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #edf1f3;
+  color: #65798d;
+  font-size: .62rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.case-step-state-active { background: #dff5f7; color: #087e96; }
+.case-step-state-closed { background: #eaf3e4; color: #5f7c3a; }
+.case-workspace-steps button.active .case-step-state { background: #fff; color: #0d496f; }
+
+.case-step-status-control {
+  display: grid;
+  gap: 3px;
+  min-width: 142px;
+  margin-left: auto;
+  padding-left: 8px;
+  border-left: 1px solid #dce6eb;
+  color: #5f7488;
+  font-size: .64rem;
+  font-weight: 800;
+}
+
+.case-step-status-control select {
+  min-height: 30px;
+  border: 1px solid #cbdbe4;
+  border-radius: 8px;
+  background: #fff;
+  color: #123d62;
+  font: inherit;
+}
+
+@media (max-width: 820px) {
+  .regional-embedded-workspace .case-workspace-steps {
+    align-items: stretch;
+  }
+
+  .regional-embedded-workspace .case-workspace-steps button {
+    grid-template-columns: auto 1fr;
+  }
+
+  .case-step-state { grid-column: 2; justify-self: start; }
+  .case-step-status-control { position: sticky; right: 0; background: #fff; }
+}
+
+.case-phase-forum {
+  margin-top: 18px;
+}
+
+.case-phase-forum .systems-explorer-section-head h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.case-phase-forum-count {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid var(--line, #d7e2e8);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--teal, #078da3);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.case-phase-forum-list,
+.case-phase-forum-replies {
+  display: grid;
+  gap: 10px;
+}
+
+.case-phase-forum-comment {
+  padding: 14px;
+  border: 1px solid var(--line, #d7e2e8);
+  border-radius: 13px;
+  background: #fff;
+}
+
+.case-phase-forum-comment > p {
+  margin: 8px 0 10px;
+}
+
+.case-phase-forum-replies {
+  margin: 10px 0;
+}
+
+.case-phase-forum-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.case-phase-forum-form textarea {
+  min-height: 104px;
+  margin: 0;
+}
+
+.case-phase-forum-form .btn {
+  min-width: 190px;
+  justify-self: end;
+}
+
+.case-phase-forum-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.case-phase-forum-votes {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.case-phase-forum-vote {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--line, #d7e2e8);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink, #173e63);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .16s ease, background-color .16s ease, color .16s ease;
+}
+
+.case-phase-forum-vote:hover,
+.case-phase-forum-vote:focus-visible {
+  border-color: var(--teal, #078da3);
+  background: #eefafb;
+  color: var(--teal, #078da3);
+}
+
+.case-phase-forum-vote:focus-visible {
+  outline: 2px solid rgb(7 141 163 / 24%);
+  outline-offset: 2px;
+}
+
+.case-phase-forum-vote.active {
+  border-color: var(--teal, #078da3);
+  background: var(--teal, #078da3);
+  color: #fff;
+}
+
+.case-phase-forum-vote:last-child.active {
+  border-color: #b55454;
+  background: #b55454;
+}
+
+.contribution-vote {
+  border-color: #b8cbd6 !important;
+  background: #fff !important;
+  transition: border-color .16s ease, background-color .16s ease, color .16s ease !important;
+}
+
+.contribution-vote-up:hover,
+.contribution-vote-up:focus-visible {
+  border-color: var(--teal, #078da3) !important;
+  background: #eefafb !important;
+  color: var(--teal, #078da3) !important;
+}
+
+.contribution-vote-down:hover,
+.contribution-vote-down:focus-visible {
+  border-color: #b55454 !important;
+  background: #fff4f4 !important;
+  color: #984343 !important;
+}
+
+.case-phase-forum-vote-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.case-phase-forum-replies .case-phase-forum-votes {
+  margin-top: 8px;
+}
+
+.case-prioritisation {
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.case-prioritisation-head {
+  max-width: 760px;
+}
+
+.case-prioritisation-head h3 {
+  margin: 0 0 6px;
+}
+
+.case-prioritisation-head p {
+  margin: 0;
+  color: var(--muted, #667a8c);
+  line-height: 1.55;
+}
+
+.case-prioritisation-rank-list {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.case-prioritisation-rank-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--line, #d7e2e8);
+  border-radius: 12px;
+  background: #f8fafb;
+  cursor: grab;
+}
+.case-prioritisation-rank-row:active { cursor: grabbing; }
+.case-prioritisation-rank-position {
+  font-weight: 850;
+  color: var(--teal, #078da3);
+  text-align: center;
+}
+.case-prioritisation-rank-copy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+.case-prioritisation-rank-copy strong {
+  color: var(--ink, #173e63);
+  font-size: 15px;
+}
+.case-prioritisation-rank-copy span {
+  color: var(--muted, #667a8c);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.case-prioritisation-rank-move { display: flex; gap: 4px; }
+.case-prioritisation-rank-move button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line, #d7e2e8);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink, #173e63);
+  cursor: pointer;
+}
+.case-prioritisation-rank-move button:disabled { opacity: .35; cursor: default; }
+
+.case-prioritisation-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  color: var(--muted, #667a8c);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.case-prioritisation-bar {
+  display: block;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e4edf1;
+}
+
+.case-prioritisation-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--teal, #078da3);
+  transition: width .2s ease;
+}
+
+.case-prioritisation-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line, #d7e2e8);
+}
+
+.case-prioritisation-status {
+  margin: 0;
+  color: var(--muted, #667a8c);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.case-prioritisation-status.saved {
+  color: #4f7a3f;
+}
+
+.case-prioritisation-submit {
+  min-width: 210px;
+}
+
+.case-toc-summary {
+  margin: 14px 0 0;
+  color: var(--ink, #173e63);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+@media (max-width: 820px) {
+  .case-workspace-phases {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .case-phase-forum-form .btn,
+  .case-prioritisation-submit {
+    width: 100%;
+    min-width: 0;
+    justify-self: stretch;
+  }
+  .case-phase-forum-vote-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .case-prioritisation-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+/* An empty state can now offer two routes (the workshop, and the in-platform
+   fallback for a coordinator); keep them on one row and let them wrap rather
+   than stretch on narrow screens. */
+.systems-explorer-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ---------------------------------------------------------------------------
+   Homepage: the informational sections that answer what / why / how / who /
+   where-to-start before a visitor commits to opening the journey.
+   --------------------------------------------------------------------------- */
+
+/* The hero CTA is the single most important control on the site; the bundle's
+   `large` button is vertically tight for a label this long. */
+.regional-home-hero .button-row .btn.primary,
+.regional-home-start-cta {
+  padding-top: 18px;
+  padding-bottom: 18px;
+  min-height: 60px;
+  line-height: 1.35;
+}
+
+.regional-home-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1180px;
+  margin: 0 auto 64px;
+  padding: 56px 24px 0;
+}
+.regional-home-section {
+  background: #fff;
+  border: 1px solid #dde5ec;
+  border-radius: 18px;
+  padding: 30px 32px;
+}
+.regional-home-section > h2 {
+  margin: 6px 0 10px;
+  font-size: 26px;
+  color: #0b3967;
+}
+.regional-home-section > p {
+  margin: 0;
+  max-width: 78ch;
+  color: #486173;
+  line-height: 1.65;
+}
+.regional-home-why {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #e7edf2;
+}
+.regional-home-why h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #0b3967;
+}
+.regional-home-why p {
+  margin: 0;
+  max-width: 78ch;
+  color: #486173;
+  line-height: 1.65;
+}
+
+/* Three phase cards: auto-fit so a single column on mobile does not leave
+   reserved empty tracks beside it. */
+.regional-home-phases,
+.regional-partner-grid,
+.regional-home-links {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+.regional-home-phases {
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+.regional-partner-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+.regional-home-links {
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+}
+
+.regional-home-phase,
+.regional-home-link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  background: #f7fafc;
+  border: 1px solid #dde5ec;
+  border-radius: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+.regional-home-phase:hover,
+.regional-home-link:hover {
+  background: #fff;
+  border-color: #008fa6;
+  transform: translateY(-2px);
+}
+.regional-home-phase:focus-visible,
+.regional-home-link:focus-visible,
+.regional-partner-card:focus-visible {
+  outline: 3px solid #008fa6;
+  outline-offset: 2px;
+}
+.regional-home-phase-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #0b3967;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.regional-home-phase-kicker {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #008fa6;
+  font-weight: 700;
+}
+.regional-home-phase strong {
+  font-size: 17px;
+  color: #0b3967;
+}
+.regional-home-phase-desc,
+.regional-home-link span {
+  font-size: 14px;
+  color: #486173;
+  line-height: 1.55;
+}
+.regional-home-link strong {
+  font-size: 16px;
+  color: #0b3967;
+}
+.regional-home-link b {
+  color: #008fa6;
+  font-size: 18px;
+}
+
+.regional-partner-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f7fafc;
+  border: 1px solid #dde5ec;
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.regional-partner-card strong {
+  font-size: 16px;
+  color: #0b3967;
+}
+.regional-partner-card span {
+  font-size: 13px;
+  color: #486173;
+  line-height: 1.5;
+}
+
+.regional-home-start-cta {
+  margin-top: 22px;
+}
+
+@media (max-width: 640px) {
+  .regional-home-sections {
+    gap: 20px;
+    padding: 36px 16px 0;
+  }
+  .regional-home-section {
+    padding: 24px 20px;
+  }
+  .regional-home-section > h2 {
+    font-size: 22px;
+  }
+}
+
+/* The VISIONS/AFFiNE roles strip was written for the journey's dark hero.
+   On the homepage's white cards its white text disappears, so re-colour it
+   for a light ground rather than duplicating the component. */
+.regional-home-sections .regional-platform-roles > div {
+  border-color: #dde5ec;
+  background: #f7fafc;
+}
+.regional-home-sections .regional-platform-roles strong {
+  color: #0b3967;
+}
+.regional-home-sections .regional-platform-roles span {
+  color: #486173;
+}
+.regional-home-sections .regional-platform-roles > b {
+  color: #008fa6;
+}
+
+/* ---------------------------------------------------------------------------
+   Phase step tabs: the switch used to tear the whole workspace down. Now only
+   the panel re-renders, so it can cross-fade instead of blinking.
+   --------------------------------------------------------------------------- */
+.case-workspace-step-content {
+  transition: min-height 220ms ease;
+}
+.case-step-body {
+  animation: case-step-enter 220ms ease both;
+}
+.case-step-affine-cta {
+  display: inline-flex;
+  margin: 0 12px 18px 0;
+}
+/* While the next panel is loading, dim rather than blank the pane, so the
+   feedback is immediate without the content disappearing. */
+.case-workspace-step-content.case-step-switching {
+  opacity: 0.55;
+  transition: opacity 120ms ease, min-height 220ms ease;
+}
+@keyframes case-step-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Respect a reduced-motion preference: keep the fade, drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .case-step-body {
+    animation-duration: 1ms;
+  }
+  .case-workspace-step-content {
+    transition: none;
+  }
+}
+
+.case-workspace-steps [role="tab"] {
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.case-workspace-steps [role="tab"]:focus-visible {
+  outline: 3px solid #008fa6;
+  outline-offset: 2px;
+  z-index: 1;
+}
+.case-step-label {
+  white-space: normal;
+  text-align: left;
+}
+@media (max-width: 720px) {
+  .case-workspace-steps {
+    flex-wrap: wrap;
+  }
+  .case-workspace-steps [role="tab"] {
+    flex: 1 1 auto;
+    /* Stretching to fill the row left the number+title hugging the left
+       edge with an empty gap trailing them -- center the content instead
+       so the padding reads as even on both sides. */
+    justify-content: center;
+  }
+}
+
+/* Regional journey stepper
+   The native tab treatment was too compressed here: the number, label and
+   state read as one crowded pill. Give each step its own equal, structured
+   surface and keep the whole row visually subordinate to the phase hero. */
+.regional-embedded-workspace .case-workspace-steps {
+  position: sticky;
+  top: 72px;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  overflow: visible;
+  padding: 10px;
+  border: 1px solid #d7e4ea;
+  border-radius: 18px;
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 8px 24px rgb(9 49 82 / 6%);
+  backdrop-filter: blur(10px);
+}
+
+.regional-embedded-workspace .case-workspace-steps [role="tab"] {
+  width: 100%;
+  min-width: 0;
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px 14px;
+  border: 1px solid #dce8ed;
+  border-radius: 12px;
+  background: #f5f9fa;
+  color: #173f60;
+  box-shadow: none;
+  text-align: left;
+}
+
+.regional-embedded-workspace .case-step-card {
+  position: relative;
+  min-width: 0;
+}
+
+.regional-embedded-workspace .case-step-card-manage [role="tab"] {
+  padding-right: 126px;
+}
+
+.regional-embedded-workspace .case-step-card-manage .case-step-state {
+  display: none;
+}
+
+.regional-embedded-workspace .case-workspace-steps [role="tab"]:hover:not(:disabled),
+.regional-embedded-workspace .case-workspace-steps [role="tab"]:focus-visible {
+  border-color: #69bdca;
+  background: #edf8f9;
+}
+
+.regional-embedded-workspace .case-workspace-steps [role="tab"].active {
+  border-color: #0c5279;
+  background: #0c5279;
+  color: #fff;
+}
+
+.regional-embedded-workspace .case-workspace-steps [role="tab"] .case-step-group {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.regional-embedded-workspace .case-step-sequence {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  font-size: .78rem;
+}
+
+.regional-embedded-workspace .case-workspace-steps [role="tab"] .case-step-label {
+  min-width: 0;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  color: inherit !important;
+  font-size: .86rem;
+  font-weight: 780;
+  line-height: 1.3;
+}
+
+.regional-embedded-workspace .case-step-state {
+  flex: 0 0 auto;
+  margin-left: 10px;
+}
+
+.regional-embedded-workspace .case-step-status-control {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  z-index: 2;
+  display: block;
+  min-width: 108px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  transform: translateY(-50%);
+}
+
+.regional-embedded-workspace .case-step-status-control select {
+  width: 108px;
+  min-width: 0;
+  min-height: 34px;
+  padding: 5px 24px 5px 9px;
+  border-color: #b9d2dc;
+  border-radius: 9px;
+  background-color: #fff;
+  font-size: .7rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .18s ease, background-color .18s ease;
+}
+
+.regional-embedded-workspace .case-step-status-control select:hover,
+.regional-embedded-workspace .case-step-status-control select:focus-visible {
+  border-color: #0c8fa7;
+  background-color: #f3fbfc;
+}
+
+.regional-embedded-workspace .case-workspace-steps [role="tab"].active + .case-step-status-control select {
+  border-color: rgb(255 255 255 / 58%);
+  background-color: #fff;
+  color: #0b4568;
+}
+
+@media (max-width: 760px) {
+  .regional-embedded-workspace .case-workspace-steps {
+    position: static;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .regional-embedded-workspace .case-workspace-steps [role="tab"] {
+    min-height: 58px;
+    justify-content: flex-start;
+    padding: 10px 12px;
+  }
+
+  .regional-embedded-workspace .case-step-group {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .regional-embedded-workspace .case-step-sequence {
+    width: 30px;
+    height: 30px;
+  }
+
+  .regional-embedded-workspace .case-step-card-manage [role="tab"] {
+    padding-right: 124px;
+  }
+
+  .regional-embedded-workspace .case-step-status-control {
+    right: 10px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Prioritisation: the participant's own choice, then everyone's answer, then
+   what the three different actions on this screen actually mean.
+   --------------------------------------------------------------------------- */
+.case-prioritisation-results {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid #e7edf2;
+}
+.case-prioritisation-results h4,
+.case-interaction-legend h4 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: #0b3967;
+}
+.case-prioritisation-participation {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: #486173;
+}
+.case-prioritisation-result-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.case-prioritisation-result-list li {
+  display: grid;
+  gap: 6px;
+}
+.case-prioritisation-result-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 14px;
+  color: #486173;
+}
+.case-prioritisation-result-figure {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #0b3967;
+}
+.case-prioritisation-results .case-prioritisation-bar {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: #eef2f6;
+  overflow: hidden;
+}
+.case-prioritisation-results .case-prioritisation-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #008fa6;
+  transition: width 320ms ease;
+}
+.case-prioritisation-leader {
+  margin: 14px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0b3967;
+}
+.case-prioritisation-feeds {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #486173;
+}
+
+.case-interaction-legend {
+  margin-top: 24px;
+  padding: 18px 20px;
+  background: #f7fafc;
+  border: 1px solid #dde5ec;
+  border-radius: 14px;
+}
+.case-interaction-legend dl {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+.case-interaction-legend dt {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b3967;
+}
+.case-interaction-legend dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #486173;
+  line-height: 1.5;
+}
+
+/* Theory of Change: just an image attachment and a description, authored by
+   the coordinator/admin. */
+.case-toc-image {
+  margin: 16px 0 18px;
+}
+.case-toc-image img {
+  display: block;
+  max-width: 100%;
+  border-radius: 12px;
+  border: 1px solid #dde5ec;
+}
+.case-toc-image-preview {
+  display: block;
+  max-width: 220px;
+  margin: 0 0 14px;
+  border-radius: 10px;
+  border: 1px solid #dde5ec;
+}
+
+/* ---------------------------------------------------------------------------
+   Homepage groups: three deliberately different treatments, so a visitor can
+   tell at a glance what is meant to be read and what is meant to be clicked.
+
+     info    the lead explanation — a raised white card, the most prominent
+     note    supporting background — flat, tinted, ruled; clearly not a target
+     actions the two groups that route somewhere — tinted, with real controls
+   --------------------------------------------------------------------------- */
+
+/* 1. The lead explanation: the tallest-contrast block on the page, because it
+      is the first thing that has to land. */
+.regional-home-section-info.regional-home-lead {
+  background: #fff;
+  border: 1px solid #dde5ec;
+  box-shadow: 0 4px 18px rgba(11, 49, 88, .06);
+  padding: 34px 36px;
+}
+.regional-home-section-info.regional-home-lead > h2 {
+  font-size: 30px;
+}
+.regional-home-section-info.regional-home-lead > p {
+  font-size: 17px;
+}
+
+/* 2. Supporting information: no card edge, no shadow, nothing that suggests a
+      click target. A left rule marks it as an aside. */
+.regional-home-section-note {
+  background: #f4f7fa;
+  border: 0;
+  border-left: 3px solid #c3d3e0;
+  border-radius: 0 14px 14px 0;
+  padding: 26px 30px;
+  box-shadow: none;
+}
+.regional-home-section-note > h2 {
+  font-size: 21px;
+}
+.regional-home-section-note > p {
+  font-size: 15px;
+}
+/* Partner tiles are reference, not navigation — flatten them so they do not
+   mimic the clickable tiles above. */
+.regional-home-section-note .regional-partner-card {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid #dbe4ec;
+  border-radius: 0;
+  padding: 14px 0 0;
+}
+
+/* 3. Action groups: a tinted ground marks them as the working part of the
+      page, and every tile inside is a real control. */
+.regional-home-section-actions {
+  background: linear-gradient(180deg, #f2f9fb 0%, #eef5f9 100%);
+  border: 1px solid #cfe3ea;
+  padding: 30px 32px;
+}
+.regional-home-section-actions > .regional-eyebrow {
+  color: #05687c;
+}
+
+/* Clickable tiles: raised, arrowed, and they move on hover. */
+.regional-home-phase,
+.regional-home-link {
+  position: relative;
+  background: #fff;
+  border-color: #cfe0e8;
+  box-shadow: 0 1px 2px rgba(11, 49, 88, .05);
+  padding-right: 44px;
+}
+.regional-home-phase:hover,
+.regional-home-link:hover {
+  box-shadow: 0 8px 22px rgba(7, 151, 173, .16);
+}
+.regional-home-phase-go,
+.regional-home-link b {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  color: #06798e;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform .18s ease;
+}
+.regional-home-phase:hover .regional-home-phase-go,
+.regional-home-link:hover b {
+  transform: translateX(3px);
+}
+
+/* The primary route out of the homepage should be unmistakable. */
+.regional-home-start-cta {
+  box-shadow: 0 6px 18px rgba(11, 49, 88, .18);
+}
+
+@media (max-width: 640px) {
+  .regional-home-section-info.regional-home-lead {
+    padding: 26px 20px;
+  }
+  .regional-home-section-info.regional-home-lead > h2 {
+    font-size: 24px;
+  }
+  .regional-home-section-note,
+  .regional-home-section-actions {
+    padding: 22px 18px;
+  }
+}
+
+/* Evidence cards: the action states are visually distinct because they do
+   different things — download a file, leave for another site, or wait for an
+   upload that has not happened. */
+.regional-evidence-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+}
+.regional-evidence-meta {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #4a6280;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Evidence cards sit in a grid row, so stretch the body and drop the action
+   to the bottom -- otherwise each card's button lands wherever its own
+   description happens to end. */
+.regional-evidence-card {
+  align-items: stretch;
+}
+.regional-evidence-card > div {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.regional-evidence-card > div > p {
+  flex: 1 1 auto;
+}
+.regional-evidence-action {
+  align-self: flex-start;
+}
+
+/* ---------------------------------------------------------------------------
+   Platform review: full justification on the running text.
+   Applied to body paragraphs rather than headings -- justifying a four-line
+   headline stretches the gaps across very few words per line and reads worse
+   than the ragged edge. Hyphenation and `text-wrap: pretty` keep Greek
+   justification from opening rivers between words.
+   --------------------------------------------------------------------------- */
+.regional-home-hero .hero-copy > p,
+.regional-home-section > p,
+.regional-home-why p,
+.regional-phase-hero p,
+.regional-system-hero p {
+  text-align: justify;
+  text-wrap: pretty;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* Justification needs a column wide enough to absorb the stretch; on a phone
+   the gaps would grow wide enough to read as broken text. */
+@media (max-width: 640px) {
+  .regional-home-hero .hero-copy > p,
+  .regional-home-section > p,
+  .regional-home-why p,
+  .regional-phase-hero p,
+  .regional-system-hero p {
+    text-align: left;
+    hyphens: manual;
+  }
+}
+
+/* Evidence card: the icon now sits on the heading line, so the description
+   uses the whole card width instead of a ~240px gutter column. */
+.regional-evidence-card h3 {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.regional-evidence-card .regional-doc-icon {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  font-size: .95rem;
+}
+.regional-evidence-card .regional-doc-title {
+  min-width: 0;
+}
+
+/* Phase-to-phase navigation. Back on the left, forward on the right, so the
+   direction of travel matches the reading direction; when there is no back
+   target a spacer keeps the forward button on the right. */
+.regional-phase-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 26px;
+}
+.regional-phase-nav-spacer {
+  flex: 1 1 auto;
+}
+.regional-phase-nav .btn {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+/* A locked next phase is shown, not hidden -- the visitor should see where
+   the journey goes -- but it must not look clickable. */
+.regional-phase-nav-forward:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+@media (max-width: 640px) {
+  .regional-phase-nav {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .regional-phase-nav-spacer {
+    display: none;
+  }
+  .regional-phase-nav .btn {
+    text-align: center;
+  }
+}
+
+.regional-sector-snapshot {
+  margin: 14px 0 0;
+}
+.regional-sector-snapshot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #d6e3ea;
+  border-radius: 14px;
+}
+/* An empty slot has to read as "an image goes here", not as a failed image:
+   a dashed frame and a label, sized so the layout does not jump when the
+   real screenshot arrives. */
+.regional-sector-snapshot-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 132px;
+  padding: 18px;
+  border: 1px dashed #c3d3e0;
+  border-radius: 14px;
+  background: #f8fbfc;
+  text-align: center;
+}
+.regional-sector-snapshot-empty strong {
+  font-size: .85rem;
+  color: #3f5468;
+}
+.regional-sector-snapshot-empty span {
+  font-size: .78rem;
+  color: #5a7188;
+  max-width: 46ch;
+}
+
+/* The shared infographic opens the Interdependencies tab rather than
+   closing it, so it needs breathing room below instead of above. */
+.regional-interdependencies-infographic {
+  margin: 0 0 22px;
+}
+
+/* ---------------------------------------------------------------------------
+   Homepage hero visual: the Pathways2Resilience transition cycle in place of
+   the stock photograph.
+
+   The bundle paints this slot from a sprite sheet (adapttica-case-atlas.png)
+   at `background-size: 200%`, cropping one photo out of several -- so both
+   the image and the sizing have to be replaced, not just the URL. `contain`
+   rather than `cover`: a diagram that gets cropped loses its labels.
+
+   The white card frame stays. The artwork has a transparent background, and
+   a diagram reads better as a framed figure than floating on the gradient.
+   --------------------------------------------------------------------------- */
+.regional-home-hero .hero-photo {
+  background-image: url("/p2r-transition-cycle.png") !important;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: transparent !important;
+  border-radius: 0;
+  /* Match the artwork's own ratio so the frame hugs it instead of
+     letterboxing 60px of empty space beside it. */
+  aspect-ratio: 3159 / 3356;
+  height: auto;
+  min-height: 0;
+}
+
+.regional-home-hero .hero-visual {
+  /* A little more breathing room than a photo needs, so the outer ring of
+     labels does not run into the frame edge. */
+  padding: 20px;
+  /* The bundle fixes this at 560px for the cropped photo; the diagram sets
+     its own height from its aspect ratio, so the frame has to follow it or
+     the artwork overflows the card. */
+  height: auto !important;
+  /* Now that the height follows the width, an unconstrained column made the
+     frame grow without limit: at 1920px it reached 813x860 and pushed the
+     hero to 990px -- taller than the viewport, so the top of the diagram
+     disappeared behind the header. Two caps, whichever binds first:
+       560px  the diagram gains nothing from being larger, and past this the
+              artwork dwarfs the headline beside it
+       58vh   keeps the frame inside the fold on short screens; 58vh of
+              width becomes ~62vh of height at this artwork's 0.94 ratio
+     Centred, because the column it sits in stays wider than the cap. */
+  width: min(560px, 58vh, calc(100vw - 40px));
+  max-width: 100%;
+  min-width: 0;
+  justify-self: center;
+}
+
+/* The artwork fills the frame's content box; without a definite width it has
+   nothing to derive its aspect-ratio height from. */
+.regional-home-hero .hero-photo {
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  /* The stacked layout gave the photo a fixed 420px floor; the diagram sizes
+     itself from its aspect ratio instead, and a floor would stretch it. */
+  .regional-home-hero .hero-visual {
+    min-height: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   System icon chip.
+
+   Regression fix: this selector used to share a rule with
+   .regional-phase-index, and lost its colour, radius, centring and glyph
+   size when that rule was rewritten for the phase-card redesign. The result
+   on the dark system hero was a white glyph on a near-white chip -- an
+   invisible icon inside what read as a stray pale square.
+   --------------------------------------------------------------------------- */
+.regional-system-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 15px;
+  color: #087f98;
+}
+.regional-system-hero > .regional-system-icon > svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* On the navy hero the chip belongs to the dark surface: a translucent panel
+   with the hero's own accent colour, rather than a light-blue tile that
+   looks pasted on. */
+.regional-system-hero > .regional-system-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .12) !important;
+  border: 1px solid rgba(255, 255, 255, .22);
+  color: #79dce5;
+}
+
+/* The hero aligns its children to the bottom, which parked the chip beside
+   the paragraph instead of the title it labels. */
+.regional-system-hero {
+  align-items: flex-start;
+}
+.regional-system-hero > .regional-system-icon {
+  margin-top: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Priority Systems as context inside Phases 2 and 3.
+
+   The journey document keeps the systems present through the collaborative
+   phases without letting them start separate journeys, so this opens the
+   Phase 1 evidence in place. It deliberately is not a filter: only pathways
+   carry a system link, so filtering the other outputs would appear to work
+   and change nothing.
+   --------------------------------------------------------------------------- */
+.regional-context-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.regional-context-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  border: 1px solid #cfe0e8;
+  border-radius: 999px;
+  background: #f7fafc;
+  color: #0b3158;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.regional-context-chip:hover {
+  border-color: #0797ad;
+  background: #fff;
+}
+.regional-context-chip:focus-visible {
+  outline: 3px solid rgba(7, 151, 173, .45);
+  outline-offset: 2px;
+}
+.regional-context-chip.active {
+  background: #0b3158;
+  border-color: #0b3158;
+  color: #fff;
+}
+.regional-context-chip-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #dff5f7;
+  color: #087f98;
+  flex: 0 0 auto;
+}
+.regional-context-chip-icon > svg {
+  width: 15px;
+  height: 15px;
+}
+.regional-context-chip.active .regional-context-chip-icon {
+  background: rgba(255, 255, 255, .16);
+  color: #79dce5;
+}
+
+.regional-context-panel {
+  margin-top: 14px;
+}
+/* Before a selection the panel carries a one-line prompt rather than an
+   empty frame, so the section never looks like it failed to load. */
+.regional-context-hint {
+  margin: 0;
+  font-size: .85rem;
+  color: #5a7188;
+}
+.regional-context-detail {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid #dde7ee;
+  border-radius: 14px;
+  background: #f7fafc;
+}
+.regional-context-group {
+  display: grid;
+  gap: 6px;
+}
+.regional-context-label {
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #486173;
+}
+.regional-context-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.regional-context-tags > span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #dde7ee;
+  color: #0b3158;
+  font-size: .78rem;
+  font-weight: 600;
+}
+.regional-context-detail .regional-text-button {
+  justify-self: start;
+}
+
+/* The context block is not a numbered step, so its heading has no number
+   column to align against. */
+.regional-section-head-plain > div {
+  grid-template-columns: 1fr;
+}
+
+/* ---------------------------------------------------------------------------
+   Knowledge Library: the native Resource type / Sector / Related case study
+   filter sidebar is replaced by a single Phase 1/2/3 filter. The sidebar is
+   permanently hidden rather than toggled — it never legitimately reappears
+   on this page — so this is a plain rule, not something the sync loop has to
+   re-assert.
+   --------------------------------------------------------------------------- */
+.resource-filters {
+  display: none !important;
+}
+.resource-layout {
+  grid-template-columns: 1fr !important;
+}
+
+.library-phase-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 18px;
+}
+.library-phase-filter-btn {
+  padding: 7px 16px;
+  border: 1px solid #cfe0e8;
+  border-radius: 999px;
+  background: #f7fafc;
+  color: #0b3158;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.library-phase-filter-btn:hover {
+  border-color: #0797ad;
+  background: #fff;
+}
+.library-phase-filter-btn:focus-visible {
+  outline: 3px solid rgba(7, 151, 173, .45);
+  outline-offset: 2px;
+}
+.library-phase-filter-btn.active {
+  background: #0b3158;
+  border-color: #0b3158;
+  color: #fff;
+}
+.resource-card.library-phase-hidden {
+  display: none !important;
 }

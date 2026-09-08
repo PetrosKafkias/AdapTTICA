@@ -1,17 +1,23 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
-import { dbPath } from "./db.js";
+import { dbPath, openDb, usingLibsql } from "./db.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const MIGRATIONS_DIR = path.join(__dirname, "..", "migrations", "sqlite");
 
 export async function migrate(targetPath = dbPath()) {
-  fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-  const db = await open({ filename: targetPath, driver: sqlite3.Database });
-  await db.exec("pragma foreign_keys = on");
+  // Against Turso there is no file to create and openDb() returns the libSQL
+  // adapter, which accepts the same statements this function already issues.
+  let db;
+  if (usingLibsql()) {
+    db = await openDb();
+  } else {
+    fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+    const [{ open }, sqlite3Module] = await Promise.all([import("sqlite"), import("sqlite3")]);
+    db = await open({ filename: targetPath, driver: sqlite3Module.default.Database });
+    await db.exec("pragma foreign_keys = on");
+  }
   await db.exec(
     "create table if not exists schema_migrations (name text primary key, applied_at text not null default (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')))"
   );

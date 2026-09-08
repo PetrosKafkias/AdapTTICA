@@ -8,6 +8,17 @@ async function loginAgent(app, email, password) {
   return agent;
 }
 
+async function seedImpact(admin) {
+  const systems = await admin.get("/api/v1/systems");
+  const hazards = await admin.get("/api/v1/hazards");
+  const system = systems.body.data.items[0];
+  const hazard = hazards.body.data.items[0];
+  const impact = (
+    await admin.post("/api/v1/impacts").send({ systemId: system.id, titleEl: "Π", titleEn: "Impact", hazardIds: [hazard.id] })
+  ).body.data.impact;
+  return { impactId: impact.id, hazardIds: [hazard.id] };
+}
+
 // The raw invitation token is only ever exposed via the (intentional)
 // console.log breadcrumb — it's never returned in the API response and
 // only the SHA-256 hash is stored — so tests recover it the same way a
@@ -27,7 +38,7 @@ describe("invitations", () => {
     await createUser(ctx.db, { email: "invitee@test.local", password: "password123" });
 
     const coordinator = await loginAgent(ctx.app, "coordinator@test.local", "password123");
-    const caseRes = await coordinator.post("/api/v1/cases").send({ titleEl: "Δ", titleEn: "Invite case" });
+    const caseRes = await coordinator.post("/api/v1/cases").send({ titleEl: "Δ", titleEn: "Invite case", ...(await seedImpact(coordinator)) });
     const caseId = caseRes.body.data.caseStudy.id;
 
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});

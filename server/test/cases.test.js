@@ -8,6 +8,21 @@ async function loginAgent(app, email, password) {
   return agent;
 }
 
+// A Case Study now requires a Primary Climate Impact and at least one
+// relevant Hazard (spec section 5/16) — seed the fixed taxonomy an admin
+// needs to satisfy that before each case-creation call in this file, which
+// otherwise isn't testing the systems/impacts feature itself.
+async function seedImpact(admin) {
+  const systems = await admin.get("/api/v1/systems");
+  const hazards = await admin.get("/api/v1/hazards");
+  const system = systems.body.data.items[0];
+  const hazard = hazards.body.data.items[0];
+  const impact = (
+    await admin.post("/api/v1/impacts").send({ systemId: system.id, titleEl: "Π", titleEn: "Impact", hazardIds: [hazard.id] })
+  ).body.data.impact;
+  return { impactId: impact.id, hazardIds: [hazard.id] };
+}
+
 describe("cases", () => {
   let ctx;
   afterEach(async () => ctx && (await ctx.cleanup()));
@@ -16,7 +31,7 @@ describe("cases", () => {
     ctx = await createTestApp();
     await createUser(ctx.db, { email: "admin0@test.local", password: "password123", platformRole: "admin" });
     const admin = await loginAgent(ctx.app, "admin0@test.local", "password123");
-    const created = await admin.post("/api/v1/cases").send({ titleEl: "Δ", titleEn: "Public case" });
+    const created = await admin.post("/api/v1/cases").send({ titleEl: "Δ", titleEn: "Public case", ...(await seedImpact(admin)) });
     const caseId = created.body.data.caseStudy.id;
 
     const anonymous = request(ctx.app);
@@ -42,7 +57,9 @@ describe("cases", () => {
     expect(denied.status).toBe(403);
 
     const admin = await loginAgent(ctx.app, "admin@test.local", "password123");
-    const created = await admin.post("/api/v1/cases").send({ titleEl: "Δοκιμή", titleEn: "Test case", descriptionEl: "Π", descriptionEn: "D" });
+    const created = await admin
+      .post("/api/v1/cases")
+      .send({ titleEl: "Δοκιμή", titleEn: "Test case", descriptionEl: "Π", descriptionEn: "D", ...(await seedImpact(admin)) });
     expect(created.status).toBe(201);
     expect(created.body.data.caseStudy.title_en).toBe("Test case");
 
@@ -58,7 +75,7 @@ describe("cases", () => {
     const admin = await loginAgent(ctx.app, "admin2@test.local", "password123");
     const member = await loginAgent(ctx.app, "member@test.local", "password123");
 
-    const caseRes = await admin.post("/api/v1/cases").send({ titleEl: "Υ", titleEn: "Case" });
+    const caseRes = await admin.post("/api/v1/cases").send({ titleEl: "Υ", titleEn: "Case", ...(await seedImpact(admin)) });
     const caseId = caseRes.body.data.caseStudy.id;
 
     const decisionRes = await admin.post(`/api/v1/cases/${caseId}/decisions`).send({ titleEl: "Α", titleEn: "Decision", status: "open" });
@@ -92,7 +109,7 @@ describe("cases", () => {
     const memberId = await createUser(ctx.db, { email: "member3@test.local", password: "password123" });
 
     const admin = await loginAgent(ctx.app, "admin3@test.local", "password123");
-    const caseRes = await admin.post("/api/v1/cases").send({ titleEl: "Υ", titleEn: "Case" });
+    const caseRes = await admin.post("/api/v1/cases").send({ titleEl: "Υ", titleEn: "Case", ...(await seedImpact(admin)) });
     const caseId = caseRes.body.data.caseStudy.id;
     await ctx.db.run("insert into case_members (case_id, user_id, role) values (?, ?, 'user')", caseId, memberId);
 
@@ -153,7 +170,7 @@ describe("cases", () => {
     const admin = await loginAgent(ctx.app, "admin3@test.local", "password123");
     const member = await loginAgent(ctx.app, "member2@test.local", "password123");
 
-    const caseRes = await admin.post("/api/v1/cases").send({ titleEl: "Υ", titleEn: "Case" });
+    const caseRes = await admin.post("/api/v1/cases").send({ titleEl: "Υ", titleEn: "Case", ...(await seedImpact(admin)) });
     const caseId = caseRes.body.data.caseStudy.id;
 
     const denied = await member.post(`/api/v1/cases/${caseId}/workshop-outputs`).send({ titleEl: "Α", titleEn: "Output" });
@@ -182,5 +199,29 @@ describe("cases", () => {
     const statusRes = await admin.patch(`/api/v1/workshop-outputs/${outputId}/status`).send({ status: "approved" });
     expect(statusRes.status).toBe(200);
     expect(statusRes.body.data.output.status_label_el).toBe("Εγκρίθηκε");
+  });
+
+  it("aggregates member stakeholder categories without a session, and without exposing names", async () => {
+    ctx = await createTestApp();
+    await createUser(ctx.db, { email: "admin4@test.local", password: "password123", platformRole: "admin" });
+    const publicMemberId = await createUser(ctx.db, { email: "public4@test.local", password: "password123" });
+    const civilMemberId = await createUser(ctx.db, { email: "civil4@test.local", password: "password123" });
+    const uncategorisedId = await createUser(ctx.db, { email: "plain4@test.local", password: "password123" });
+
+    const admin = await loginAgent(ctx.app, "admin4@test.local", "password123");
+    const caseRes = await admin.post("/api/v1/cases").send({ titleEl: "Υ", titleEn: "Case", ...(await seedImpact(admin)) });
+    const caseId = caseRes.body.data.caseStudy.id;
+
+    await ctx.db.run("update users set stakeholder_category = 'public' where id = ?", publicMemberId);
+    await ctx.db.run("update users set stakeholder_category = 'civil' where id = ?", civilMemberId);
+    for (const userId of [publicMemberId, civilMemberId, uncategorisedId]) {
+      await ctx.db.run("insert into case_members (case_id, user_id, role) values (?, ?, 'user')", caseId, userId);
+    }
+
+    const anonymous = request(ctx.app);
+    const res = await anonymous.get(`/api/v1/cases/${caseId}/representation`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.counts).toEqual({ public: 1, private: 0, civil: 1, research: 0 });
+    expect(JSON.stringify(res.body)).not.toMatch(/public4@test\.local/);
   });
 });

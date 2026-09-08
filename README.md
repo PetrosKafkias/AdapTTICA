@@ -132,6 +132,8 @@ npm run check
 
 Runs, in order: `eslint` over `src/`, `server/` and `scripts/`; a `tsc --checkJs` static-analysis pass (no build step, no `.ts` conversion — see `tsconfig.json`); the Vitest + supertest integration suite under `server/test/` (auth, role enforcement, the full decision/comment/vote/status flow, admin role changes, file uploads — each against a throwaway SQLite database); and the production `vite build`.
 
+The seed also creates a fully connected acceptance journey named **Flood resilience**. It links Built Environment (primary), Urban Flooding, Floods, Water, Transport, Health and Civil Protection, and includes one item in every co-creation stage through **Pathway 1**. This is deliberately stored once through foreign keys; System and Impact pages aggregate it dynamically. `server/test/connected-journey.test.js` verifies linked visibility, edit propagation, inherited Pathway taxonomy, administrator-only deletion and removal from every parent view.
+
 For a clean-machine verification:
 
 ```powershell

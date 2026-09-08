@@ -110,6 +110,42 @@ async function canAccessFile(db, upload, user) {
     );
     if (membership) return true;
   }
+  const tocEntry = await db.get("select case_id from theory_of_change_entries where image_key = ?", upload.id);
+  if (tocEntry) {
+    const membership = await db.get(
+      "select 1 from case_members where case_id = ? and user_id = ?",
+      tocEntry.case_id,
+      user.id
+    );
+    if (membership) return true;
+  }
+  const future = await db.get("select case_id from alternative_futures where image_key = ?", upload.id);
+  if (future) {
+    const membership = await db.get(
+      "select 1 from case_members where case_id = ? and user_id = ?",
+      future.case_id,
+      user.id
+    );
+    if (membership) return true;
+  }
+  const pathway = await db.get("select case_id from pathways where image_key = ?", upload.id);
+  if (pathway) {
+    const membership = await db.get(
+      "select 1 from case_members where case_id = ? and user_id = ?",
+      pathway.case_id,
+      user.id
+    );
+    if (membership) return true;
+  }
+  const portfolioImage = await db.get("select case_id from case_portfolio_images where image_key = ?", upload.id);
+  if (portfolioImage) {
+    const membership = await db.get(
+      "select 1 from case_members where case_id = ? and user_id = ?",
+      portfolioImage.case_id,
+      user.id
+    );
+    if (membership) return true;
+  }
   return false;
 }
 

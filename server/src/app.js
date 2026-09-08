@@ -14,6 +14,10 @@ import { workshopOutputsRouter } from "./routes/workshopOutputs.js";
 import { resourcesRouter } from "./routes/resources.js";
 import { adminRouter } from "./routes/admin.js";
 import { invitationsRouter } from "./routes/invitations.js";
+import { systemsRouter } from "./routes/systems.js";
+import { hazardsRouter } from "./routes/hazards.js";
+import { impactsRouter } from "./routes/impacts.js";
+import { pathwaysRouter } from "./routes/pathways.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -47,6 +51,10 @@ export function createApp({ db, sessionSecret, serveStatic = false }) {
   api.use("/resources", resourcesRouter);
   api.use("/admin", adminRouter);
   api.use("/invitations", invitationsRouter);
+  api.use("/systems", systemsRouter);
+  api.use("/hazards", hazardsRouter);
+  api.use("/impacts", impactsRouter);
+  api.use("/pathways", pathwaysRouter);
   api.use((req, res) => {
     fail(res, "not_found", `Endpoint not implemented: ${req.method} ${req.originalUrl}`);
   });

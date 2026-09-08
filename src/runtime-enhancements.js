@@ -2,11 +2,21 @@
 // bundle; casting every querySelector result to HTMLElement throughout
 // would add noise without catching real bugs here.
 import { dictionaries as copy } from "./i18n.js";
+import {
+  api,
+} from "./systems-explorer.js";
+import {
+  installRegionalJourney,
+  installRegionalNavigation,
+  openRegionalJourney,
+  rewriteHomepage,
+  syncRegionalJourney,
+} from "./regional-journey.js";
 
 const ROLE_STORAGE_KEY = "adapttica-selected-role";
-const RETURN_TO_CASE_KEY = "adapttica-return-to-case";
 const ACTIVE_CASE_KEY = "adapttica-active-case";
 const REGISTER_INTENT_KEY = "adapttica-register-intent";
+const LANGUAGE_STORAGE_KEY = "adapttica-language-preference";
 
 const a11yIcons = {
   text: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 19 10.5 6h1L16 19"/><path d="M7.5 15h5"/><path d="M18 19v-6"/><path d="M16.5 14.5 18 13l1.5 1.5"/></svg>`,
@@ -39,20 +49,6 @@ function currentCaseId() {
   return new URLSearchParams(location.search).get("id") || sessionStorage.getItem(ACTIVE_CASE_KEY) || "";
 }
 
-// The bundle's own case-detail components (Participants tab, the invite
-// modal, the resources tab, the collaborative board) all read the current
-// case id exclusively from sessionStorage[ACTIVE_CASE_KEY] — never from the
-// URL. That key is normally set by the bundle itself when a case card is
-// clicked from the catalogue, but a direct URL visit, a refresh, or
-// navigating back/forward never (re)sets it, silently breaking all of the
-// above (e.g. the Participants tab permanently shows "no participants").
-// Keep it mirrored from the URL's id param on every render pass so those
-// native features always see a case id that matches what's on screen.
-function syncActiveCaseId() {
-  if (currentView() !== "case") return;
-  const urlCaseId = new URLSearchParams(location.search).get("id");
-  if (urlCaseId) sessionStorage.setItem(ACTIVE_CASE_KEY, urlCaseId);
-}
 
 let authCache = null; // { authenticated: boolean, role: string|null, checkedAt: number }
 const AUTH_CACHE_TTL_MS = 5_000;
@@ -260,10 +256,13 @@ function applyNotificationBadge() {
 
 function savedLanguage() {
   try {
+    const stable = String(localStorage.getItem(LANGUAGE_STORAGE_KEY) || "").toLowerCase();
+    if (stable === "el" || stable === "en") return stable;
     const preference = JSON.parse(localStorage.getItem("adapttica-preferences-v1") || "{}");
-    return String(preference.lang || "").toLowerCase();
+    const saved = String(preference.lang || "").toLowerCase();
+    return saved === "en" || saved === "el" ? saved : "el";
   } catch {
-    return "";
+    return "el";
   }
 }
 
@@ -276,6 +275,11 @@ function persistLanguagePreference(lang) {
   } catch {
     preference = {};
   }
+  // The vendored SPA rewrites adapttica-preferences-v1 after `/me` loads,
+  // using the account's original language. Keep the user's explicit UI
+  // choice in a separate stable key so it survives full-page navigation,
+  // refresh, sign-in and sign-out, then mirror it into the native object.
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, lang.toLowerCase());
   localStorage.setItem("adapttica-preferences-v1", JSON.stringify({ ...preference, lang: lang.toUpperCase() }));
 }
 
@@ -320,6 +324,12 @@ function createRoleSelector(container) {
   const demoAccounts = {
     user: { email: "participant@demo.adapttica.local", password: "Demo123!" },
     representative: { email: "representative@demo.adapttica.local", password: "Demo123!" },
+    // Matches the documented default in .env.example / server/src/seed.js
+    // (SEED_ADMIN_EMAIL/SEED_ADMIN_PASSWORD) — not a secret beyond what's
+    // already committed there. A deployment that overrides those env vars
+    // will simply see this quick-fill stop matching, same accepted
+    // trade-off as the two demo accounts above.
+    admin: { email: "admin@adapttica.local", password: "ChangeMe123!" },
   };
 
   const populateDemoAccount = (role) => {
@@ -337,8 +347,12 @@ function createRoleSelector(container) {
     });
   };
   // Admin can only be granted by an existing administrator (via the admin
-  // user-management screen), never through self-registration.
-  ["user", "representative"].forEach((role) => {
+  // user-management screen), never through self-registration — that rule
+  // is enforced on the *registration* form (isRegistration branch below,
+  // which drops the role selector entirely), not here: this is the sign-in
+  // screen's quick-fill for already-existing demo accounts, so offering
+  // the seeded admin account alongside the other two is safe.
+  ["user", "representative", "admin"].forEach((role) => {
     const label = document.createElement("label");
     label.className = "auth-role-option";
     label.innerHTML = `<input type="radio" name="platform-role" value="${role}" ${selected === role ? "checked" : ""}><span><b>${t[role]}</b><small>${t[`${role}Help`]}</small></span>`;
@@ -398,6 +412,154 @@ function decorateAuthFields(content, isRegistration) {
   });
 }
 
+// Same case the Regional Resilience Journey uses (regional-journey.js's
+// REGIONAL_CASE_ID) -- duplicated here rather than imported since that
+// module doesn't export it, and this is the only other place that needs it.
+const REGIONAL_CASE_ID_FOR_REGISTRATION = "20000000-0000-4000-8000-000000000001";
+const REGISTRATION_CATEGORY_LABELS = {
+  el: { public: "Δημόσιος τομέας", private: "Ιδιωτικός τομέας", civil: "ΜΚΟ / Κοινωνία των πολιτών", research: "Έρευνα & ακαδημαϊκή κοινότητα" },
+  en: { public: "Public sector", private: "Private sector", civil: "NGOs / Civil Society", research: "Research & Academia" },
+};
+const REGISTRATION_COUNTS_INTRO = {
+  el: "Ποιοι έχουν ήδη εγγραφεί",
+  en: "Who has already registered",
+};
+
+// The spec asks that the same per-category participant numbers shown in
+// Phase 2 also appear during registration, so a prospective participant can
+// see where representation is thin before they sign up.
+function installRegistrationRepresentationCounts(content) {
+  const lang = currentLanguage();
+  let panel = content.querySelector(".auth-representation-counts");
+  if (panel?.dataset.lang === lang) return;
+  panel?.remove();
+  panel = document.createElement("div");
+  panel.className = "auth-representation-counts";
+  panel.dataset.lang = lang;
+  panel.setAttribute("data-no-localize", "true");
+  panel.innerHTML = `<p></p><div class="auth-representation-grid"></div>`;
+  panel.querySelector("p").textContent = REGISTRATION_COUNTS_INTRO[lang];
+  const grid = panel.querySelector(".auth-representation-grid");
+  const form = content.querySelector(".auth-form");
+  (form || content.querySelector("h1"))?.before(panel);
+  api(`/cases/${REGIONAL_CASE_ID_FOR_REGISTRATION}/representation`)
+    .then((data) => {
+      Object.entries(data.counts || {}).forEach(([key, count]) => {
+        const item = document.createElement("div");
+        item.innerHTML = `<strong></strong><span></span>`;
+        item.querySelector("strong").textContent = String(count);
+        item.querySelector("span").textContent = REGISTRATION_CATEGORY_LABELS[lang][key] || key;
+        grid.append(item);
+      });
+    })
+    .catch(() => panel.remove());
+}
+
+// The consent checkbox no longer belongs in this flow, and a stakeholder
+// needs to confirm their password and declare which category they represent
+// -- none of which the vendored bundle's own register form has a field or
+// submit-time hook for. sessionStorage is how the stakeholder-category
+// selection reaches local-api.js's forwardRegisterRequest, which is the one
+// place that actually builds the POST body sent to the server.
+const PENDING_STAKEHOLDER_CATEGORY_KEY = "adapttica-pending-stakeholder-category";
+
+function passwordFieldIconMarkup() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole" aria-hidden="true"><circle cx="12" cy="16" r="1"></circle><rect x="3" y="10" width="18" height="12" rx="2"></rect><path d="M7 10V7a5 5 0 0 1 10 0v3"></path></svg>`;
+}
+
+function installRegistrationExtraFields(content, lang) {
+  const form = content.querySelector(".auth-form");
+  if (!form) return;
+  const t = copy[lang];
+
+  // Removed from the flow entirely, not just hidden -- but the Register
+  // button underneath it may be gated on the React state this checkbox's
+  // own onChange sets, so a genuine .click() flips that state exactly as a
+  // visitor checking it themselves would, before the row disappears.
+  const consentLabel = form.querySelector("label.check");
+  if (consentLabel && !consentLabel.hidden) {
+    const checkbox = consentLabel.querySelector('input[type="checkbox"]');
+    if (checkbox && !checkbox.checked) checkbox.click();
+    consentLabel.hidden = true;
+  }
+
+  const passwordLabel = [...form.querySelectorAll("label")].find((label) => label.querySelector('input[type="password"]'));
+  if (passwordLabel && !form.querySelector(".auth-confirm-password")) {
+    const confirmLabel = document.createElement("label");
+    confirmLabel.className = "auth-confirm-password";
+    confirmLabel.append(t.confirmPasswordLabel);
+    const wrapper = document.createElement("div");
+    wrapper.className = "input-with-icon";
+    wrapper.innerHTML = passwordFieldIconMarkup();
+    const confirmInput = document.createElement("input");
+    confirmInput.type = "password";
+    confirmInput.autocomplete = "new-password";
+    wrapper.append(confirmInput);
+    confirmLabel.append(wrapper);
+    passwordLabel.after(confirmLabel);
+
+    // decorateAuthFields treats a label as invalid purely by whether a
+    // ".field-error" child *exists* -- it never checks visibility -- so the
+    // paragraph is only added to the DOM on an actual mismatch, not created
+    // upfront and toggled hidden.
+    const passwordInput = passwordLabel.querySelector('input[type="password"]');
+    const validate = () => {
+      const mismatch = Boolean(confirmInput.value) && confirmInput.value !== passwordInput.value;
+      confirmInput.setCustomValidity(mismatch ? t.confirmPasswordMismatch : "");
+      let error = confirmLabel.querySelector(":scope > .field-error");
+      if (mismatch && !error) {
+        error = document.createElement("p");
+        error.className = "field-error";
+        error.textContent = t.confirmPasswordMismatch;
+        confirmLabel.append(error);
+      } else if (!mismatch && error) {
+        error.remove();
+      }
+    };
+    confirmInput.addEventListener("input", validate);
+    passwordInput.addEventListener("input", validate);
+  }
+
+  if (!form.querySelector(".auth-stakeholder-category")) {
+    const organisationLabel = [...form.querySelectorAll("label")].find((label) =>
+      /organisation|organization|οργανισμός/i.test(label.textContent || "")
+    );
+    const categoryLabel = document.createElement("label");
+    categoryLabel.className = "auth-stakeholder-category";
+    // decorateAuthFields only wraps a label's leading text in the
+    // required-star span when it finds an <input> to require -- a <select>
+    // never matches that lookup, so the star is built here directly.
+    const requiredWrapper = document.createElement("span");
+    requiredWrapper.className = "auth-required-label";
+    requiredWrapper.append(t.stakeholderCategoryLabel, " ");
+    const requiredStar = document.createElement("span");
+    requiredStar.className = "auth-required-star";
+    requiredStar.setAttribute("aria-hidden", "true");
+    requiredStar.textContent = "*";
+    requiredWrapper.append(requiredStar);
+    categoryLabel.append(requiredWrapper);
+    const select = document.createElement("select");
+    select.required = true;
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = t.stakeholderCategoryPlaceholder;
+    select.append(placeholder);
+    ["public", "private", "civil", "research"].forEach((key) => {
+      const option = document.createElement("option");
+      option.value = key;
+      option.textContent = REGISTRATION_CATEGORY_LABELS[lang][key];
+      select.append(option);
+    });
+    select.value = sessionStorage.getItem(PENDING_STAKEHOLDER_CATEGORY_KEY) || "";
+    select.addEventListener("change", () => {
+      if (select.value) sessionStorage.setItem(PENDING_STAKEHOLDER_CATEGORY_KEY, select.value);
+      else sessionStorage.removeItem(PENDING_STAKEHOLDER_CATEGORY_KEY);
+    });
+    categoryLabel.append(select);
+    (organisationLabel || form.firstElementChild)?.after(categoryLabel);
+  }
+}
+
 function enhanceAuthentication() {
   document.querySelectorAll(".auth-content").forEach((content) => {
     const heading = content.querySelector("h1")?.textContent || "";
@@ -408,9 +570,19 @@ function enhanceAuthentication() {
     // for a role here is both misleading and a potential permissions leak.
     if (isRegistration) {
       content.querySelector(".auth-role-selector")?.remove();
+      installRegistrationExtraFields(content, currentLanguage());
       decorateAuthFields(content, true);
+      installRegistrationRepresentationCounts(content);
       return;
     }
+
+    // The React root re-renders this same .auth-content node in place when
+    // the visitor switches from register to sign-in, so anything injected
+    // above survives unless it's explicitly cleaned up here.
+    content.querySelector(".auth-confirm-password")?.remove();
+    content.querySelector(".auth-stakeholder-category")?.remove();
+    const consentLabel = content.querySelector(".auth-form label.check");
+    if (consentLabel?.hidden) consentLabel.hidden = false;
 
     createRoleSelector(content);
     decorateAuthFields(content, false);
@@ -783,9 +955,66 @@ function replacePartialCopy(root, repairs) {
   }
 }
 
+
+
+
+
+
+
+const HOMEPAGE_JOURNEY_VISUAL = {
+  el: "Ο κύκλος μετάβασης του Pathways2Resilience: προετοιμασία βάσης, κοινό όραμα και σχεδιασμός διαδρομών προς την κλιματική ανθεκτικότητα",
+  en: "Pathways2Resilience transition cycle: prepare the ground, build a shared vision and design pathways towards climate resilience",
+};
+
+// The User Journey diagram is the methodological overview the hero promises.
+// Keep it as a real image (rather than a CSS background) so its meaning and
+// bilingual alternative text remain available to assistive technology.
+// eslint-disable-next-line no-unused-vars -- retained as a rollback-safe legacy renderer while the regional journey replaces it.
+function installHomepageJourneyVisual() {
+  if (currentView() !== "home") return;
+  const visual = document.querySelector(".hero-visual");
+  const photo = visual?.querySelector(".hero-photo");
+  if (!visual || !photo) return;
+  visual.classList.add("homepage-journey-visual");
+  visual.setAttribute("data-no-localize", "true");
+  visual.setAttribute("aria-label", HOMEPAGE_JOURNEY_VISUAL[currentLanguage()]);
+  photo.classList.remove("crop-a");
+  photo.classList.add("homepage-journey-visual-frame");
+  let image = photo.querySelector("img");
+  if (!image) {
+    image = document.createElement("img");
+    image.src = "/p2r-transition-cycle.png";
+    image.decoding = "async";
+    photo.replaceChildren(image);
+  }
+  image.alt = HOMEPAGE_JOURNEY_VISUAL[currentLanguage()];
+}
+
+// Pentsiou review comment #6: "A shared pathway towards 2027" reads as
+// though Adaptation Pathways themselves are the 2027 deliverable, when in
+// the P2R methodology a Pathway is long-term (out to end-of-century) and
+// 2027 is just how long this project runs. Retitle the homepage's mission
+// section to name the project's own timeline instead of overloading
+// "pathway" — "Regional Resilience Journey" is the term the review comment
+// itself proposes.
+function repairPathwayTerminology() {
+  const lang = currentLanguage();
+
+  const heading = document.querySelector(".journey-section h2");
+  if (heading) {
+    const expected = lang === "el" ? "Περιφερειακή Πορεία Ανθεκτικότητας" : "Regional Resilience Journey";
+    if (
+      heading.textContent !== expected &&
+      /^(Μια κοινή πορεία προς|A shared pathway towards|Περιφερειακή Πορεία Ανθεκτικότητας|Regional Resilience Journey)/.test(heading.textContent || "")
+    ) {
+      heading.textContent = expected;
+    }
+  }
+}
+
 function repairPlatformLanguageLeaks() {
   if (currentLanguage() === "el") {
-    replaceExactCopy(document.body, new Map([["Region of Attica", "Περιφέρεια Αττικής"]]));
+    replacePartialCopy(document.body, new Map([["Region of Attica", "Περιφέρεια Αττικής"]]));
     return;
   }
   replaceExactCopy(document.body, platformEnglishRepairs);
@@ -818,82 +1047,9 @@ function applyRegisterIntent() {
   sessionStorage.removeItem(REGISTER_INTENT_KEY);
 }
 
-// The bundle's case-studies empty state (shown when a search/filter yields
-// no results) is hard-coded Greek with no English branch at all — unlike
-// almost every other string in the bundle, it never switches with the
-// language toggle. This replaces it with the correct text for the active
-// language on every render, and normalises the Greek wording to the
-// platform's standard phrasing.
-function repairCasesEmptyState() {
-  if (currentView() !== "cases") return;
-  const empty = document.querySelector(".empty-state");
-  if (!empty) return;
-  const t = copy[currentLanguage()];
-  const heading = empty.querySelector("h2");
-  const description = empty.querySelector("p");
-  const button = empty.querySelector("button");
-  if (heading && heading.textContent !== t.casesEmptyTitle) heading.textContent = t.casesEmptyTitle;
-  if (description && description.textContent !== t.casesEmptyDescription) description.textContent = t.casesEmptyDescription;
-  if (button && button.textContent !== t.casesEmptyButton) button.textContent = t.casesEmptyButton;
-}
 
-function buildCaseLoginOverlay(lang, { onLogin, onContinue }) {
-  const t = copy[lang];
-  const overlay = document.createElement("div");
-  overlay.className = "case-login-overlay";
-  overlay.setAttribute("data-no-localize", "true");
-  overlay.innerHTML = `
-    <div class="case-login-modal" role="dialog" aria-modal="true" aria-labelledby="case-login-title">
-      <h2 id="case-login-title">${t.caseLoginTitle}</h2>
-      <p>${t.caseLoginDescription}</p>
-      <div class="case-login-actions">
-        <button type="button" class="btn primary case-login-primary">${t.caseLoginPrimary}</button>
-        <button type="button" class="btn secondary case-login-secondary">${t.caseLoginSecondary}</button>
-      </div>
-    </div>`;
-  overlay.querySelector(".case-login-primary").addEventListener("click", onLogin);
-  overlay.querySelector(".case-login-secondary").addEventListener("click", onContinue);
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) onContinue();
-  });
-  return overlay;
-}
 
-// Shows the login prompt required before a guest can open a case study's
-// full detail. `caseId` (when known) is only ever a bare id we generate
-// ourselves — never a URL — so there is nothing here an attacker could turn
-// into an open redirect; the return navigation below always targets our
-// own `?view=case` on the current origin.
-function showCaseLoginPrompt({ caseId, onContinue }) {
-  if (document.querySelector(".case-login-overlay")) return;
-  const lang = currentLanguage();
-  const previouslyFocused = document.activeElement;
-  const overlay = buildCaseLoginOverlay(lang, {
-    onLogin: () => {
-      if (caseId) sessionStorage.setItem(RETURN_TO_CASE_KEY, caseId);
-      window.location.href = `${location.pathname}?view=login`;
-    },
-    onContinue: () => {
-      overlay.remove();
-      if (onContinue) onContinue();
-      else if (previouslyFocused?.focus) previouslyFocused.focus();
-    },
-  });
-  document.body.append(overlay);
-  overlay.querySelector(".case-login-primary").focus();
-  overlay.dataset.lang = lang;
-}
 
-function syncCaseLoginPromptLanguage() {
-  const overlay = document.querySelector(".case-login-overlay");
-  if (!overlay || overlay.dataset.lang === currentLanguage()) return;
-  const t = copy[currentLanguage()];
-  overlay.dataset.lang = currentLanguage();
-  overlay.querySelector("h2").textContent = t.caseLoginTitle;
-  overlay.querySelector("p").textContent = t.caseLoginDescription;
-  overlay.querySelector(".case-login-primary").textContent = t.caseLoginPrimary;
-  overlay.querySelector(".case-login-secondary").textContent = t.caseLoginSecondary;
-}
 
 // The case page's "Workshop outputs" tab (.workshop-output-section) is
 // entirely decorative in the bundle: three permanently hardcoded demo
@@ -1248,7 +1404,7 @@ function enableParticipantResourceSubmission() {
     restrictedButton.addEventListener("click", () => {
       const overlay = buildResourceSubmissionForm(currentLanguage(), {
         onSuccess: () => {
-          resourceListCache = [];
+          window.__adapttica_resourceListCache = [];
         },
       });
       document.body.append(overlay);
@@ -1256,14 +1412,21 @@ function enableParticipantResourceSubmission() {
     });
   }
   const infoBanner = [...document.querySelectorAll("main *")].find(
-    (element) => element.childElementCount === 0 && /^(Διαφορετικά επίπεδα δημοσίευσης|Different publishing levels)$/i.test((element.textContent || "").trim())
+    (element) =>
+      element.childElementCount === 0 &&
+      /^(Διαφορετικά επίπεδα δημοσίευσης|Different publishing levels|Πώς οι πόροι γίνονται δημόσιοι|How resources become public)$/i.test(
+        (element.textContent || "").trim()
+      )
   );
+  if (infoBanner) {
+    infoBanner.textContent = lang === "el" ? "Πώς οι πόροι γίνονται δημόσιοι" : "How resources become public";
+  }
   const bannerText = infoBanner?.parentElement?.querySelector("p");
   if (bannerText) {
     bannerText.textContent =
       lang === "el"
-        ? "Μπορείτε να υποβάλετε υλικό στην ανοικτή βιβλιοθήκη — θα δημοσιευτεί μετά τον έλεγχο από τον υπεύθυνο της βιβλιοθήκης."
-        : "You can submit material to the open library — it's published once the library moderator reviews it.";
+        ? "Υποβάλετε το υλικό σας για έλεγχο. Μόλις εγκριθεί από τον υπεύθυνο της βιβλιοθήκης, θα είναι διαθέσιμο σε όλους στην ανοικτή βιβλιοθήκη."
+        : "Submit your material for review. Once the library moderator approves it, everyone can find it in the open library.";
   }
 }
 
@@ -1494,281 +1657,14 @@ async function injectRealWorkshopOutputs() {
   }
 }
 
-function initialsFor(fullName) {
-  return (fullName || "")
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
 
-let participantSummaryCache = null; // { caseId, lang, count, initials: string[] }
-let participantSummaryFetchInFlight = false;
 
-// The case-detail hero's avatar cluster ("ΠΚ ΜΓ ΔΚ +21 · 24 συμμετέχοντες")
-// and the "Συμμετέχοντες" tab (unlike its "Αποτελέσματα εργαστηρίων"/
-// "Πρόσθετο υλικό" siblings, which at least carry a — still hardcoded —
-// count badge) are baked-in demo literals with zero data binding: every
-// case shows the exact same fake "24", regardless of its real membership.
-// Patch both from the real /members list so they agree with what the
-// Participants tab itself shows.
-function findParticipantsTabButton() {
-  // Not a \b-anchored regex: JS's \b only recognises ASCII word characters,
-  // so it silently fails to match a boundary right after a Greek word like
-  // "Συμμετέχοντες" — a plain startsWith side-steps that Unicode gap.
-  return Array.from(document.querySelectorAll(".case-tabs button")).find((button) => {
-    const text = button.textContent || "";
-    return text.startsWith("Συμμετέχοντες") || text.startsWith("Participants");
-  });
-}
 
-async function patchCaseParticipantSummary() {
-  if (currentView() !== "case") return;
-  const heroCount = document.querySelector(".avatar-row small");
-  const tabButton = findParticipantsTabButton();
-  if (!heroCount && !tabButton) return;
-  const lang = currentLanguage();
-  const caseId = currentCaseId();
-  if (!caseId) return;
-  if (participantSummaryCache?.caseId === caseId && participantSummaryCache.lang === lang) {
-    applyParticipantSummary(participantSummaryCache);
-    return;
-  }
-  if (participantSummaryFetchInFlight) return;
-  participantSummaryFetchInFlight = true;
-  try {
-    const res = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/members`, { credentials: "same-origin" });
-    if (!res.ok) return;
-    const body = await res.json();
-    const items = body.data.items || [];
-    const summary = { caseId, lang, count: items.length, initials: items.slice(0, 3).map((m) => initialsFor(m.full_name)) };
-    participantSummaryCache = summary;
-    applyParticipantSummary(summary);
-  } catch {
-    // Leave participantSummaryFetchInFlight cleared below so the next sync
-    // pass (cache still stale/empty) retries.
-  } finally {
-    participantSummaryFetchInFlight = false;
-  }
-}
 
-// Always re-queries the live DOM rather than reusing element references
-// captured before the fetch above — the tab bar and hero can both re-render
-// while that request is in flight, which would otherwise silently patch
-// detached nodes.
-function applyParticipantSummary({ count, initials, lang }) {
-  const heroCount = document.querySelector(".avatar-row small");
-  const tabButton = findParticipantsTabButton();
-  const avatarRow = heroCount?.closest(".avatar-row");
-  if (avatarRow) {
-    avatarRow.setAttribute("data-no-localize", "true");
-    const avatarSpans = Array.from(avatarRow.querySelectorAll(":scope > span"));
-    avatarSpans.forEach((span, index) => {
-      if (index < initials.length) {
-        span.textContent = initials[index];
-        span.style.display = "";
-      } else {
-        span.style.display = "none";
-      }
-    });
-    const overflow = count - initials.length;
-    const overflowSpan = avatarSpans[avatarSpans.length - 1];
-    if (overflowSpan && overflow > 0 && initials.length === avatarSpans.length - 1) {
-      overflowSpan.textContent = `+${overflow}`;
-      overflowSpan.style.display = "";
-    }
-    heroCount.textContent = `${count} ${lang === "el" ? "συμμετέχοντες" : "participants"}`;
-  }
-  if (tabButton) {
-    let badge = tabButton.querySelector("span");
-    if (!badge) {
-      badge = document.createElement("span");
-      tabButton.append(badge);
-    }
-    badge.textContent = String(count);
-  }
-}
 
-const CASE_MEMBER_ROLE_LABELS = {
-  user: { el: "Συμμετέχων", en: "Participant" },
-  representative: { el: "Εκπρόσωπος φορέα", en: "Organisation representative" },
-  coordinator: { el: "Συντονιστής", en: "Coordinator" },
-};
 
-// The Participants tab's per-row "Manage" button is correctly permission
-// gated (disabled unless the viewer's role carries "manageCase" — the
-// bundle's own client-side check), but even when enabled its onClick only
-// ever shows an info toast naming the person and their role; there was
-// never a real management action behind it. This builds the real one:
-// change role (PATCH /cases/:id/members) or remove them from the case
-// (DELETE /cases/:id/members/:userId), both already permission-checked
-// server-side too.
-function buildParticipantManageModal(member, caseId, lang, { onDone }) {
-  const t = copy[lang];
-  const overlay = document.createElement("div");
-  overlay.className = "modal-backdrop participant-manage-overlay";
-  overlay.setAttribute("data-no-localize", "true");
-  overlay.setAttribute("role", "dialog");
-  overlay.setAttribute("aria-modal", "true");
-  overlay.innerHTML = `
-    <div class="modal-card participant-manage-modal">
-      <button type="button" class="modal-close icon-btn" aria-label="${t.close}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
-      </button>
-      <h2></h2>
-      <p class="participant-manage-subtitle"></p>
-      <div class="participant-manage-roles"></div>
-      <div class="modal-actions participant-manage-remove-row">
-        <button type="button" class="btn secondary participant-manage-remove"></button>
-      </div>
-    </div>`;
 
-  overlay.querySelector("h2").textContent = t.participantManageTitle;
-  overlay.querySelector(".participant-manage-subtitle").textContent =
-    `${member.full_name} · ${(CASE_MEMBER_ROLE_LABELS[member.role] || {})[lang] || member.role}`;
 
-  const close = () => overlay.remove();
-  overlay.querySelector(".modal-close").addEventListener("click", close);
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) close();
-  });
-
-  const roleContainer = overlay.querySelector(".participant-manage-roles");
-  Object.keys(CASE_MEMBER_ROLE_LABELS).forEach((role) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "btn secondary participant-manage-role-option";
-    if (role === member.role) button.classList.add("active");
-    button.textContent = CASE_MEMBER_ROLE_LABELS[role][lang];
-    button.addEventListener("click", async () => {
-      if (role === member.role) return;
-      roleContainer.querySelectorAll("button").forEach((b) => (b.disabled = true));
-      try {
-        const res = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/members`, {
-          method: "PATCH",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: member.user_id, role }),
-        });
-        if (!res.ok) throw new Error("request failed");
-        showRuntimeToast({ type: "success", title: t.participantManageRoleSuccessTitle, message: t.participantManageRoleSuccessMessage });
-        close();
-        onDone?.({ type: "role", role });
-      } catch {
-        showRuntimeToast({ type: "error", title: t.participantManageErrorTitle, message: t.participantManageErrorMessage });
-        roleContainer.querySelectorAll("button").forEach((b) => (b.disabled = false));
-      }
-    });
-    roleContainer.append(button);
-  });
-
-  const removeButton = overlay.querySelector(".participant-manage-remove");
-  removeButton.textContent = t.participantManageRemove;
-  let removeArmed = false;
-  removeButton.addEventListener("click", async () => {
-    if (!removeArmed) {
-      removeArmed = true;
-      removeButton.textContent = t.participantManageRemoveConfirm;
-      removeButton.classList.add("danger-armed");
-      return;
-    }
-    removeButton.disabled = true;
-    try {
-      const res = await fetch(
-        `/api/v1/cases/${encodeURIComponent(caseId)}/members/${encodeURIComponent(member.user_id)}`,
-        { method: "DELETE", credentials: "same-origin" }
-      );
-      const body = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(body?.error?.message || "request failed");
-      showRuntimeToast({ type: "success", title: t.participantManageRemoveSuccessTitle, message: t.participantManageRemoveSuccessMessage });
-      close();
-      onDone?.({ type: "removed" });
-    } catch (error) {
-      showRuntimeToast({
-        type: "error",
-        title: t.participantManageErrorTitle,
-        message: error instanceof Error ? error.message : t.participantManageErrorMessage,
-      });
-      removeButton.disabled = false;
-    }
-  });
-
-  return overlay;
-}
-
-function findParticipantsGrid() {
-  return document.querySelector(".people-grid");
-}
-
-// Matches each row's displayed name back to a real member record fetched
-// fresh from the API — the DOM only ever has the rendered name/role text,
-// never the underlying user id the management endpoints need. The native
-// button's own `disabled` state (gated on the coarse platform-role
-// can("manageCase") check) isn't trustworthy on its own — see the comment
-// on getCurrentCaseRole() — so this re-checks the real per-case role before
-// wiring anything, and force-disables the button (matching the bundle's own
-// disabled/title pattern) when that role isn't actually coordinator/admin.
-async function enableParticipantManagement() {
-  const grid = findParticipantsGrid();
-  if (!grid) return;
-  const caseId = currentCaseId();
-  if (!caseId) return;
-  const canManage = await isCaseCoordinator(caseId);
-  const lang = currentLanguage();
-  grid.querySelectorAll("article").forEach((article) => {
-    const button = article.querySelector(".icon-btn[aria-label]");
-    if (!button) return;
-    if (!canManage) {
-      if (!button.disabled) {
-        button.disabled = true;
-        button.title =
-          lang === "el" ? "Η διαχείριση μελών ανήκει στον συντονιστή." : "Member management belongs to the coordinator.";
-      }
-      return;
-    }
-    if (button.disabled || button.dataset.manageWired) return;
-    button.dataset.manageWired = "true";
-    button.addEventListener(
-      "click",
-      async (event) => {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const fullName = article.querySelector("b")?.textContent?.trim();
-        if (!fullName) return;
-        try {
-          const res = await fetch(`/api/v1/cases/${encodeURIComponent(caseId)}/members`, { credentials: "same-origin" });
-          if (!res.ok) throw new Error("request failed");
-          const body = await res.json();
-          const member = (body.data.items || []).find((item) => item.full_name === fullName);
-          if (!member) return;
-          const lang = currentLanguage();
-          const overlay = buildParticipantManageModal(member, caseId, lang, {
-            onDone: (result) => {
-              participantSummaryCache = null;
-              patchCaseParticipantSummary();
-              if (result?.type === "removed") {
-                article.remove();
-              } else if (result?.type === "role") {
-                const roleLabel = article.querySelector("em");
-                if (roleLabel) roleLabel.textContent = CASE_MEMBER_ROLE_LABELS[result.role][currentLanguage()];
-              }
-            },
-          });
-          document.body.append(overlay);
-        } catch {
-          showRuntimeToast({
-            type: "error",
-            title: copy[currentLanguage()].participantManageErrorTitle,
-            message: copy[currentLanguage()].participantManageErrorMessage,
-          });
-        }
-      },
-      { capture: true }
-    );
-  });
-}
 
 function findDecisionsTabButton() {
   return Array.from(document.querySelectorAll(".case-tabs button")).find((button) => {
@@ -1875,100 +1771,37 @@ async function patchDecisionStatusPermission() {
   }
 }
 
-// Guards the case-study *detail* route only — the catalogue (view=cases)
-// stays fully public. Runs on every render pass so it also catches direct
-// URL navigation and back/forward, not just clicking a card.
+// The Case Studies catalogue and the per-case detail page are both retired:
+// Attica has one Regional Resilience Journey, not one journey per case. The
+// views live in the vendored bundle and cannot be deleted from it, so they
+// are made unreachable instead -- redirected before their content can paint.
+// This runs on every pass, so it also catches direct URL entry, back/forward
+// and the bundle's own post-sign-in landing on ?view=cases.
 function guardCaseAccess() {
   const view = currentView();
   if (view !== "cases" && view !== "case") return;
-  refreshAuthCache().then((authenticated) => {
-    if (authenticated || currentView() !== "case") return;
-    if (document.querySelector(".case-login-overlay")) return;
-    const activeCaseId = currentCaseId();
-    showCaseLoginPrompt({
-      caseId: activeCaseId,
-      onContinue: () => {
-        window.location.href = `${location.pathname}?view=cases`;
-      },
-    });
-  });
+  openRegionalJourney("overview");
 }
 
-// After a guest logs in from the prompt above, send them straight back to
-// the case study they wanted instead of the homepage/dashboard.
-function consumeReturnToCase() {
-  const pendingCaseId = sessionStorage.getItem(RETURN_TO_CASE_KEY);
-  if (!pendingCaseId || currentView() === "case") return;
-  const cached = isAuthenticatedCached();
-  if (cached !== true) return;
-  sessionStorage.removeItem(RETURN_TO_CASE_KEY);
-  sessionStorage.setItem(ACTIVE_CASE_KEY, pendingCaseId);
-  window.location.href = `${location.pathname}?view=case`;
-}
 
-// The bundle only disables (greys out) this button when it has a *signed
-// in* user whose role isn't admin — it never considered the
-// no-user-at-all case, because the case-studies catalogue used to require
-// a session to view at all. Now that browsing it is public, an anonymous
-// visitor sees a fully clickable "New case study" button. Hide it
-// outright for that specific case; leave the bundle's own (correct)
-// disabled state alone for signed-in non-admins.
-function guardCaseCreationButton() {
-  if (!authCache || authCache.role === "admin") return;
-  document.querySelectorAll("button").forEach((button) => {
-    if (!/new case study|νέα μελέτη περίπτωσης/i.test(button.textContent || "")) return;
-    button.classList.add("permission-hidden");
-    button.setAttribute("aria-hidden", "true");
-    button.disabled = true;
-  });
-}
+
+// The native "New case study" wizard (?view=create, a 5-step flow baked
+// into the vendored bundle) only ever collects title/description/area/
+// sectors — it has no notion of Primary System, Primary Impact, Hazards or
+// Linked Systems. Since a Case Study now requires those (the shared
+// backend relationship every Priority System page reads from), letting
+// that wizard run would either fail outright on submit or silently create
+// a disconnected case. Intercept the click at the capture phase (before
+// the bundle's own delegated React handler sees it) and open our own
+// connected form instead — same technique already used by
+// installSystemsExplorerNativeExitListener() elsewhere in this file.
 
 function removeDeprecatedHomepageTrustItem() {
   if (currentView() !== "home") return;
-  document.querySelector(".hero-copy .trust-row > span:nth-child(3)")?.remove();
+  document.querySelector(".hero-copy .trust-row")?.remove();
 }
 
-function removeCasesRoleNotices() {
-  if (currentView() !== "cases") return;
-  const exactMatches = (patterns) => [...document.querySelectorAll("main *")].filter((element) => {
-    const ownText = [...element.childNodes]
-      .filter((node) => node.nodeType === Node.TEXT_NODE)
-      .map((node) => node.textContent || "")
-      .join(" ")
-      .trim();
-    return patterns.some((pattern) => pattern.test(ownText));
-  });
 
-  exactMatches([/^Οι δικές σας προσκλήσεις$/i, /^Your invitations$/i]).forEach((heading) => {
-    const container = heading.closest("aside, section, .case-access-banner, .info-banner") || heading.parentElement;
-    container?.classList.add("cases-notice-hidden");
-    container?.setAttribute("aria-hidden", "true");
-  });
-  exactMatches([
-    /^Απαιτεί ρόλο εκπροσώπου φορέα\.?$/i,
-    /^Requires (an? )?organisation representative role\.?$/i,
-  ]).forEach((element) => {
-    element.classList.add("cases-notice-hidden");
-    element.setAttribute("aria-hidden", "true");
-  });
-}
-
-// Participants can still use the collaborative board, comment and add files,
-// but coordinator-only actions must not compete for attention as disabled
-// lock buttons. The backend remains the authority for the permission check;
-// this is the matching presentation rule for the case-study detail screen.
-function hideParticipantCaseActions() {
-  if (currentView() !== "case" || authCache?.role !== "user") return;
-  document.querySelectorAll("main button:disabled").forEach((button) => {
-    const permissionCopy = `${button.textContent || ""} ${button.title || ""} ${button.getAttribute("aria-label") || ""}`;
-    const isCoordinatorAction = button.querySelector(".lucide-lock-keyhole") ||
-      /invite|settings|new decision|manage|review|approval|πρόσκληση|ρυθμίσεις|νέα απόφαση|διαχείριση|αξιολόγηση|έγκριση/i.test(permissionCopy);
-    if (!isCoordinatorAction) return;
-    button.classList.add("participant-action-hidden");
-    button.setAttribute("aria-hidden", "true");
-    button.tabIndex = -1;
-  });
-}
 
 function enhanceNativeToasts() {
   document.querySelectorAll(".toast-stack").forEach((stack) => {
@@ -1988,7 +1821,7 @@ function enhanceNativeToasts() {
 // fully reachable — this only ever matches view === "toolkit".
 function guardToolkitAccess() {
   if (currentView() !== "toolkit") return;
-  window.location.href = `${location.pathname}?view=cases`;
+  openRegionalJourney("overview");
 }
 
 // Four entry points link to the Toolkit page: the public header nav, the
@@ -2009,6 +1842,76 @@ function hideToolkitEntryPoints() {
     card.classList.add("permission-hidden");
     card.setAttribute("aria-hidden", "true");
   });
+}
+
+// Priority Systems is now the platform's primary destination (it's where
+// the whole P2R Journey actually lives, per the reviewed journey doc) --
+// Case Studies stays a real, reachable record, but not a top-level nav
+// destination in the header, footer or homepage any more. Scoped to the
+// header nav specifically (not a blanket document-wide text match like
+// hideToolkitEntryPoints above) so this never touches the in-page
+// "‹ Case studies" back-link on the native case-detail page itself, which
+// must stay reachable when someone lands there via a direct/legacy link.
+function demoteCaseStudiesHeaderNav() {
+  document.querySelectorAll(".public-header nav, .app-header nav").forEach((nav) => {
+    nav.querySelectorAll(":scope > button").forEach((button) => {
+      if (!/^(Μελέτες περίπτωσης|Case studies)$/i.test((button.textContent || "").trim())) return;
+      button.classList.add("permission-hidden");
+      button.setAttribute("aria-hidden", "true");
+      button.disabled = true;
+    });
+  });
+}
+
+// The homepage's marketing feature-grid shipped four cards; with Case
+// Studies demoted it should read Priority Systems / Knowledge library /
+// User guide. Hidden rather than removed, same React-safety rule as
+// hideToolkitEntryPoints (both hidden cards leave dead grid slots, which
+// the grid's own auto-fill collapses).
+
+function hideCaseStudiesFeatureCard() {
+  // Matched on the subject rather than an exact phrase: the bundle ships
+  // several wordings for this one card ("Go to case studies" in its
+  // translation map but "Open case studies" in the rendered aria-label), so
+  // pinning the full string silently missed it in English. No other card in
+  // this grid mentions case studies, so a substring match is unambiguous.
+  const mentionsCases = (text) => /case studies|μελέτες περίπτωσης/i.test(text || "");
+  document.querySelectorAll(".feature-grid article.feature-card[role='link']").forEach((card) => {
+    const label = card.getAttribute("aria-label") || "";
+    const heading = card.querySelector("h3")?.textContent || "";
+    if (!mentionsCases(label) && !mentionsCases(heading)) return;
+    card.classList.add("permission-hidden");
+    card.setAttribute("aria-hidden", "true");
+  });
+}
+
+// The footer's "Platform" column linked straight to the Case Studies
+// catalogue; replace that slot with a Priority Systems link instead
+// (reusing the header nav button's own click handling rather than
+// duplicating its navigation logic, since that button isn't exported).
+function replaceFooterCaseStudiesLink() {
+  const footer = document.querySelector("footer");
+  if (!footer) return;
+  const native = [...footer.querySelectorAll("button")].find((button) =>
+    /^(Μελέτες περίπτωσης|Case studies)$/i.test((button.textContent || "").trim())
+  );
+  if (native && !native.classList.contains("permission-hidden")) {
+    native.classList.add("permission-hidden");
+    native.setAttribute("aria-hidden", "true");
+    native.disabled = true;
+  }
+  let replacement = footer.querySelector(".footer-systems-explorer-link");
+  if (!replacement) {
+    replacement = document.createElement("button");
+    replacement.type = "button";
+    replacement.className = "footer-systems-explorer-link";
+    native?.before(replacement);
+    replacement.addEventListener("click", () => {
+      document.querySelector(".systems-explorer-nav-button")?.click();
+    });
+  }
+  const lang = currentLanguage();
+  replacement.textContent = lang === "el" ? "Συστήματα προτεραιότητας" : "Priority Systems";
 }
 
 const GUIDE_FEATURE_ICON_SVG =
@@ -2126,19 +2029,17 @@ function installLicenceFetchInterceptor() {
       return nativeFetch(input, { ...init, body });
     }
 
-    if (path === "/api/v1/resources" && method === "GET") {
-      nativeFetch(input, init)
-        .then((response) => response.clone().json())
-        .then((body) => {
-          resourceListCache = body?.data?.items || [];
-        })
-        .catch(() => {});
-    }
     return nativeFetch(input, init);
   };
 }
 
-let resourceListCache = [];
+// Populated by local-api.js, which loads early enough to catch the vendored
+// bundle's *first* fetch on mount — this module's own installLicenceFetchInterceptor
+// only installs after that bundle has already loaded, too late for that
+// first request.
+function resourceListCache() {
+  return window.__adapttica_resourceListCache || [];
+}
 
 // Inserted as the last .resource-form-section, right before the
 // visibility-toggle/submit footer — "how this resource may be reused"
@@ -2228,6 +2129,99 @@ function injectLicenceField() {
 }
 
 // The bundle hardcodes the licence text shown on a resource's detail modal
+// Knowledge Library: replace the native Resource type / Sector / Related
+// case study filters with a single Phase 1/2/3 filter. A resource is bound
+// to a phase by tagging it "phase1"/"phase2"/"phase3" in the Knowledge
+// Library, the same convention already used for evidence documents
+// (rccap/observatory) and stakeholder-mapping screenshots — the project
+// team assigns a resource to a phase without a code change. No id is
+// exposed on a rendered card, so cards are correlated to the GET /resources
+// cache by title, the same text-matching approach patchResourceLicenceDisplay
+// below already relies on.
+function patchLibraryPhaseFilter() {
+  if (currentView() !== "knowledge") return;
+  const section = document.querySelector(".resource-layout > section.resources");
+  const toolbar = section?.querySelector(".resource-toolbar");
+  if (!section || !toolbar) return;
+  const lang = currentLanguage();
+  const labels = {
+    phase1: lang === "el" ? "Φάση 1" : "Phase 1",
+    phase2: lang === "el" ? "Φάση 2" : "Phase 2",
+    phase3: lang === "el" ? "Φάση 3" : "Phase 3",
+  };
+
+  let bar = section.querySelector(".library-phase-filter");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "library-phase-filter";
+    bar.dataset.active = "";
+    toolbar.after(bar);
+  }
+  // Only rebuild the buttons when the language changes — rebuilding on
+  // every pass would drop a click mid-interaction.
+  if (bar.dataset.lang !== lang) {
+    bar.dataset.lang = lang;
+    bar.innerHTML = "";
+    ["phase1", "phase2", "phase3"].forEach((key) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "library-phase-filter-btn";
+      button.dataset.phase = key;
+      button.textContent = labels[key];
+      button.setAttribute("aria-pressed", bar.dataset.active === key ? "true" : "false");
+      button.classList.toggle("active", bar.dataset.active === key);
+      // Toggle: clicking the active phase again clears the filter, since
+      // "the only filter" still needs a way back to seeing everything.
+      button.addEventListener("click", () => {
+        const next = bar.dataset.active === key ? "" : key;
+        bar.dataset.active = next;
+        [...bar.querySelectorAll("button")].forEach((btn) => {
+          const on = btn.dataset.phase === next;
+          btn.classList.toggle("active", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        applyLibraryPhaseFilter(section, next);
+      });
+      bar.append(button);
+    });
+  }
+  // Re-applied every pass: search and sort re-render the card list natively,
+  // and the phase filter has to be re-imposed on whatever set survives that.
+  applyLibraryPhaseFilter(section, bar.dataset.active || "");
+}
+
+const LIBRARY_PHASE_PILL_LABEL = {
+  el: { phase1: "Φάση 1", phase2: "Φάση 2", phase3: "Φάση 3" },
+  en: { phase1: "Phase 1", phase2: "Phase 2", phase3: "Phase 3" },
+};
+
+function applyLibraryPhaseFilter(section, phase) {
+  const lang = currentLanguage();
+  section.querySelectorAll(".resource-card").forEach((card) => {
+    const title = card.querySelector("h2")?.textContent?.trim() || "";
+    const match = resourceListCache().find((item) => item.title_el === title || item.title_en === title);
+    const tags = match?.tags || [];
+    const visible = !phase || tags.includes(phase);
+    card.classList.toggle("library-phase-hidden", !visible);
+
+    // The card's own second pill already renders tags[0] verbatim — when
+    // that happens to be one of ours, it leaks the raw filter key
+    // ("phase1") rather than a label a reader would recognise. The raw key
+    // is stashed in a data attribute the first time round, so a later
+    // language switch can still re-derive the label instead of trying to
+    // translate whatever text is already showing.
+    const rawPill = card.querySelector(".resource-pills > span:last-child");
+    if (rawPill) {
+      if (!rawPill.dataset.phaseTag) {
+        const initial = rawPill.textContent.trim();
+        if (LIBRARY_PHASE_PILL_LABEL.en[initial]) rawPill.dataset.phaseTag = initial;
+      }
+      const label = LIBRARY_PHASE_PILL_LABEL[lang][rawPill.dataset.phaseTag];
+      if (label && rawPill.textContent !== label) rawPill.textContent = label;
+    }
+  });
+}
+
 // ("Όπως δηλώνεται από τον εκδότη"/"As specified by the publisher") — it
 // never reflects the real per-resource value. No id is exposed in the
 // rendered DOM, so this correlates the open modal to a raw record from the
@@ -2235,7 +2229,7 @@ function injectLicenceField() {
 // text-matching approach already used elsewhere in this file.
 function patchResourceLicenceDisplay() {
   const modal = document.querySelector(".resource-modal");
-  if (!modal || !resourceListCache.length) return;
+  if (!modal || !resourceListCache().length) return;
   const licenceRow = [...modal.querySelectorAll(".resource-detail-grid > div")].find((row) =>
     /^(Άδεια|Licence)$/i.test(row.querySelector("small")?.textContent?.trim() || "")
   );
@@ -2245,7 +2239,7 @@ function patchResourceLicenceDisplay() {
 
   const title = modal.querySelector("h2")?.textContent?.trim() || "";
   const author = modal.querySelector(".resource-detail-grid b")?.textContent?.trim() || "";
-  const matches = resourceListCache.filter(
+  const matches = resourceListCache().filter(
     (item) => (item.title_el === title || item.title_en === title) && (item.author_organisation || "") === author
   );
   if (matches.length !== 1) return;
@@ -2266,37 +2260,34 @@ function syncEnhancements() {
   applyRegisterIntent();
   syncAccessibilityLanguage();
   repairPlatformLanguageLeaks();
+  repairPathwayTerminology();
   repairGuideEnglishCopy();
-  repairCasesEmptyState();
-  removeCasesRoleNotices();
   removeDeprecatedHomepageTrustItem();
   enhanceNativeToasts();
-  syncCaseLoginPromptLanguage();
   addGuideDemonstrations();
   applyGuideRoleVisibility();
-  syncActiveCaseId();
   injectRealWorkshopOutputs();
   patchWorkshopOutputCreatePermission();
-  patchCaseParticipantSummary();
-  enableParticipantManagement();
   patchDecisionsTabBadge();
   enableDecisionCardClick();
   patchDecisionStatusPermission();
   injectLicenceField();
   patchResourceLicenceDisplay();
+  patchLibraryPhaseFilter();
   enableParticipantResourceSubmission();
   refreshAuthCache().then(() => {
-    consumeReturnToCase();
-    guardCaseCreationButton();
-    hideParticipantCaseActions();
-  });
-  guardCaseCreationButton();
-  hideParticipantCaseActions();
+        });
   guardCaseAccess();
   guardToolkitAccess();
   hideToolkitEntryPoints();
+  demoteCaseStudiesHeaderNav();
+  replaceFooterCaseStudiesLink();
+  hideCaseStudiesFeatureCard();
   addGuideFeatureCard();
   enhanceBoardBackButton();
+  installRegionalNavigation();
+  rewriteHomepage();
+  syncRegionalJourney();
   applyNotificationBadge();
   if (!notificationBadgeCache || Date.now() - notificationBadgeCache.checkedAt > NOTIFICATION_BADGE_TTL_MS) {
     refreshNotificationBadge();
@@ -2309,6 +2300,7 @@ export function installRuntimeEnhancements() {
   // before the bundle's own Toolkit page has a chance to render.
   guardToolkitAccess();
   installLicenceFetchInterceptor();
+  installRegionalJourney();
   let scheduled = false;
   const schedule = () => {
     if (scheduled) return;
@@ -2330,12 +2322,6 @@ export function installRuntimeEnhancements() {
   // guideEnglishRepairs above) while others "just worked": whichever ones
   // happened to get a fresh node creation were caught, the rest weren't.
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
-  // The auth cache backs a synchronous click-time decision (guarding case
-  // cards / the "New case study" button), but syncEnhancements() only runs
-  // on a DOM mutation — on a page that's sat still for a few seconds with
-  // no mutations, the cache would go stale and never refresh again until
-  // something else happened to change. Keep it warm independent of that.
-  setInterval(() => refreshAuthCache().then(guardCaseCreationButton), Math.floor(AUTH_CACHE_TTL_MS * 0.8));
   // Same reasoning as the auth cache above: keep the notification badge
   // correct even while the page sits idle with no DOM mutations.
   setInterval(refreshNotificationBadge, Math.floor(NOTIFICATION_BADGE_TTL_MS * 0.8));
@@ -2361,23 +2347,6 @@ export function installRuntimeEnhancements() {
   // bundle's own click handler (attached higher up via React's synthetic
   // event system) ever sees the event. isAuthenticatedCached() reads the
   // cache kept warm by syncEnhancements()/guardCaseAccess() on every pass,
-  // since the real check is async and a click has to be decided
-  // synchronously. If the cache hasn't warmed yet, the click is allowed
-  // through; guardCaseAccess() still catches the unauthenticated case a
-  // moment later once the "case" view has actually mounted.
-  document.addEventListener("click", (event) => {
-    if (currentView() !== "cases") return;
-    const card = event.target.closest?.(".case-card");
-    if (!card) return;
-    if (isAuthenticatedCached() !== false) return;
-    event.preventDefault();
-    event.stopPropagation();
-    showCaseLoginPrompt({ caseId: null, onContinue: () => card.querySelector("button")?.focus() });
-  }, true);
-  document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
-    document.querySelector(".case-login-overlay .case-login-secondary")?.click();
-  });
   // Header "Register"/"Εγγραφή" click: record the intent, then let the
   // click proceed normally (it still navigates to the login view like
   // today) — applyRegisterIntent() picks the flag up once that view mounts.

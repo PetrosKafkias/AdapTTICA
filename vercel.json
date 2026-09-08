@@ -1,4 +1,13 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/v1/:path*", "destination": "/api" }
+  ],
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 30,
+      "includeFiles": "{server/migrations/sqlite/**,node_modules/@libsql/linux-x64-gnu/**,node_modules/@libsql/linux-x64-musl/**}"
+    }
+  }
 }
