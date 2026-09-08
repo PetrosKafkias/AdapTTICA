@@ -204,25 +204,13 @@ describe("case study co-creation workflow", () => {
     expect(optionScores[option1.id].criteria.effectiveness).toEqual({ average: 3, rating_count: 2 });
 
     // Phase 3, Step 1 (Identify): "Support" ("worth considering") is a
-    // separate concept from the agree/disagree vote above, and only a
-    // Coordinator/Admin moves a candidate to the shortlist for Step 2.
+    // separate concept from the agree/disagree vote above. There is no
+    // shortlisting gate before Step 2 -- every identified option can be
+    // assessed directly.
     await participant.post(`/api/v1/cases/${caseId}/options/${option2.id}/support`);
     const afterSupport = (await participant.get(`/api/v1/cases/${caseId}/options`)).body.data.items.find((o) => o.id === option2.id);
     expect(afterSupport.support_count).toBe(1);
     expect(afterSupport.my_support).toBe(true);
-
-    const assessBeforeShortlist = await participant.post(`/api/v1/cases/${caseId}/options/${option2.id}/assessments`).send({
-      effectiveness: "high",
-      feasibility: "high",
-      coBenefits: "high",
-      transformativePotential: "high",
-      robustAcrossFutures: "most",
-    });
-    expect(assessBeforeShortlist.status).toBe(400);
-
-    const shortlistDeniedByRole = await participant.patch(`/api/v1/cases/${caseId}/options/${option2.id}`).send({ shortlisted: true });
-    expect(shortlistDeniedByRole.status).toBe(403);
-    await admin.patch(`/api/v1/cases/${caseId}/options/${option2.id}`).send({ shortlisted: true });
 
     // Step 2 (Assess): Low/Medium/High per criterion. The collective
     // assessment and automatic priority score (High=3/Medium=2/Low=1,
@@ -392,7 +380,6 @@ describe("case study co-creation workflow", () => {
       "rate_option",
       "rate_option",
       "support_adaptation_option",
-      "shortlist_adaptation_option",
       "assess_adaptation_option",
       "assess_adaptation_option",
       "create_pathway",

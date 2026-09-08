@@ -129,6 +129,8 @@ const COPY = {
     stakeholderMappingAltPrefix: "Χαρτογράφηση εμπλεκόμενων μερών —",
     sectorSnapshot: "Αποτέλεσμα χαρτογράφησης",
     sectorSnapshotPending: "Το στιγμιότυπο του εργαστηρίου θα προστεθεί από την ομάδα έργου.",
+    impactImageTitle: "Απόσπασμα αξιολόγησης",
+    impactImagePending: "Η εικόνα αξιολόγησης θα προστεθεί από την ομάδα έργου.",
     systemForumTitle: "Γενικό φόρουμ συζήτησης",
     systemForumIntro: "Σχολιάστε ό,τι αφορά αυτό το Σύστημα Προτεραιότητας.",
     systemForumPlaceholder: "Γράψτε ένα σχόλιο...",
@@ -265,6 +267,8 @@ const COPY = {
     stakeholderMappingAltPrefix: "Stakeholder mapping —",
     sectorSnapshot: "Mapping output",
     sectorSnapshotPending: "The workshop snapshot will be added by the project team.",
+    impactImageTitle: "Assessment extract",
+    impactImagePending: "The assessment image will be added by the project team.",
     systemForumTitle: "General discussion forum",
     systemForumIntro: "Comment on anything related to this Priority System.",
     systemForumPlaceholder: "Write a comment...",
@@ -369,16 +373,17 @@ function setState(next) {
 // collaborative phase's own steps (Phase 2's Explore/Vision/ToC, Phase 3's
 // Options/Pathways). Kept separate from STATE_KEY (the generic
 // view/systemId/tab triple) since it must persist across a phase render the
-// way STATE_KEY's own systemId slot only tracks Phase 1's system pages, and
-// kept per-phase since a visitor may be mid-Options on one system in Phase 3
-// while still working Vision on a different one in Phase 2.
-function getPhaseSystem(phase) {
-  return sessionStorage.getItem(PHASE_SYSTEM_KEY_PREFIX + phase) || "";
+// way STATE_KEY's own systemId slot only tracks Phase 1's system pages.
+// The Priority System a visitor commits to is universal across phases --
+// picking it (or changing it) in Phase 2 carries into Phase 3 and back, so
+// one shared key is used regardless of which phase asks for it.
+function getPhaseSystem() {
+  return sessionStorage.getItem(PHASE_SYSTEM_KEY_PREFIX) || "";
 }
 
-function setPhaseSystem(phase, systemId) {
-  if (systemId) sessionStorage.setItem(PHASE_SYSTEM_KEY_PREFIX + phase, systemId);
-  else sessionStorage.removeItem(PHASE_SYSTEM_KEY_PREFIX + phase);
+function setPhaseSystem(systemId) {
+  if (systemId) sessionStorage.setItem(PHASE_SYSTEM_KEY_PREFIX, systemId);
+  else sessionStorage.removeItem(PHASE_SYSTEM_KEY_PREFIX);
 }
 
 export function openRegionalJourney(view = "overview", systemId = null, tab = "impacts") {
@@ -676,7 +681,14 @@ function translatedSystemName(name, lang) { return lang === "el" ? (SYSTEM_NAMES
 // (`index === 0 ? "high" : ...`), the same fabricated-looking value on every
 // visit regardless of who reads it. Removed along with its legend and
 // colour coding, rather than kept as decoration with nothing behind it.
-function renderRiskCards(container, system, lang, t) {
+// Same tag-based binding as the interdependencies infographic and the
+// stakeholder-mapping screenshots -- the project team attaches a real
+// assessment extract per impact without a code change.
+function climateImpactImageTag(systemKey, impact) {
+  return `climate-impact:${systemKey}:${impact.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+}
+
+function renderRiskCards(container, system, lang, t, resources = [], signedIn = false) {
   const grid = el("div", "regional-risk-grid");
   const impacts = SYSTEM_IMPACTS[system.key] || [];
   impacts.forEach((impact) => {
@@ -687,13 +699,26 @@ function renderRiskCards(container, system, lang, t) {
     card.querySelector(".regional-risk-card-title").textContent = title;
     card.querySelector(".regional-risk-card-desc").textContent = translatedImpactDescription(impact, lang);
     card.querySelector(".regional-risk-card-cta").textContent = t.viewDetails;
+    const tag = climateImpactImageTag(system.key, impact);
+    const match = resources.find(
+      (item) =>
+        item.file_key &&
+        item.status === "approved" &&
+        String(item.file_type || "").startsWith("image/") &&
+        (item.tags || []).some((candidate) => String(candidate).toLowerCase() === tag)
+    );
     card.addEventListener("click", () => {
       document.body.append(
-        buildDetailTableModal(title, [
-          [t.period, "2041–2070"],
-          [t.scenario, "RCP 4.5 / 8.5"],
-          [t.note, t.indicative],
-        ], t)
+        buildDetailTableModal(
+          title,
+          [
+            [t.period, "2041–2070"],
+            [t.scenario, "RCP 4.5 / 8.5"],
+            [t.note, t.indicative],
+          ],
+          t,
+          { imageUrl: match && signedIn ? `/api/v1/files/${encodeURIComponent(match.file_key)}` : null }
+        )
       );
     });
     grid.append(card);
@@ -899,11 +924,24 @@ async function renderSystemForum(system, lang, t) {
 // A small table popup reused by both the Climate Impacts cards and the
 // Interdependencies map -- click a chip/card, see its detail as a table,
 // rather than spelling every row out inline on the page at once.
-function buildDetailTableModal(title, rows, t) {
+function buildDetailTableModal(title, rows, t, { imageUrl = null } = {}) {
   return buildModal(
     "regional-detail-table-card",
     (card) => {
       card.append(el("h2", null, title));
+      const figure = el("figure", "regional-sector-snapshot regional-detail-table-image");
+      if (imageUrl) {
+        const image = document.createElement("img");
+        image.src = imageUrl;
+        image.alt = "";
+        image.loading = "lazy";
+        figure.append(image);
+      } else {
+        const placeholder = el("div", "regional-sector-snapshot-empty");
+        placeholder.append(el("strong", null, t.impactImageTitle), el("span", null, t.impactImagePending));
+        figure.append(placeholder);
+      }
+      card.append(figure);
       const table = document.createElement("table");
       table.className = "regional-mapping-table";
       table.innerHTML = "<tbody></tbody>";
@@ -920,11 +958,6 @@ function buildDetailTableModal(title, rows, t) {
 
 async function renderSystem(page, lang, t, current) {
   addBackBar(page, t.alreadyKnow, () => setState({ view: "phase1" }));
-  // The back bar is appended first so it's still there if the fetch below
-  // fails, but visually the hero belongs above it -- moved up one slot once
-  // it exists, rather than reordering addBackBar itself and affecting its
-  // other call sites.
-  const backBar = page.querySelector(".regional-backbar");
   try {
     const data = await api(`/systems/${encodeURIComponent(current.systemId)}`);
     const system = data.system;
@@ -937,7 +970,7 @@ async function renderSystem(page, lang, t, current) {
     const moreInfoButton = hero.querySelector(".regional-more-info-cta");
     moreInfoButton.textContent = t.moreInfo;
     moreInfoButton.addEventListener("click", () => document.body.append(buildSystemMoreInfoModal(system, lang, t)));
-    page.insertBefore(hero, backBar);
+    page.append(hero);
     const tabs = el("nav", "regional-tabs");
     [["impacts", t.climateImpacts], ["interdependencies", t.interdependencies], ["stakeholders", t.stakeholderMapping]].forEach(([key, label]) => {
       const button = el("button", current.tab === key ? "active" : "", label);
@@ -949,15 +982,16 @@ async function renderSystem(page, lang, t, current) {
     const content = el("section", "regional-section regional-tab-panel");
     const title = current.tab === "impacts" ? t.climateImpacts : current.tab === "interdependencies" ? t.systemMapTitle : t.mappedActors;
     content.append(el("h2", null, title));
+    const [libraryResources, signedIn] = await Promise.all([
+      api("/resources").then((payload) => payload.items || []).catch(() => []),
+      getCurrentUser().then((user) => Boolean(user)).catch(() => false),
+    ]);
     if (current.tab === "impacts") {
-      renderRiskCards(content, system, lang, t);
+      renderRiskCards(content, system, lang, t, libraryResources, signedIn);
+    } else if (current.tab === "interdependencies") {
+      renderInterdependencies(content, system, lang, t, libraryResources, signedIn);
     } else {
-      const [libraryResources, signedIn] = await Promise.all([
-        api("/resources").then((payload) => payload.items || []).catch(() => []),
-        getCurrentUser().then((user) => Boolean(user)).catch(() => false),
-      ]);
-      if (current.tab === "interdependencies") renderInterdependencies(content, system, lang, t, libraryResources, signedIn);
-      else renderStakeholders(content, system, lang, t, libraryResources, signedIn);
+      renderStakeholders(content, system, lang, t, libraryResources, signedIn);
     }
     page.append(content);
     try {
@@ -1133,7 +1167,7 @@ async function renderCollaborativePhase(page, lang, t, phase) {
     // commits to one Priority System before their steps appear -- showing
     // all of it up front is exactly what the spec asked Phase 2 to avoid,
     // and Phase 3's Options/Pathways need the same framing.
-    if (!getPhaseSystem(phase)) {
+    if (!getPhaseSystem()) {
       await renderPhaseSystemPicker(page, lang, t, phase);
     } else {
       renderPhaseSystemBanner(page, lang, t, phase);
@@ -1179,7 +1213,7 @@ async function renderPhaseSystemPicker(page, lang, t, phase) {
         card.querySelector("strong").textContent = lang === "el" ? system.name_el : system.name_en;
         card.querySelector(".regional-system-copy > span").textContent = lang === "el" ? system.description_el : system.description_en;
         card.querySelector("b").textContent = t.exploreSystem;
-        card.addEventListener("click", () => { setPhaseSystem(phase, system.id); setState({ view: phase }); });
+        card.addEventListener("click", () => { setPhaseSystem(system.id); setState({ view: phase }); });
         grid.append(card);
       });
   } catch (error) {
@@ -1189,12 +1223,12 @@ async function renderPhaseSystemPicker(page, lang, t, phase) {
 }
 
 function renderPhaseSystemBanner(page, lang, t, phase) {
-  const selectedId = getPhaseSystem(phase);
+  const selectedId = getPhaseSystem();
   const banner = el("div", "regional-phase-system-banner");
   banner.innerHTML = `<span class="regional-phase-system-icon"></span><span class="regional-phase-system-copy"><small></small><strong></strong></span><button type="button" class="btn secondary small regional-phase-system-change"></button>`;
   banner.querySelector("small").textContent = t.phase2WorkingOn;
   banner.querySelector(".regional-phase-system-change").textContent = t.phase2ChangeSystem;
-  banner.querySelector(".regional-phase-system-change").addEventListener("click", () => { setPhaseSystem(phase, ""); setState({ view: phase }); });
+  banner.querySelector(".regional-phase-system-change").addEventListener("click", () => { setPhaseSystem(""); setState({ view: phase }); });
   page.append(banner);
   api("/systems")
     .then((data) => {
@@ -1220,7 +1254,7 @@ export async function syncRegionalJourney() {
   const lang = currentLanguage();
   const t = COPY[lang];
   const isCollaborativePhase = current.view === "phase2" || current.view === "phase3";
-  const renderKey = `${lang}:${current.view}:${current.systemId || ""}:${current.tab || ""}:${isCollaborativePhase ? getPhaseSystem(current.view) : ""}`;
+  const renderKey = `${lang}:${current.view}:${current.systemId || ""}:${current.tab || ""}:${isCollaborativePhase ? getPhaseSystem() : ""}`;
   // MutationObserver passes can fire while an async render is awaiting API
   // data. The render key itself is the lock; allowing a second pass while
   // `rendering` was true duplicated the entire journey surface.

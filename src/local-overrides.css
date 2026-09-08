@@ -518,7 +518,7 @@
   top: 72px;
   z-index: 4;
   display: flex;
-  gap: 6px;
+  gap: 12px;
   margin-top: 20px;
   padding: 6px;
   border: 1px solid #d4e2ea;
@@ -2542,9 +2542,20 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
   background: #fff;
   border: 1px solid var(--line, #e2e6e9);
   border-radius: 24px;
-  padding: 28px;
-  margin-bottom: 20px;
+  padding: 32px;
+  margin-top: 32px;
+  margin-bottom: 32px;
   box-shadow: 0 10px 30px #082f580f;
+}
+
+.systems-explorer-panel > h3:first-child,
+.systems-explorer-panel > h2:first-child {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.systems-explorer-panel > *:last-child {
+  margin-bottom: 0;
 }
 
 
@@ -2679,14 +2690,6 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
   color: #334;
 }
 
-.systems-explorer-case-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-}
-
 .systems-explorer-link-button {
   color: var(--teal, #078da3);
   font-weight: 700;
@@ -2728,8 +2731,20 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 .vision-element-card {
   border: 1px solid var(--line, #e2e6e9);
   border-radius: 14px;
-  padding: 14px 16px;
+  padding: 24px;
   background: #fff;
+}
+
+.vision-element-card > h4 {
+  margin: 0 0 16px;
+}
+
+.vision-element-card > * + * {
+  margin-top: 16px;
+}
+
+.vision-element-card > .vision-element-head {
+  margin-top: 0;
 }
 
 .vision-element-merged {
@@ -2773,8 +2788,8 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 }
 
 .vision-element-replies {
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid var(--line, #e2e6e9);
   display: grid;
   gap: 8px;
@@ -2813,50 +2828,72 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 
 .systems-explorer-table-wrapper {
   overflow-x: auto;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 16px;
 }
 
 .systems-explorer-comparison-table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
   min-width: 480px;
 }
 
 .systems-explorer-comparison-table th,
 .systems-explorer-comparison-table td {
-  border: 1px solid var(--line, #e2e6e9);
-  padding: 10px 12px;
+  border-bottom: 1px solid var(--line, #e2e6e9);
+  border-right: 1px solid var(--line, #e2e6e9);
+  padding: 16px 20px;
   text-align: left;
   font-size: 13px;
 }
 
-.systems-explorer-criterion-label {
+.systems-explorer-comparison-table th:last-child,
+.systems-explorer-comparison-table td:last-child {
+  border-right: 0;
+}
+
+.systems-explorer-comparison-table tr:last-child th,
+.systems-explorer-comparison-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.systems-explorer-comparison-table thead th {
+  background: #f4f8f9;
+  font-weight: 800;
+  color: var(--navy, #08345f);
+}
+
+.systems-explorer-comparison-table tbody th {
+  background: #fafcfd;
   font-weight: 700;
   white-space: nowrap;
 }
 
-.systems-explorer-rate-btn {
-  margin-left: 8px;
-  border: 0;
-  background: none;
-  color: #e8a53d;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-/* Compare & Prioritise: the calculated (from-measures) number sits above
-   the optional stakeholder whole-pathway overlay, per the journey doc's
-   "Measure-level assessment -> Calculated Pathway profile -> Stakeholder
-   discussion of the whole Pathway" flow. */
-.compare-cell-calculated {
+.evaluate-matrix-value {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 12px;
+  color: var(--muted, #667a8c);
+  background: #f0f3f5;
 }
 
-.compare-cell-stakeholder {
-  margin-left: 0;
-  display: block;
-  margin-top: 4px;
-  font-size: 11px;
+.evaluate-matrix-value-high {
+  color: #0d6b41;
+  background: #e3f6ec;
+}
+
+.evaluate-matrix-value-medium {
+  color: #8a5a00;
+  background: #fdf1dc;
+}
+
+.evaluate-matrix-value-low {
+  color: #9a2f2f;
+  background: #fbeaea;
 }
 
 /* Step 5: the per-measure "Αξιολόγηση μέτρου" panel appended to each
@@ -2878,38 +2915,6 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 
 .measure-assessment-label {
   font-size: 13px;
-}
-
-.systems-explorer-timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-left: 2px solid var(--line, #e2e6e9);
-}
-
-.systems-explorer-timeline li {
-  position: relative;
-  padding: 0 0 18px 20px;
-}
-
-.systems-explorer-timeline li::before {
-  content: "";
-  position: absolute;
-  left: -5px;
-  top: 4px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--teal, #078da3);
-}
-
-.systems-explorer-timeline b {
-  display: block;
-}
-
-.systems-explorer-timeline-meta {
-  color: var(--muted, #667a8c);
-  font-size: 12px;
 }
 
 /* Case Study workspace: step activation badges + open/close controls
@@ -2975,62 +2980,6 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 .baseline-suggestion-rejected {
   background: #fdece9;
   color: #b3261e;
-}
-
-/* Compare & Prioritise: an inline 1-5 rating popover replacing a bare
-   prompt(), plus a short optional justification. */
-.rating-popover-host {
-  position: relative;
-}
-
-.rating-popover {
-  position: absolute;
-  z-index: 20;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  border: 1px solid var(--line, #e2e6e9);
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 10px 24px #08345f29;
-  display: grid;
-  gap: 8px;
-  width: 220px;
-  text-align: left;
-}
-
-.rating-scale {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-}
-
-.rating-dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--line, #e2e6e9);
-  background: #fff;
-  color: var(--navy, #08345f);
-  font-weight: 700;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.rating-dot.selected {
-  background: var(--teal, #078da3);
-  border-color: var(--teal, #078da3);
-  color: #fff;
-}
-
-.rating-popover textarea {
-  font: inherit;
-  border: 1px solid var(--line, #e2e6e9);
-  border-radius: 8px;
-  padding: 6px 8px;
-  min-height: 50px;
-  resize: vertical;
 }
 
 @media (max-width: 700px) {
@@ -3149,17 +3098,6 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 
 .impact-detail-panel h4 {
   margin: 18px 0 8px;
-}
-
-.impact-case-bucket {
-  margin-bottom: 12px;
-}
-
-.impact-case-bucket > b {
-  display: block;
-  font-size: 12px;
-  color: var(--muted, #667a8c);
-  margin-bottom: 4px;
 }
 
 .system-card-desc {
@@ -4041,9 +3979,8 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 }
 
 /* A pathway is a SEQUENCE of measures, not a set: the create/edit form lets
-   the author order them, and the card renders that order as numbered steps. */
-.pathway-sequence-list,
-.pathway-sequence-readout {
+   the author order them. */
+.pathway-sequence-list {
   margin: 6px 0 0;
   padding-left: 20px;
   display: grid;
@@ -4088,16 +4025,67 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
   border: 1px solid var(--line, #d7e2e8);
 }
 
-.pathway-category-group {
-  margin-top: 10px;
+/* Formulate's per-pathway timeline: measures laid out across three
+   Short/Medium/Long-term columns rather than one flat numbered list. */
+.pathway-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 8px;
 }
 
-.pathway-category-label {
+.pathway-timeline-column {
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 10px;
+  padding: 8px;
+  background: #f7fafb;
+  min-width: 0;
+}
+
+.pathway-timeline-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--teal, #078da3);
+  margin-bottom: 6px;
+}
+
+.pathway-timeline-chips {
+  display: grid;
+  gap: 6px;
+}
+
+.pathway-timeline-chip {
   display: block;
   font-size: 12px;
+  line-height: 1.35;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--line, #dde5ec);
+  word-break: break-word;
+}
+
+.pathway-timeline-chip-category {
+  display: block;
+  font-size: 10px;
   font-weight: 800;
-  color: var(--teal, #078da3);
+  text-transform: uppercase;
+  color: var(--muted, #667a8c);
   margin-bottom: 2px;
+}
+
+.pathway-timeline-empty {
+  font-size: 12px;
+  color: var(--muted, #667a8c);
+}
+
+@media (max-width: 640px) {
+  .pathway-timeline {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Phase 3, Tab 1 — Identify & Assess Adaptation Options. */
@@ -4141,20 +4129,19 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
   margin-top: 6px;
 }
 
-.option-assessment-details {
-  margin-top: 12px;
+.option-assessment-modal {
+  max-width: 640px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.option-assessment-details summary {
-  cursor: pointer;
-  font-weight: 700;
-  color: var(--teal, #078da3);
+.option-assessment-modal .modal-actions {
+  margin-top: 6px;
 }
 
 .option-assessment-form {
   display: grid;
   gap: 12px;
-  margin-top: 12px;
 }
 
 .option-assessment-criterion {
@@ -4197,6 +4184,57 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
   font-size: 13px;
 }
 
+/* Pathway Ranking tab: one scored, bar-charted row per evaluated pathway. */
+.pathway-ranking-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.pathway-ranking-row {
+  padding: 14px 16px;
+  border: 1px solid var(--line, #e2e6e9);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.pathway-ranking-row-top {
+  border-color: var(--teal, #078da3);
+  box-shadow: 0 0 0 1px var(--teal, #078da3);
+}
+
+.pathway-ranking-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pathway-ranking-score {
+  margin-left: auto;
+  font-weight: 800;
+  color: var(--teal, #078da3);
+}
+
+.pathway-ranking-bar-track {
+  margin-top: 8px;
+  height: 10px;
+  border-radius: 999px;
+  background: #eef2f5;
+  overflow: hidden;
+}
+
+.pathway-ranking-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--teal, #078da3);
+}
+
+.pathway-ranking-strengths,
+.pathway-ranking-weaknesses {
+  margin-top: 8px;
+}
+
 /* Adaptation pathways developed under a Climate Impact, surfaced on the
    Priority System page (Pentsiou #1) and linking back to their own journey. */
 .system-impact-pathways {
@@ -4221,13 +4259,6 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 .case-step-closed .vision-element-reply-form,
 .case-step-closed .case-step-body > .btn.secondary:not(.vision-element-curator-menu .btn) {
   display: none;
-}
-
-/* Pentsiou #13: a criterion the user scores 1-5 must explain what it means.
-   The dotted underline signals the definition is available on hover/focus. */
-.has-criterion-help {
-  border-bottom: 1px dotted var(--muted, #667a8c);
-  cursor: help;
 }
 
 /* ---------------------------------------------------------------------
@@ -4413,6 +4444,17 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 .pathway-card {
   background: #fff;
   max-width: 620px;
+  container-type: inline-size;
+}
+
+/* Three side-by-side timeline columns need real room for a multi-word
+   measure title -- when the pathways grid puts 3+ cards in a row, each
+   card is too narrow for that and the columns collapse to one stacked
+   list instead of wrapping mid-word. */
+@container (max-width: 380px) {
+  .pathway-timeline {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* User Journey (2026): concise P2R methodology directly below the hero. */
@@ -5469,7 +5511,7 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
   z-index: 4;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 16px;
   overflow: visible;
   padding: 10px;
   border: 1px solid #d7e4ea;

@@ -205,13 +205,6 @@ const T2 = {
     noOptionsSelected: "Δεν έχει επιλεγεί κανένα μέτρο ακόμη.",
     noPathwaysShort: "Δεν έχουν προταθεί ακόμη διαδρομές.",
     pathwayOptionsIncluded: "Περιλαμβάνει",
-    markCombined: "Δημιουργία συνδυασμένης/προτεινόμενης κατεύθυνσης",
-    combineTitle: "Προτεινόμενη ή Συνδυασμένη Διαδρομή",
-    combineSourcesLabel: "Πηγές διαδρομές",
-    directionSummaryLabel: "Περίληψη κατεύθυνσης",
-    outcomeEmpty: "Δεν έχει οριστεί ακόμη προτεινόμενη ή συνδυασμένη κατεύθυνση.",
-    outcomeTrace: "Πλήρες ιστορικό αποφάσεων",
-    outcomeTraceEmpty: "Δεν υπάρχει ακόμη καταγεγραμμένο ιστορικό.",
     curatorOnlyNote: "Μόνο ο συντονιστής της μελέτης ή διαχειριστές μπορούν να το κάνουν αυτό.",
     close: "Κλείσιμο",
     stepNotStarted: "Δεν έχει ξεκινήσει",
@@ -241,17 +234,7 @@ const T2 = {
     youAgree: "✓ Συμφωνείτε",
     youDisagree: "✓ Διαφωνείτε",
     mergedSummary: (n) => `Συνδυάστηκε με ${n} άλλη πρόταση`,
-    sharedVisionPublished: "Κοινό Όραμα — Δημοσιεύτηκε",
-    assessmentSubmitted: "Η αξιολόγησή σας υποβλήθηκε.",
     measureAssessment: "Αξιολόγηση μέτρου",
-    calculatedFromMeasures: (n) => `Υπολογισμένο από ${n} μέτρ${n === 1 ? "ο" : "α"}`,
-    stakeholderAssessment: "Αξιολόγηση εμπλεκομένων",
-    justificationLabel: "Σύντομη αιτιολόγηση (προαιρετικό)",
-    consensusTitle: "Σύγκλιση & Διαφωνία εμπλεκομένων",
-    strongAlignment: "Ισχυρή σύγκλιση",
-    mixedViews: "Μεικτές απόψεις",
-    furtherDiscussionNeeded: "Χρειάζεται περαιτέρω συζήτηση",
-    noAssessmentYet: "Δεν υπάρχουν ακόμη αρκετές αξιολογήσεις.",
     baselineImpactLabel: "Κλιματική επίπτωση",
     baselineContextLabel: "Πλαίσιο",
     baselineVulnerabilities: "Τρωτότητες",
@@ -270,37 +253,6 @@ const T2 = {
     reject: "Απόρριψη",
     suggestionAccepted: "Αποδεκτό",
     suggestionRejected: "Απορρίφθηκε",
-    decisionRationaleTitle: "Αιτιολόγηση απόφασης",
-    basedOn: "Βασίστηκε σε",
-    resultsHidden: "Τα αποτελέσματα θα είναι ορατά όταν ο συντονιστής κλείσει την αξιολόγηση",
-    resultsHiddenCell: "🔒",
-    revealResults: "Αποκάλυψη αποτελεσμάτων",
-    historyActions: {
-      create_case: "Δημιουργία μελέτης περίπτωσης",
-      update_case: "Ενημέρωση μελέτης περίπτωσης",
-      propose_alternative_future: "Πρόταση εναλλακτικού μέλλοντος",
-      rank_alternative_futures: "Ιεράρχηση εναλλακτικών μελλόντων",
-      reply_alternative_future: "Απάντηση σε εναλλακτικό μέλλον",
-      merge_alternative_future: "Συγχώνευση εναλλακτικών μελλόντων",
-      comment_baseline: "Σχόλιο στη βάση αναφοράς",
-      comment_toc: "Σχόλιο στη Θεωρία Αλλαγής",
-      update_step_status: "Αλλαγή κατάστασης δραστηριότητας",
-      publish_shared_vision: "Δημοσίευση Κοινού Οράματος",
-      propose_vision_element: "Πρόταση ιδέας οράματος",
-      reply_vision_element: "Απάντηση σε ιδέα οράματος",
-      merge_vision_element: "Συγχώνευση ιδεών οράματος",
-      update_theory_of_change: "Ενημέρωση Θεωρίας Αλλαγής",
-      propose_adaptation_option: "Πρόταση επιλογής προσαρμογής",
-      reply_adaptation_option: "Απάντηση σε επιλογή προσαρμογής",
-      merge_adaptation_option: "Συγχώνευση επιλογών προσαρμογής",
-      create_pathway: "Δημιουργία διαδρομής",
-      update_pathway: "Ενημέρωση διαδρομής",
-      update_pathway_status: "Αλλαγή κατάστασης διαδρομής",
-      rate_option: "Βαθμολόγηση μέτρου",
-      rate_pathway: "Βαθμολόγηση διαδρομής",
-      comment_pathway: "Σχόλιο σε διαδρομή",
-      combine_pathway: "Σύνθεση προτεινόμενης κατεύθυνσης",
-    },
   },
   en: {
     tabLabel: "Co-creation",
@@ -420,13 +372,6 @@ const T2 = {
     noOptionsSelected: "No measures selected yet.",
     noPathwaysShort: "No pathways proposed yet.",
     pathwayOptionsIncluded: "Includes",
-    markCombined: "Create combined / preferred direction",
-    combineTitle: "Preferred or Combined Pathway Direction",
-    combineSourcesLabel: "Source pathways",
-    directionSummaryLabel: "Direction summary",
-    outcomeEmpty: "No preferred or combined direction has been set yet.",
-    outcomeTrace: "Full decision and contribution history",
-    outcomeTraceEmpty: "No history recorded yet.",
     curatorOnlyNote: "Only the case's coordinator or an admin can do this.",
     close: "Close",
     stepNotStarted: "Not started",
@@ -456,17 +401,7 @@ const T2 = {
     youAgree: "✓ You agree",
     youDisagree: "✓ You disagree",
     mergedSummary: (n) => `Combined with ${n} other contribution${n === 1 ? "" : "s"}`,
-    sharedVisionPublished: "Shared Vision — Published",
-    assessmentSubmitted: "Your assessment has been submitted.",
     measureAssessment: "Measure assessment",
-    calculatedFromMeasures: (n) => `Calculated from ${n} measure${n === 1 ? "" : "s"}`,
-    stakeholderAssessment: "Stakeholder assessment",
-    justificationLabel: "Short justification (optional)",
-    consensusTitle: "Stakeholder consensus & disagreement",
-    strongAlignment: "Strong alignment",
-    mixedViews: "Mixed views",
-    furtherDiscussionNeeded: "Further discussion required",
-    noAssessmentYet: "Not enough assessments yet.",
     baselineImpactLabel: "Climate impact",
     baselineContextLabel: "Context",
     baselineVulnerabilities: "Vulnerabilities",
@@ -485,37 +420,6 @@ const T2 = {
     reject: "Reject",
     suggestionAccepted: "Accepted",
     suggestionRejected: "Rejected",
-    decisionRationaleTitle: "Decision rationale",
-    basedOn: "Based on",
-    resultsHidden: "Results will be visible once the Coordinator closes the assessment",
-    resultsHiddenCell: "🔒",
-    revealResults: "Reveal results",
-    historyActions: {
-      create_case: "Case study created",
-      update_case: "Case study updated",
-      propose_alternative_future: "Alternative future proposed",
-      rank_alternative_futures: "Alternative futures ranked",
-      reply_alternative_future: "Reply to an alternative future",
-      merge_alternative_future: "Alternative futures merged",
-      comment_baseline: "Comment on the baseline",
-      comment_toc: "Comment on the Theory of Change",
-      update_step_status: "Activity status changed",
-      publish_shared_vision: "Shared Vision published",
-      propose_vision_element: "Vision idea proposed",
-      reply_vision_element: "Reply to a vision idea",
-      merge_vision_element: "Vision ideas merged",
-      update_theory_of_change: "Theory of Change updated",
-      propose_adaptation_option: "Adaptation option proposed",
-      reply_adaptation_option: "Reply to an adaptation option",
-      merge_adaptation_option: "Adaptation options merged",
-      create_pathway: "Pathway created",
-      update_pathway: "Pathway updated",
-      update_pathway_status: "Pathway status changed",
-      rate_option: "Measure rated",
-      rate_pathway: "Pathway rated",
-      comment_pathway: "Comment on a pathway",
-      combine_pathway: "Preferred/combined direction synthesised",
-    },
   },
 };
 
@@ -534,18 +438,13 @@ const P3 = {
     timeHorizonShort: "Βραχυπρόθεσμο",
     timeHorizonLong: "Μακροπρόθεσμο",
     timeHorizonFieldLabel: "Χρονικός ορίζοντας",
-    supportAction: "Υποστήριξη",
-    supportedNote: "Η υποστήριξη σημαίνει ότι η επιλογή αξίζει να εξεταστεί — όχι ότι είναι η καλύτερη.",
-    addToShortlist: "Προσθήκη στη βραχεία λίστα",
-    removeFromShortlist: "Αφαίρεση από τη βραχεία λίστα",
-    shortlistedBadge: "Στη βραχεία λίστα",
     moreInformation: "Περισσότερες πληροφορίες",
-    addNewOption: "+ Προσθήκη νέας επιλογής προσαρμογής",
+    addNewOption: "Προσθήκη νέας επιλογής προσαρμογής",
     newOptionModalTitle: "Νέα επιλογή προσαρμογής",
     identifyEmptyTitle: "Δεν έχουν εντοπιστεί ακόμη επιλογές προσαρμογής",
     identifyEmptyDesc: "Καταγράψτε υφιστάμενα μέτρα ή προτείνετε νέα για να ξεκινήσει ο εντοπισμός.",
-    assessEmptyTitle: "Καμία επιλογή δεν έχει προστεθεί ακόμη στη βραχεία λίστα",
-    assessEmptyDesc: "Ο συντονιστής/διαχειριστής προσθέτει επιλογές στη βραχεία λίστα από το βήμα Εντοπισμού για να ξεκινήσει η δομημένη αξιολόγηση.",
+    assessEmptyTitle: "Δεν έχουν προστεθεί ακόμη επιλογές προσαρμογής",
+    assessEmptyDesc: "Προσθέστε επιλογές στο βήμα Εντοπισμού για να ξεκινήσει η δομημένη αξιολόγησή τους.",
     evidenceFromPespka: "Στοιχεία από το ΠΕΣΠΚΑ",
     referenceEvidenceNote: "Τα στοιχεία αναφοράς είναι μόνο για ανάγνωση.",
     pespkaCode: "Κωδικός ΠΕΣΠΚΑ",
@@ -604,7 +503,8 @@ const P3 = {
     },
     formulateStep: "Διαμόρφωση διαδρομών",
     evaluateStep: "Αξιολόγηση διαδρομών",
-    portfolioImageStep: "Χαρτοφυλάκιο παρεμβάσεων",
+    evaluateMatrixTitle: "Πίνακας σύγκρισης",
+    rankingStep: "Κατάταξη διαδρομών",
     formulateQuestion: "Ποιος συνδυασμός παρεμβάσεων θα μπορούσε να λειτουργήσει μαζί για να επιφέρει τις επιθυμητές αλλαγές;",
     evaluateQuestion: "Πόσο ισχυρή είναι κάθε διαδρομή σε σύγκριση με τις υπόλοιπες;",
     riskReductionLabel: "Μείωση κινδύνου",
@@ -615,11 +515,13 @@ const P3 = {
     evaluationSaved: "Η αξιολόγησή σας αποθηκεύτηκε.",
     pathwayRankingTitle: "Αυτόματη κατάταξη διαδρομών",
     noEvaluatedYet: "Καμία διαδρομή δεν έχει αξιολογηθεί ακόμη.",
-    portfolioImageIntro: "Το αποτέλεσμα του εργαστηρίου AFFiNE: μια εικόνα με τις διαδρομές οπτικοποιημένες ως χαρτοφυλάκιο παρεμβάσεων.",
-    portfolioImageEmpty: "Δεν έχει προστεθεί ακόμη εικόνα χαρτοφυλακίου.",
-    uploadPortfolioImage: "Προσθήκη / αντικατάσταση εικόνας",
-    portfolioImageModalTitle: "Εικόνα χαρτοφυλακίου παρεμβάσεων",
-    portfolioImageCaptionLabel: "Λεζάντα",
+    rankingIntro: "Αυτόματη κατάταξη με βάση τις βαθμολογίες από το βήμα «Αξιολόγηση διαδρομών». Ενημερώνεται αυτόματα όταν αλλάζουν οι αξιολογήσεις.",
+    rankingScoreLabel: "Συνολική βαθμολογία",
+    rankingStrengths: "Ισχυρά σημεία",
+    rankingWeaknesses: "Αδυναμίες",
+    rankingTopBadge: "Κορυφαία επιλογή",
+    timeHorizonMedium: "Μεσοπρόθεσμο",
+    pathwayTimelineLabel: "Χρονική διάταξη μέτρων",
     noPathwaysYetForEvaluation: "Δημιουργήστε πρώτα μια διαδρομή στο βήμα «Διαμόρφωση διαδρομών».",
     noPrioritisedOptionsYet: "Δεν υπάρχουν ακόμη ιεραρχημένες επιλογές προσαρμογής — ολοκληρώστε πρώτα το βήμα Αξιολόγησης στο Tab 1.",
   },
@@ -634,18 +536,13 @@ const P3 = {
     timeHorizonShort: "Short-term",
     timeHorizonLong: "Long-term",
     timeHorizonFieldLabel: "Time horizon",
-    supportAction: "Support",
-    supportedNote: "Support means this option is relevant and worth considering — not that it's the best one.",
-    addToShortlist: "Add to shortlist",
-    removeFromShortlist: "Remove from shortlist",
-    shortlistedBadge: "Shortlisted",
     moreInformation: "More information",
-    addNewOption: "+ Add a new adaptation option",
+    addNewOption: "Add a new adaptation option",
     newOptionModalTitle: "New adaptation option",
     identifyEmptyTitle: "No adaptation options identified yet",
     identifyEmptyDesc: "Record existing measures or propose new ones to start identifying options.",
-    assessEmptyTitle: "No options have been shortlisted yet",
-    assessEmptyDesc: "A coordinator/admin shortlists options from the Identify step to start the structured assessment.",
+    assessEmptyTitle: "No adaptation options have been added yet",
+    assessEmptyDesc: "Add options in the Identify step to start their structured assessment.",
     evidenceFromPespka: "Evidence from PESPKA",
     referenceEvidenceNote: "Reference evidence is read-only.",
     pespkaCode: "PESPKA code",
@@ -704,7 +601,8 @@ const P3 = {
     },
     formulateStep: "Formulate Adaptation Pathways",
     evaluateStep: "Evaluate Pathways",
-    portfolioImageStep: "Design portfolio of interventions",
+    evaluateMatrixTitle: "Comparison matrix",
+    rankingStep: "Pathway Ranking",
     formulateQuestion: "Which combination of interventions could work together to deliver the desired changes?",
     evaluateQuestion: "How strong is each pathway compared to the others?",
     riskReductionLabel: "Risk reduction",
@@ -715,11 +613,13 @@ const P3 = {
     evaluationSaved: "Your evaluation was saved.",
     pathwayRankingTitle: "Automatic pathway ranking",
     noEvaluatedYet: "No pathway has been evaluated yet.",
-    portfolioImageIntro: "The AFFiNE workshop's result: an image visualizing the pathways as a portfolio of interventions.",
-    portfolioImageEmpty: "No portfolio image has been added yet.",
-    uploadPortfolioImage: "Add / replace image",
-    portfolioImageModalTitle: "Portfolio of interventions image",
-    portfolioImageCaptionLabel: "Caption",
+    rankingIntro: "Automatic ranking based on the scores from the Evaluate Pathways step. Updates automatically whenever the evaluations change.",
+    rankingScoreLabel: "Overall score",
+    rankingStrengths: "Strengths",
+    rankingWeaknesses: "Weaknesses",
+    rankingTopBadge: "Top-ranked",
+    timeHorizonMedium: "Medium-term",
+    pathwayTimelineLabel: "Timeline of measures",
     noPathwaysYetForEvaluation: "Create a pathway in the Formulate Adaptation Pathways step first.",
     noPrioritisedOptionsYet: "No prioritised adaptation options yet — complete the Assess step in Tab 1 first.",
   },
@@ -1035,20 +935,23 @@ async function renderWorkspace(caseId, pane, lang, options = {}) {
       appendAffineCta(stepBody, lang, "toc");
     }
     else if (activeStep === "options") await renderOptions(stepBody, lang, t, t2, caseId, user, curator);
+    // Design Portfolio of Interventions is exactly the 3 tabs (Formulate /
+    // Evaluate / Ranking) -- the older Compare & Prioritise and Preferred/
+    // Combined Direction sections used to be appended below them
+    // unconditionally, so they showed under all 3 tabs alike. Dropped per
+    // spec; nothing else renders on this step now.
     else if (activeStep === "pathways") {
       await renderPortfolioTab(stepBody, lang, t, t2, caseId, user, curator);
-      await renderCompare(stepBody, lang, t, t2, caseId, curator, { append: true });
-      await renderOutcome(stepBody, lang, t, t2, caseId, curator, { append: true });
       appendAffineCta(stepBody, lang, "pathways");
     }
-    else if (activeStep === "compare") await renderCompare(stepBody, lang, t, t2, caseId, curator);
-    else if (activeStep === "outcome") await renderOutcome(stepBody, lang, t, t2, caseId, curator);
     else if (activeStep === "implementation") renderImplementationPlaceholder(stepBody, lang);
     // Phase 2 keeps the focus on the three co-creation activities and their
     // contribution-level discussions. Its separate generic forum was a
     // second, disconnected discussion surface, so it is intentionally not
-    // rendered here. Phase 1 and Phase 3 retain their own phase forums.
-    if (activePhase !== "phase2") {
+    // rendered here. Phase 3's forum is hidden for now, per request -- it
+    // duplicated the per-option/per-step discussions being built out there.
+    // Only Phase 1 currently shows its own phase forum.
+    if (activePhase === "phase1") {
       stepBody.append(await renderPhaseForum(caseId, activePhase, lang, t, t2));
     }
   } catch (error) {
@@ -1249,7 +1152,6 @@ async function renderFutures(content, lang, t, t2, caseId, user, curator) {
       list.append(
         buildContributionCard(f, lang, t, t2, user, curator, {
           showEditorialMeta: false,
-          showAuthor: false,
           getTitle: (i, l) => (l === "el" ? i.title_el : i.title_en),
           getBody: (i, l) => (l === "el" ? i.description_el : i.description_en),
           allItems: data.items,
@@ -1327,11 +1229,18 @@ function buildReplyRow(reply, t2) {
   return row;
 }
 function buildContributionCard(item, lang, t, t2, user, curator, config) {
-  const card = el("article", "vision-element-card");
+  // Same comment-card look as the Phase 1 Forum (renderPhaseForum) --
+  // author name + role pill + relative time, so every forum/comment/post
+  // surface in the app reads consistently.
+  const card = el("article", "case-phase-forum-comment");
   const showEditorialMeta = config.showEditorialMeta !== false;
   if (item.status === "merged") card.classList.add("vision-element-merged");
-  const head = el("div", "vision-element-head");
-  if (config.showAuthor !== false) head.append(el("span", "vision-element-author", item.author_name));
+  const head = el("div", "contribution-reply-head");
+  if (config.showAuthor !== false) {
+    if (item.author_name) head.append(el("strong", null, item.author_name));
+    if (item.author_role) head.append(el("span", "contribution-reply-role", t2.memberRole[item.author_role] || item.author_role));
+    if (item.created_at) head.append(el("span", "contribution-reply-time", relativeTime(item.created_at, t2)));
+  }
   if (showEditorialMeta && item.group_label) head.append(el("span", "decision-status-pill status-draft", item.group_label));
   if (item.status === "merged") head.append(el("span", "decision-status-pill status-draft", t.mergedInto));
   card.append(head);
@@ -1357,25 +1266,31 @@ function buildContributionCard(item, lang, t, t2, user, curator, config) {
     });
   }
 
-  const actions = el("div", "vision-element-actions");
+  const actions = el("div", "case-phase-forum-actions");
   const replyBtn = el("button", "btn secondary small", `${t.reply} (${item.reply_count})`);
   replyBtn.type = "button";
   if (config.onVote) {
-    const agreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-up", `↑ ${t2.forumUpvote} (${item.agree_count})`);
-    agreeBtn.type = "button";
-    agreeBtn.setAttribute("aria-label", `${t2.forumUpvote} (${item.agree_count})`);
-    const disagreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-down", `↓ ${t2.forumDownvote} (${item.disagree_count})`);
-    disagreeBtn.type = "button";
-    disagreeBtn.setAttribute("aria-label", `${t2.forumDownvote} (${item.disagree_count})`);
-    const vote = (value) => {
-      config.onVote(item.id, value).then(() => {
-        showToast({ type: "success", title: t2.forumVoteUpdated });
-        config.onChanged();
+    const votes = el("div", "case-phase-forum-votes");
+    const buildVoteButton = (value, label, countValue, symbol) => {
+      const button = el("button", `case-phase-forum-vote${item.my_vote === value ? " active" : ""}`);
+      button.type = "button";
+      button.setAttribute("aria-label", `${label} (${countValue})`);
+      button.append(el("span", "case-phase-forum-vote-icon", symbol));
+      button.append(el("span", "case-phase-forum-vote-label", label));
+      button.append(el("strong", null, String(countValue)));
+      button.addEventListener("click", () => {
+        config.onVote(item.id, value).then(() => {
+          showToast({ type: "success", title: t2.forumVoteUpdated });
+          config.onChanged();
+        });
       });
+      return button;
     };
-    agreeBtn.addEventListener("click", () => vote("agree"));
-    disagreeBtn.addEventListener("click", () => vote("disagree"));
-    actions.append(agreeBtn, disagreeBtn);
+    votes.append(
+      buildVoteButton("agree", t2.forumUpvote, item.agree_count, "↑"),
+      buildVoteButton("disagree", t2.forumDownvote, item.disagree_count, "↓")
+    );
+    actions.append(votes);
   }
   // Reply always sits to the right of Disagree, in every action row that
   // has both -- matching the phase-forum's action row.
@@ -1459,12 +1374,13 @@ function buildContributionCard(item, lang, t, t2, user, curator, config) {
     card.append(actions);
   }
 
-  let repliesLoaded = false;
-  const repliesBox = el("div", "vision-element-replies");
-  repliesBox.style.display = "none";
+  // Existing replies are always visible, exactly like the Phase 1 Forum's
+  // comment threads -- only the compose form is toggled by Reply, not the
+  // replies that are already there.
+  const repliesBox = el("div", "case-phase-forum-replies");
   const replyForm = document.createElement("form");
   replyForm.className = "vision-element-reply-form";
-  replyForm.style.display = "none";
+  replyForm.hidden = true;
   const replyInput = document.createElement("input");
   replyInput.placeholder = t.replyPlaceholder;
   const sendBtn = el("button", "btn primary small", t.send);
@@ -1472,31 +1388,19 @@ function buildContributionCard(item, lang, t, t2, user, curator, config) {
   replyForm.append(replyInput, sendBtn);
   card.append(repliesBox, replyForm);
 
-  // One loader used by both the toggle and the submit handler, so posting a
-  // reply refreshes the thread in place instead of the old double-click
-  // toggle hack -- which collapsed the panel and hid the very comment the
-  // user had just written.
   const loadReplies = async () => {
     const data = await config.getReplies(item.id);
     repliesBox.innerHTML = "";
     data.items.forEach((r) => repliesBox.append(buildReplyRow(r, t2)));
-    repliesLoaded = true;
     replyBtn.textContent = `${t.reply} (${data.items.length})`;
     return data.items.length;
   };
+  loadReplies();
 
-  const setThreadOpen = (open) => {
-    repliesBox.style.display = open ? "" : "none";
-    replyForm.style.display = open ? "" : "none";
-    card.classList.toggle("contribution-thread-open", open);
-    replyBtn.setAttribute("aria-expanded", String(open));
-  };
-  setThreadOpen(false);
-
-  replyBtn.addEventListener("click", async () => {
-    const show = repliesBox.style.display === "none";
-    setThreadOpen(show);
-    if (show && !repliesLoaded) await loadReplies();
+  replyBtn.addEventListener("click", () => {
+    replyForm.hidden = !replyForm.hidden;
+    card.classList.toggle("contribution-thread-open", !replyForm.hidden);
+    if (!replyForm.hidden) replyInput.focus();
   });
   replyForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1505,8 +1409,6 @@ function buildContributionCard(item, lang, t, t2, user, curator, config) {
     try {
       await config.onReply(item.id, body);
       replyInput.value = "";
-      // Keep the thread open and show the new comment straight away.
-      setThreadOpen(true);
       await loadReplies();
       showToast({ type: "success", title: t2.commentPosted });
     } catch (error) {
@@ -1567,7 +1469,6 @@ async function renderVision(content, lang, t, t2, caseId, user, curator) {
       list.append(
         buildContributionCard(ve, lang, t, t2, user, curator, {
           showEditorialMeta: false,
-          showAuthor: false,
           getTitle: (i, l) => (l === "el" ? i.title_el : i.title_en) || null,
           getBody: (i, l) => (l === "el" ? i.description_el : i.description_en) || i.body,
           allItems: data.items,
@@ -1693,16 +1594,11 @@ function buildTocDiscussion(toc, lang, t, t2, caseId, onChanged) {
   head.append(el("h3", null, t2.tocDiscussionTitle));
   wrap.append(head);
 
-  const actions = el("div", "vision-element-actions");
-  const replyBtn = el("button", "btn secondary small", `${t.reply} (${toc.reply_count})`);
-  replyBtn.type = "button";
-  const agreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-up", `↑ ${t2.forumUpvote} (${toc.agree_count})`);
-  agreeBtn.type = "button";
-  const disagreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-down", `↓ ${t2.forumDownvote} (${toc.disagree_count})`);
-  disagreeBtn.type = "button";
-  actions.append(replyBtn, agreeBtn, disagreeBtn);
-  wrap.append(actions);
-
+  // Same vote/reply action-row markup as the Phase 1 Forum
+  // (renderPhaseForum) -- icon/label/count pill buttons, Reply to the
+  // right of Disagree.
+  const actions = el("div", "case-phase-forum-actions");
+  const votes = el("div", "case-phase-forum-votes");
   const vote = async (value) => {
     try {
       await api(`/cases/${encodeURIComponent(caseId)}/theory-of-change/vote`, { method: "POST", body: JSON.stringify({ value }) });
@@ -1712,14 +1608,32 @@ function buildTocDiscussion(toc, lang, t, t2, caseId, onChanged) {
       showToast({ type: "error", title: t.createdError, message: error.message });
     }
   };
-  agreeBtn.addEventListener("click", () => vote("agree"));
-  disagreeBtn.addEventListener("click", () => vote("disagree"));
+  const buildVoteButton = (value, label, countValue, symbol) => {
+    const button = el("button", `case-phase-forum-vote${toc.my_vote === value ? " active" : ""}`);
+    button.type = "button";
+    button.setAttribute("aria-label", `${label} (${countValue})`);
+    button.append(el("span", "case-phase-forum-vote-icon", symbol));
+    button.append(el("span", "case-phase-forum-vote-label", label));
+    button.append(el("strong", null, String(countValue)));
+    button.addEventListener("click", () => vote(value));
+    return button;
+  };
+  votes.append(
+    buildVoteButton("agree", t2.forumUpvote, toc.agree_count, "↑"),
+    buildVoteButton("disagree", t2.forumDownvote, toc.disagree_count, "↓")
+  );
+  const replyBtn = el("button", "btn secondary small", `${t.reply} (${toc.reply_count})`);
+  replyBtn.type = "button";
+  actions.append(votes, replyBtn);
+  wrap.append(actions);
 
-  const repliesBox = el("div", "vision-element-replies");
-  repliesBox.style.display = "none";
+  // Existing replies are always visible, exactly like the Phase 1 Forum's
+  // comment threads -- only the compose form is toggled by Reply, not the
+  // replies that are already there.
+  const repliesBox = el("div", "case-phase-forum-replies");
   const replyForm = document.createElement("form");
   replyForm.className = "vision-element-reply-form";
-  replyForm.style.display = "none";
+  replyForm.hidden = true;
   const replyInput = document.createElement("input");
   replyInput.placeholder = t2.forumReplyPlaceholder;
   const replySubmit = el("button", "btn primary small", t.send);
@@ -1731,15 +1645,9 @@ function buildTocDiscussion(toc, lang, t, t2, caseId, onChanged) {
     repliesBox.innerHTML = "";
     data.items.forEach((reply) => repliesBox.append(buildReplyRow(reply, t2)));
   };
-  let loaded = false;
-  replyBtn.addEventListener("click", async () => {
-    const show = repliesBox.style.display === "none";
-    repliesBox.style.display = show ? "" : "none";
-    replyForm.style.display = show ? "" : "none";
-    if (show && !loaded) {
-      await loadReplies();
-      loaded = true;
-    }
+  replyBtn.addEventListener("click", () => {
+    replyForm.hidden = !replyForm.hidden;
+    if (!replyForm.hidden) replyInput.focus();
   });
   replyForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1750,7 +1658,6 @@ function buildTocDiscussion(toc, lang, t, t2, caseId, onChanged) {
       replyInput.value = "";
       showToast({ type: "success", title: t2.commentPosted });
       await loadReplies();
-      loaded = true;
       await onChanged();
     } catch (error) {
       showToast({ type: "error", title: t.createdError, message: error.message });
@@ -1758,6 +1665,7 @@ function buildTocDiscussion(toc, lang, t, t2, caseId, onChanged) {
   });
 
   wrap.append(repliesBox, replyForm);
+  loadReplies();
   return wrap;
 }
 
@@ -2263,7 +2171,6 @@ function buildIdentifyOptionCard(option, lang, t, t2, p3, caseId, curator, onCha
   if (option.time_horizon) {
     head.append(el("span", "decision-status-pill status-draft", option.time_horizon === "short" ? p3.timeHorizonShort : p3.timeHorizonLong));
   }
-  if (option.shortlisted) head.append(el("span", "decision-status-pill status-validated", p3.shortlistedBadge));
   card.append(head);
   card.append(el("h4", null, lang === "el" ? option.title_el : option.title_en));
   const body = lang === "el" ? option.description_el : option.description_en;
@@ -2273,38 +2180,27 @@ function buildIdentifyOptionCard(option, lang, t, t2, p3, caseId, curator, onCha
   }
 
   const actions = el("div", "vision-element-actions");
-  const supportBtn = el(
-    "button",
-    `btn secondary small contribution-vote${option.my_support ? " active" : ""}`,
-    `${p3.supportAction} (${option.support_count})`
-  );
-  supportBtn.type = "button";
-  supportBtn.title = p3.supportedNote;
-  supportBtn.addEventListener("click", async () => {
-    await api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}/support`, { method: "POST" });
-    onChanged();
-  });
-  const replyBtn = el("button", "btn secondary small", `${t.reply} (${option.reply_count})`);
-  replyBtn.type = "button";
-  actions.append(supportBtn, replyBtn);
-  const infoBtn = el("button", "btn secondary small", p3.moreInformation);
-  infoBtn.type = "button";
-  infoBtn.addEventListener("click", () => document.body.append(buildOptionInfoModal(option, lang, t, t2, p3)));
-  actions.append(infoBtn);
-  card.append(actions);
-
-  if (curator) {
-    const shortlistBtn = el("button", "btn secondary small", option.shortlisted ? p3.removeFromShortlist : p3.addToShortlist);
-    shortlistBtn.type = "button";
-    shortlistBtn.addEventListener("click", async () => {
-      await api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}`, {
-        method: "PATCH",
-        body: JSON.stringify({ shortlisted: !option.shortlisted }),
-      });
+  const agreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-up", `↑ ${t2.forumUpvote} (${option.agree_count})`);
+  agreeBtn.type = "button";
+  agreeBtn.setAttribute("aria-label", `${t2.forumUpvote} (${option.agree_count})`);
+  const disagreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-down", `↓ ${t2.forumDownvote} (${option.disagree_count})`);
+  disagreeBtn.type = "button";
+  disagreeBtn.setAttribute("aria-label", `${t2.forumDownvote} (${option.disagree_count})`);
+  const vote = (value) => {
+    api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}/vote`, {
+      method: "POST",
+      body: JSON.stringify({ value }),
+    }).then(() => {
+      showToast({ type: "success", title: t2.forumVoteUpdated });
       onChanged();
     });
-    card.append(shortlistBtn);
-  }
+  };
+  agreeBtn.addEventListener("click", () => vote("agree"));
+  disagreeBtn.addEventListener("click", () => vote("disagree"));
+  const replyBtn = el("button", "btn secondary small", `${t.reply} (${option.reply_count})`);
+  replyBtn.type = "button";
+  actions.append(agreeBtn, disagreeBtn, replyBtn);
+  card.append(actions);
 
   // Reply always sits to the right of the other actions here, same as
   // elsewhere -- a lightweight discussion thread, not the structured
@@ -2387,7 +2283,29 @@ async function renderIdentifyOptions(content, lang, t, t2, p3, caseId, user, cur
   await reload();
 }
 
-function buildAssessmentForm(option, lang, t2, p3, onSubmit) {
+// Structured-assessment/evaluation forms open in a popup, same modal shell
+// as every other create/edit form in the app -- an inline expansion here
+// pushed the card's own discussion thread further down the page every time.
+function openFormModal(title, buildForm) {
+  const overlay = document.createElement("div");
+  overlay.className = "modal-backdrop systems-explorer-modal-backdrop";
+  overlay.setAttribute("data-no-localize", "true");
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  const card = document.createElement("div");
+  card.className = "modal-card option-assessment-modal";
+  card.append(el("h2", null, title));
+  const close = () => overlay.remove();
+  card.append(buildForm(close));
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) close();
+  });
+  overlay.append(card);
+  document.body.append(overlay);
+  return close;
+}
+
+function buildAssessmentForm(option, lang, t, t2, p3, onSubmit, onCancel) {
   const form = document.createElement("form");
   form.className = "option-assessment-form";
   const criteria = [
@@ -2436,9 +2354,14 @@ function buildAssessmentForm(option, lang, t2, p3, onSubmit) {
   commentWrap.append(commentInput);
   form.append(commentWrap);
 
-  const submitBtn = el("button", "btn primary small", p3.submitAssessment);
+  const actions = el("div", "modal-actions");
+  const cancelBtn = el("button", "btn secondary", t.cancel);
+  cancelBtn.type = "button";
+  cancelBtn.addEventListener("click", () => onCancel?.());
+  const submitBtn = el("button", "btn primary", p3.submitAssessment);
   submitBtn.type = "submit";
-  form.append(submitBtn);
+  actions.append(cancelBtn, submitBtn);
+  form.append(actions);
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -2464,12 +2387,11 @@ function buildAssessmentForm(option, lang, t2, p3, onSubmit) {
 
 function buildAssessOptionCard(option, lang, t, t2, p3, caseId, onChanged) {
   const card = el("article", "vision-element-card option-card");
-  const head = el("div", "vision-element-head");
-  head.append(el("span", "decision-status-pill status-validated", p3.shortlistedBadge));
   if (option.time_horizon) {
+    const head = el("div", "vision-element-head");
     head.append(el("span", "decision-status-pill status-draft", option.time_horizon === "short" ? p3.timeHorizonShort : p3.timeHorizonLong));
+    card.append(head);
   }
-  card.append(head);
   card.append(el("h4", null, lang === "el" ? option.title_el : option.title_en));
 
   const infoBtn = el("button", "btn secondary small", p3.moreInformation);
@@ -2498,21 +2420,93 @@ function buildAssessOptionCard(option, lang, t, t2, p3, caseId, onChanged) {
     card.append(wrap);
   }
 
-  const formDetails = document.createElement("details");
-  formDetails.className = "option-assessment-details";
-  const summary = document.createElement("summary");
-  summary.textContent = option.my_assessment ? p3.yourAssessment : p3.submitAssessment;
-  formDetails.append(summary);
-  formDetails.append(
-    buildAssessmentForm(option, lang, t2, p3, async (payload) => {
-      await api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}/assessments`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+  const toggleBtn = el("button", `btn ${option.my_assessment ? "secondary" : "primary"} small option-assessment-toggle`, option.my_assessment ? p3.yourAssessment : p3.submitAssessment);
+  toggleBtn.type = "button";
+  toggleBtn.addEventListener("click", () => {
+    openFormModal(option.my_assessment ? p3.yourAssessment : p3.submitAssessment, (close) =>
+      buildAssessmentForm(
+        option,
+        lang,
+        t,
+        t2,
+        p3,
+        async (payload) => {
+          await api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}/assessments`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          close();
+          onChanged();
+        },
+        close
+      )
+    );
+  });
+  card.append(toggleBtn);
+
+  // Same lightweight discussion thread as the Identify card -- agree/
+  // disagree plus replies, kept separate from the structured assessment.
+  const actions = el("div", "vision-element-actions");
+  const agreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-up", `↑ ${t2.forumUpvote} (${option.agree_count})`);
+  agreeBtn.type = "button";
+  agreeBtn.setAttribute("aria-label", `${t2.forumUpvote} (${option.agree_count})`);
+  const disagreeBtn = el("button", "btn secondary small contribution-vote contribution-vote-down", `↓ ${t2.forumDownvote} (${option.disagree_count})`);
+  disagreeBtn.type = "button";
+  disagreeBtn.setAttribute("aria-label", `${t2.forumDownvote} (${option.disagree_count})`);
+  const vote = (value) => {
+    api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}/vote`, {
+      method: "POST",
+      body: JSON.stringify({ value }),
+    }).then(() => {
+      showToast({ type: "success", title: t2.forumVoteUpdated });
       onChanged();
-    })
-  );
-  card.append(formDetails);
+    });
+  };
+  agreeBtn.addEventListener("click", () => vote("agree"));
+  disagreeBtn.addEventListener("click", () => vote("disagree"));
+  const replyBtn = el("button", "btn secondary small", `${t.reply} (${option.reply_count})`);
+  replyBtn.type = "button";
+  actions.append(agreeBtn, disagreeBtn, replyBtn);
+  card.append(actions);
+
+  const repliesBox = el("div", "case-phase-forum-replies");
+  const replyForm = document.createElement("form");
+  replyForm.className = "vision-element-reply-form";
+  replyForm.hidden = true;
+  const replyInput = document.createElement("input");
+  replyInput.placeholder = t2.forumReplyPlaceholder;
+  const replySubmit = el("button", "btn primary small", t.send);
+  replySubmit.type = "submit";
+  replyForm.append(replyInput, replySubmit);
+  const loadReplies = async () => {
+    const data = await api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}/replies`);
+    repliesBox.innerHTML = "";
+    data.items.forEach((reply) => repliesBox.append(buildReplyRow(reply, t2)));
+  };
+  loadReplies();
+  replyBtn.addEventListener("click", () => {
+    replyForm.hidden = !replyForm.hidden;
+    if (!replyForm.hidden) replyInput.focus();
+  });
+  replyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const body = replyInput.value.trim();
+    if (!body) return;
+    try {
+      await api(`/cases/${encodeURIComponent(caseId)}/options/${encodeURIComponent(option.id)}/replies`, {
+        method: "POST",
+        body: JSON.stringify({ body }),
+      });
+      replyInput.value = "";
+      showToast({ type: "success", title: t2.commentPosted });
+      await loadReplies();
+      onChanged();
+    } catch (error) {
+      showToast({ type: "error", title: t.createdError, message: error.message });
+    }
+  });
+  card.append(repliesBox, replyForm);
+
   return card;
 }
 
@@ -2563,15 +2557,15 @@ async function renderAssessOptions(content, lang, t, t2, p3, caseId) {
 
   const reload = async () => {
     const data = await api(`/cases/${encodeURIComponent(caseId)}/options`);
-    const shortlisted = data.items.filter((option) => option.shortlisted);
+    const items = data.items;
     list.innerHTML = "";
-    if (!shortlisted.length) {
+    if (!items.length) {
       list.append(buildEmptyState(t, { icon: "layers", title: p3.assessEmptyTitle, description: p3.assessEmptyDesc }));
     } else {
-      shortlisted.forEach((option) => list.append(buildAssessOptionCard(option, lang, t, t2, p3, caseId, reload)));
+      items.forEach((option) => list.append(buildAssessOptionCard(option, lang, t, t2, p3, caseId, reload)));
     }
 
-    const assessed = shortlisted.filter((option) => option.assessment_count > 0).sort((a, b) => b.priority_score - a.priority_score);
+    const assessed = items.filter((option) => option.assessment_count > 0).sort((a, b) => b.priority_score - a.priority_score);
     priorityList.innerHTML = "";
     if (!assessed.length) {
       priorityList.append(el("p", "systems-explorer-empty", p3.noAssessedYet));
@@ -2618,6 +2612,39 @@ async function renderOptions(content, lang, t, t2, caseId, user, curator) {
 // Step 6: Alternative Pathways, assembled from Adaptation Options
 // ---------------------------------------------------------------------------
 
+// A Short -> Medium -> Long-term read of a pathway's included measures.
+// Bucketing is derived from each measure's own time_horizon (set back in
+// Identify), not stored on the pathway itself.
+function buildPathwayTimeline(options, lang, t2) {
+  const p3 = P3[lang];
+  const columns = [
+    ["short", t2.timeHorizonShort],
+    ["medium", t2.timeHorizonMedium],
+    ["long", t2.timeHorizonLong],
+  ];
+  const bucketOf = (o) => (o.time_horizon === "short" ? "short" : o.time_horizon === "long" ? "long" : "medium");
+  const timeline = el("div", "pathway-timeline");
+  columns.forEach(([bucket, label]) => {
+    const col = el("div", "pathway-timeline-column");
+    col.append(el("span", "pathway-timeline-label", label));
+    const chips = el("div", "pathway-timeline-chips");
+    const inBucket = options.filter((o) => bucketOf(o) === bucket);
+    if (!inBucket.length) {
+      chips.append(el("span", "pathway-timeline-empty", "–"));
+    } else {
+      inBucket.forEach((o) => {
+        const chip = el("span", "pathway-timeline-chip");
+        if (o.category) chip.append(el("span", "pathway-timeline-chip-category", p3.categories[o.category] || o.category));
+        chip.append(document.createTextNode(lang === "el" ? o.title_el : o.title_en));
+        chips.append(chip);
+      });
+    }
+    col.append(chips);
+    timeline.append(col);
+  });
+  return timeline;
+}
+
 // Formulate Adaptation Pathways (Design Portfolio of Interventions, sub-tab
 // 1): the methodology doc's ask for this card is deliberately small --
 // title, the prioritised measures it's built from, an optional image. The
@@ -2634,33 +2661,16 @@ function buildPathwayCard(p, lang, t, t2, caseId, curator, { onChanged, onEdit }
   const desc = lang === "el" ? p.short_description_el : p.short_description_en;
   if (desc) card.append(el("p", "challenge-card-desc", desc));
   if (p.time_horizon) card.append(el("p", "systems-explorer-empty-inline", `${t2.timeHorizonLabel}: ${p.time_horizon}`));
-  // A pathway is a SEQUENCE, not a set -- render the measures in their
-  // stored sort_order as numbered steps so the ordering is visible. Where a
-  // measure was tagged with a Portfolio category, group by that category
-  // first (spec: "combination of complementary interventions", not one
-  // flat list) -- uncategorised measures fall back to the plain sequence.
+  // A pathway is a SEQUENCE of measures, but the methodology asks for a
+  // visual read of WHEN each one lands, not just a numbered list -- so the
+  // included measures are laid out on a Short/Medium/Long-term timeline.
+  // Each measure carries its own short/long time_horizon from the Identify
+  // step; one with neither tag falls into the medium-term middle column
+  // (the model has no explicit "medium" tag of its own). The Portfolio
+  // category (if any) still shows on each chip.
   if (p.options.length) {
     card.append(el("p", "pathway-section-label", t2.pathwayOptionsIncluded));
-    const p3 = P3[lang];
-    const byCategory = {};
-    const uncategorised = [];
-    p.options.forEach((o) => {
-      if (o.category) (byCategory[o.category] ||= []).push(o);
-      else uncategorised.push(o);
-    });
-    Object.entries(byCategory).forEach(([category, options]) => {
-      const group = el("div", "pathway-category-group");
-      group.append(el("span", "pathway-category-label", p3.categories[category] || category));
-      const seq = el("ol", "pathway-sequence-readout");
-      options.forEach((o) => seq.append(el("li", null, lang === "el" ? o.title_el : o.title_en)));
-      group.append(seq);
-      card.append(group);
-    });
-    if (uncategorised.length) {
-      const seq = el("ol", "pathway-sequence-readout");
-      uncategorised.forEach((o) => seq.append(el("li", null, lang === "el" ? o.title_el : o.title_en)));
-      card.append(seq);
-    }
+    card.append(buildPathwayTimeline(p.options, lang, t2));
   }
 
   if (p.image_url) {
@@ -2674,11 +2684,14 @@ function buildPathwayCard(p, lang, t, t2, caseId, curator, { onChanged, onEdit }
     card.append(figure);
   }
 
+  // One compact action row -- Edit, preferred-direction, Comments -- instead
+  // of each button stacking full-width down the card.
+  const actions = el("div", "vision-element-actions");
   if (onEdit) {
     const editBtn = el("button", "btn secondary small", t2.editPathway);
     editBtn.type = "button";
     editBtn.addEventListener("click", () => onEdit(p));
-    card.append(editBtn);
+    actions.append(editBtn);
   }
   if (curator && p.status !== "preferred" && p.status !== "combined") {
     const markBtn = el("button", "btn secondary small", t.markPreferred);
@@ -2691,14 +2704,16 @@ function buildPathwayCard(p, lang, t, t2, caseId, curator, { onChanged, onEdit }
         showToast({ type: "error", title: t.createdError, message: error.message });
       }
     });
-    card.append(markBtn);
+    actions.append(markBtn);
   }
-  if (p.status === "preferred" || p.status === "combined") card.append(el("span", "decision-status-pill status-draft", t.preferredBadge));
+  if (p.status === "preferred" || p.status === "combined") actions.append(el("span", "decision-status-pill status-draft", t.preferredBadge));
 
   // Stakeholder discussion per pathway -- "comment on individual
   // interventions, comment on the overall pathway" (spec).
   const commentsToggle = el("button", "btn secondary small", t.comments);
   commentsToggle.type = "button";
+  actions.append(commentsToggle);
+  card.append(actions);
   const commentsBox = el("div", "vision-element-replies");
   commentsBox.style.display = "none";
   const commentForm = document.createElement("form");
@@ -2709,7 +2724,7 @@ function buildPathwayCard(p, lang, t, t2, caseId, curator, { onChanged, onEdit }
   const commentSendBtn = el("button", "btn primary small", t.send);
   commentSendBtn.type = "submit";
   commentForm.append(commentInput, commentSendBtn);
-  card.append(commentsToggle, commentsBox, commentForm);
+  card.append(commentsBox, commentForm);
 
   let commentsLoaded = false;
   const loadComments = async () => {
@@ -2760,14 +2775,14 @@ async function renderPathways(content, lang, t, t2, caseId, curator) {
 
   // "The tool takes the prioritised options from Tab 1 -- also based on the
   // earlier prioritisation feature." Two things can mark an option
-  // prioritised: it went through the current Identify/Assess flow
-  // (shortlisted + assessed, ranked by score), or it carries the earlier
-  // "ready for pathway" flag from before that flow existed. Either way, the
-  // picker offers only prioritised options -- never every identified one --
-  // so nothing here needs the measure re-typed.
+  // prioritised: it went through the current Identify/Assess flow (assessed,
+  // ranked by score), or it carries the earlier "ready for pathway" flag from
+  // before that flow existed. Either way, the picker offers only prioritised
+  // options -- never every identified one -- so nothing here needs the
+  // measure re-typed.
   const [optionsData] = await Promise.all([api(`/cases/${encodeURIComponent(caseId)}/options`)]);
   const assessedOptions = optionsData.items
-    .filter((o) => o.shortlisted && o.assessment_count > 0)
+    .filter((o) => o.assessment_count > 0)
     .sort((a, b) => b.priority_score - a.priority_score);
   const legacyReadyOptions = optionsData.items.filter(
     (o) => o.ready_for_pathway && !assessedOptions.some((a) => a.id === o.id)
@@ -2899,8 +2914,8 @@ async function renderPathways(content, lang, t, t2, caseId, curator) {
     };
 
     // Editing a pathway whose measure later dropped off the prioritised
-    // list (un-shortlisted, say) must still show it as already selected,
-    // rather than silently vanish from the picker.
+    // list must still show it as already selected, rather than silently
+    // vanish from the picker.
     const pickerOptions = [
       ...prioritisedOptions,
       ...optionsData.items.filter((o) => sequence.includes(o.id) && !prioritisedOptions.some((p) => p.id === o.id)),
@@ -3018,7 +3033,7 @@ const PATHWAY_EVALUATION_ROWS = [
   ["flexibility", "flexibility", (p3) => p3.flexibilityLabel],
 ];
 
-function buildPathwayEvaluationForm(pathway, p3, onSubmit) {
+function buildPathwayEvaluationForm(pathway, t, p3, onSubmit, onCancel) {
   const form = document.createElement("form");
   form.className = "option-assessment-form";
   const selects = {};
@@ -3038,9 +3053,14 @@ function buildPathwayEvaluationForm(pathway, p3, onSubmit) {
     form.append(wrap);
     selects[key] = select;
   });
-  const submitBtn = el("button", "btn primary small", p3.submitEvaluation);
+  const actions = el("div", "modal-actions");
+  const cancelBtn = el("button", "btn secondary", t.cancel);
+  cancelBtn.type = "button";
+  cancelBtn.addEventListener("click", () => onCancel?.());
+  const submitBtn = el("button", "btn primary", p3.submitEvaluation);
   submitBtn.type = "submit";
-  form.append(submitBtn);
+  actions.append(cancelBtn, submitBtn);
+  form.append(actions);
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     submitBtn.disabled = true;
@@ -3072,6 +3092,8 @@ async function renderEvaluatePathways(content, lang, t, t2, caseId) {
       return;
     }
 
+    const matrixSection = el("section", "systems-explorer-panel evaluate-matrix-panel");
+    matrixSection.append(el("h3", null, p3.evaluateMatrixTitle));
     const wrapper = document.createElement("div");
     wrapper.className = "systems-explorer-table-wrapper";
     const table = document.createElement("table");
@@ -3095,49 +3117,42 @@ async function renderEvaluatePathways(content, lang, t, t2, caseId) {
       pathways.forEach((p) => {
         const td = document.createElement("td");
         const value = p.collective_evaluation?.[col];
-        td.textContent = value ? levelLabel(p3, value) : "–";
+        td.append(el("span", `evaluate-matrix-value${value ? ` evaluate-matrix-value-${value}` : ""}`, value ? levelLabel(p3, value) : "–"));
         tr.append(td);
       });
       tbody.append(tr);
     });
     table.append(tbody);
     wrapper.append(table);
-    body.append(wrapper);
+    matrixSection.append(wrapper);
+    body.append(matrixSection);
 
-    const rankingSection = el("section", "systems-explorer-panel");
-    rankingSection.append(el("h3", null, p3.pathwayRankingTitle));
-    const evaluated = pathways.filter((p) => p.evaluation_count > 0).sort((a, b) => b.evaluation_score - a.evaluation_score);
-    if (!evaluated.length) {
-      rankingSection.append(el("p", "systems-explorer-empty", p3.noEvaluatedYet));
-    } else {
-      const list = el("ol", "option-priority-list");
-      evaluated.forEach((p, index) => {
-        const row = el("li", "option-priority-row");
-        row.append(el("strong", null, `${index + 1}. ${lang === "el" ? p.title_el : p.title_en}`));
-        row.append(el("p", "systems-explorer-empty-inline", p3.pathwayEvaluationCount(p.evaluation_count)));
-        list.append(row);
-      });
-      rankingSection.append(list);
-    }
-    body.append(rankingSection);
-
+    // The automatic ranking itself now lives in its own tab (Pathway
+    // Ranking), which reads this same evaluation data -- this tab stays
+    // focused on entering and reading the matrix.
     const formsSection = el("section", "systems-explorer-panel");
     formsSection.append(el("h3", null, p3.evaluateStep));
     pathways.forEach((p) => {
       const card = el("article", "vision-element-card option-card");
       card.append(el("h4", null, lang === "el" ? p.title_el : p.title_en));
-      const details = document.createElement("details");
-      details.className = "option-assessment-details";
-      const summary = document.createElement("summary");
-      summary.textContent = p.my_evaluation ? p3.yourAssessment : p3.submitEvaluation;
-      details.append(summary);
-      details.append(
-        buildPathwayEvaluationForm(p, p3, async (payload) => {
-          await api(`/pathways/${encodeURIComponent(p.id)}/evaluations`, { method: "POST", body: JSON.stringify(payload) });
-          await reload();
-        })
-      );
-      card.append(details);
+      const toggleBtn = el("button", `btn ${p.my_evaluation ? "secondary" : "primary"} small option-assessment-toggle`, p.my_evaluation ? p3.yourAssessment : p3.submitEvaluation);
+      toggleBtn.type = "button";
+      toggleBtn.addEventListener("click", () => {
+        openFormModal(p.my_evaluation ? p3.yourAssessment : p3.submitEvaluation, (close) =>
+          buildPathwayEvaluationForm(
+            p,
+            t,
+            p3,
+            async (payload) => {
+              await api(`/pathways/${encodeURIComponent(p.id)}/evaluations`, { method: "POST", body: JSON.stringify(payload) });
+              close();
+              await reload();
+            },
+            close
+          )
+        );
+      });
+      card.append(toggleBtn);
       formsSection.append(card);
     });
     body.append(formsSection);
@@ -3145,114 +3160,69 @@ async function renderEvaluatePathways(content, lang, t, t2, caseId) {
   await reload();
 }
 
-// "Design portfolio of interventions" -- Design Portfolio of Interventions,
-// sub-tab 3. One AFFiNE-produced image per case, visualizing how its
-// pathways combine -- curator-uploaded, same shape as the Theory of Change
-// image.
-function buildPortfolioImageForm(lang, t, t2, p3, existing, onSubmit) {
-  const overlay = document.createElement("div");
-  overlay.className = "modal-backdrop systems-explorer-modal-backdrop";
-  overlay.setAttribute("data-no-localize", "true");
-  overlay.setAttribute("role", "dialog");
-  overlay.setAttribute("aria-modal", "true");
-  const card = document.createElement("form");
-  card.className = "modal-card";
-  card.append(el("h2", null, p3.portfolioImageModalTitle));
-  if (existing?.image_url) {
-    const preview = document.createElement("img");
-    preview.className = "case-toc-image-preview";
-    preview.src = existing.image_url;
-    preview.alt = "";
-    card.append(preview);
-  }
-  const fileLabel = document.createElement("label");
-  fileLabel.className = "systems-explorer-field";
-  fileLabel.append(t2.tocImageLabel);
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileLabel.append(fileInput);
-  card.append(fileLabel);
-  const captionField = buildTextField(p3.portfolioImageCaptionLabel, "caption", {
-    value: (lang === "el" ? existing?.caption_el : existing?.caption_en) || "",
-  });
-  card.append(captionField.wrapper);
+// "Pathway Ranking" -- Design Portfolio of Interventions, sub-tab 3. Reads
+// the same evaluation data as the Evaluate Pathways matrix and turns each
+// pathway's transparent score (High=3/Medium=2/Low=1, summed across the six
+// criteria, max 18) into a percentage, an ordered ranking, and a
+// strengths/weaknesses read-out -- refreshed every time this tab renders, so
+// it always reflects the latest evaluations.
+const PATHWAY_EVALUATION_MAX_SCORE = PATHWAY_EVALUATION_ROWS.length * 3;
 
-  const actions = document.createElement("div");
-  actions.className = "modal-actions";
-  const cancelBtn = el("button", "btn secondary", t.cancel);
-  cancelBtn.type = "button";
-  const submitBtn = el("button", "btn primary", t.save);
-  submitBtn.type = "submit";
-  actions.append(cancelBtn, submitBtn);
-  card.append(actions);
-  const close = () => overlay.remove();
-  cancelBtn.addEventListener("click", close);
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) close();
-  });
-  card.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    submitBtn.disabled = true;
-    try {
-      if (!fileInput.files[0] && !existing?.image_key) throw new Error(p3.portfolioImageEmpty);
-      const payload = { imageKey: fileInput.files[0] ? await uploadImageFile(fileInput.files[0]) : existing.image_key };
-      payload[lang === "el" ? "captionEl" : "captionEn"] = captionField.input.value.trim();
-      await onSubmit(payload);
-      close();
-    } catch (error) {
-      showToast({ type: "error", title: t.createdError, message: error.message });
-      submitBtn.disabled = false;
+function buildPathwayRankingRow(p, lang, p3, rank, isTop) {
+  const percentage = Math.round((p.evaluation_score / PATHWAY_EVALUATION_MAX_SCORE) * 100);
+  const row = el("article", `option-priority-row pathway-ranking-row${isTop ? " pathway-ranking-row-top" : ""}`);
+  const head = el("div", "pathway-ranking-head");
+  head.append(el("strong", null, `${rank}. ${lang === "el" ? p.title_el : p.title_en}`));
+  if (isTop) head.append(el("span", "decision-status-pill status-validated", p3.rankingTopBadge));
+  head.append(el("span", "pathway-ranking-score", `${percentage}%`));
+  row.append(head);
+
+  const barTrack = el("div", "pathway-ranking-bar-track");
+  const bar = el("div", "pathway-ranking-bar");
+  bar.style.width = `${percentage}%`;
+  barTrack.append(bar);
+  row.append(barTrack);
+
+  const c = p.collective_evaluation;
+  if (c) {
+    const strengths = PATHWAY_EVALUATION_ROWS.filter(([, col]) => c[col] === "high").map(([, , labelFn]) => labelFn(p3));
+    const weaknesses = PATHWAY_EVALUATION_ROWS.filter(([, col]) => c[col] === "low").map(([, , labelFn]) => labelFn(p3));
+    if (strengths.length) {
+      const line = el("p", "systems-explorer-empty-inline pathway-ranking-strengths");
+      line.innerHTML = `<b></b> `;
+      line.querySelector("b").textContent = `${p3.rankingStrengths}: `;
+      line.append(document.createTextNode(strengths.join(", ")));
+      row.append(line);
     }
-  });
-  overlay.append(card);
-  document.body.append(overlay);
+    if (weaknesses.length) {
+      const line = el("p", "systems-explorer-empty-inline pathway-ranking-weaknesses");
+      line.innerHTML = `<b></b> `;
+      line.querySelector("b").textContent = `${p3.rankingWeaknesses}: `;
+      line.append(document.createTextNode(weaknesses.join(", ")));
+      row.append(line);
+    }
+  }
+  return row;
 }
 
-async function renderPortfolioImage(content, lang, t, t2, caseId, curator) {
+async function renderPathwayRanking(content, lang, t, t2, caseId) {
   const p3 = P3[lang];
   content.innerHTML = "";
-  content.append(el("p", "regional-tab-intro", p3.portfolioImageIntro));
-  const data = await api(`/cases/${encodeURIComponent(caseId)}/portfolio-image`).catch(() => ({ portfolioImage: null }));
-  const existing = data.portfolioImage;
-  const section = el("section", "systems-explorer-panel");
-  const openForm = () => {
-    buildPortfolioImageForm(lang, t, t2, p3, existing, async (payload) => {
-      await api(`/cases/${encodeURIComponent(caseId)}/portfolio-image`, { method: "PUT", body: JSON.stringify(payload) });
-      showToast({ type: "success", title: t2.contributionUpdated });
-      await renderPortfolioImage(content, lang, t, t2, caseId, curator);
-    });
-  };
-  if (existing?.image_url) {
-    const figure = document.createElement("figure");
-    figure.className = "case-toc-image";
-    const img = document.createElement("img");
-    img.src = existing.image_url;
-    img.alt = "";
-    img.loading = "lazy";
-    figure.append(img);
-    section.append(figure);
-    const caption = lang === "el" ? existing.caption_el : existing.caption_en;
-    if (caption) section.append(el("p", "case-toc-summary", caption));
-    if (curator) {
-      const editBtn = el("button", "btn secondary", p3.uploadPortfolioImage);
-      editBtn.type = "button";
-      editBtn.addEventListener("click", openForm);
-      section.append(editBtn);
-    }
+  content.append(el("p", "regional-tab-intro", p3.rankingIntro));
+
+  const rankingSection = el("section", "systems-explorer-panel");
+  rankingSection.append(el("h3", null, p3.pathwayRankingTitle));
+  const data = await api(`/cases/${encodeURIComponent(caseId)}/pathways`);
+  const pathways = data.items.filter((p) => p.status !== "archived");
+  const evaluated = pathways.filter((p) => p.evaluation_count > 0).sort((a, b) => b.evaluation_score - a.evaluation_score);
+  if (!evaluated.length) {
+    rankingSection.append(el("p", "systems-explorer-empty", pathways.length ? p3.noEvaluatedYet : p3.noPathwaysYetForEvaluation));
   } else {
-    section.append(
-      buildStepEmptyState(t, t2, {
-        icon: "layers",
-        title: p3.portfolioImageEmpty,
-        description: "",
-        curator,
-        curatorLabel: p3.uploadPortfolioImage,
-        onCurator: openForm,
-      })
-    );
+    const list = el("div", "pathway-ranking-list");
+    evaluated.forEach((p, index) => list.append(buildPathwayRankingRow(p, lang, p3, index + 1, index === 0)));
+    rankingSection.append(list);
   }
-  content.append(section);
+  content.append(rankingSection);
 }
 
 async function renderPortfolioTab(content, lang, t, t2, caseId, user, curator) {
@@ -3265,12 +3235,12 @@ async function renderPortfolioTab(content, lang, t, t2, caseId, user, curator) {
     tabs.querySelectorAll("button").forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === activeTab));
     if (activeTab === "formulate") renderPathways(body, lang, t, t2, caseId, curator);
     else if (activeTab === "evaluate") renderEvaluatePathways(body, lang, t, t2, caseId);
-    else renderPortfolioImage(body, lang, t, t2, caseId, curator);
+    else renderPathwayRanking(body, lang, t, t2, caseId);
   };
   [
     ["formulate", p3.formulateStep],
     ["evaluate", p3.evaluateStep],
-    ["image", p3.portfolioImageStep],
+    ["ranking", p3.rankingStep],
   ].forEach(([key, label]) => {
     const button = el("button", key === activeTab ? "active" : "", label);
     button.type = "button";
@@ -3285,268 +3255,3 @@ async function renderPortfolioTab(content, lang, t, t2, caseId, user, curator) {
   renderBody();
 }
 
-// ---------------------------------------------------------------------------
-// Step 7: Compare and Prioritise
-// ---------------------------------------------------------------------------
-
-// A same-page expanding rating popover (1-5 buttons + optional
-// justification) replacing a bare prompt() -- "provide their assessment
-// for each criterion... optionally allow a short justification" plus a
-// clear confirmation once submitted.
-function buildRatingPopover(t, t2, cell, onSubmit) {
-  const popover = el("div", "rating-popover");
-  const scale = el("div", "rating-scale");
-  let selected = null;
-  const scoreButtons = [1, 2, 3, 4, 5].map((n) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "rating-dot";
-    btn.textContent = String(n);
-    btn.addEventListener("click", () => {
-      selected = n;
-      scoreButtons.forEach((b) => b.classList.toggle("selected", Number(b.textContent) <= n));
-    });
-    scale.append(btn);
-    return btn;
-  });
-  popover.append(scale);
-  const justification = document.createElement("textarea");
-  justification.placeholder = t2.justificationLabel;
-  popover.append(justification);
-  const submitBtn = el("button", "btn primary small", t.save);
-  submitBtn.type = "button";
-  submitBtn.addEventListener("click", async () => {
-    if (!selected) return;
-    try {
-      await onSubmit(selected, justification.value.trim());
-      showToast({ type: "success", title: t2.assessmentSubmitted });
-    } catch (error) {
-      showToast({ type: "error", title: t.createdError, message: error.message });
-    }
-  });
-  popover.append(submitBtn);
-  return popover;
-}
-
-async function renderCompare(content, lang, t, t2, caseId, curator, { append = false } = {}) {
-  if (!append) content.innerHTML = "";
-  const data = await api(`/cases/${encodeURIComponent(caseId)}/pathways/comparison`);
-  const section = el("section", "systems-explorer-panel");
-  section.append(el("h3", null, t.comparisonTitle));
-  if (!data.resultsVisible) {
-    section.append(el("p", "systems-explorer-empty", t2.resultsHidden));
-  }
-  if (data.pathways.length < 2) {
-    section.append(el("p", "systems-explorer-empty", t.comparisonEmpty));
-    content.append(section);
-  } else {
-    const wrapper = document.createElement("div");
-    wrapper.className = "systems-explorer-table-wrapper";
-    const table = document.createElement("table");
-    table.className = "systems-explorer-comparison-table";
-    const thead = document.createElement("thead");
-    const headRow = document.createElement("tr");
-    headRow.append(document.createElement("th"));
-    data.pathways.forEach((p) => {
-      const th = document.createElement("th");
-      th.textContent = lang === "el" ? p.title_el : p.title_en;
-      headRow.append(th);
-    });
-    thead.append(headRow);
-    table.append(thead);
-    const tbody = document.createElement("tbody");
-    data.criteria.forEach((criterion) => {
-      const tr = document.createElement("tr");
-      const th = document.createElement("th");
-      th.textContent = t.criteria[criterion] || criterion;
-      if (t.criteriaHelp?.[criterion]) {
-        th.title = t.criteriaHelp[criterion];
-        th.classList.add("has-criterion-help");
-      }
-      tr.append(th);
-      data.pathways.forEach((p) => {
-        const td = document.createElement("td");
-        const cell = p.criteria[criterion];
-        // The primary number is CALCULATED from the pathway's constituent
-        // measures (journey doc), not re-entered here -- it's read-only in
-        // this table. The stakeholder button is the "qualitative
-        // assessment of the pathway as a whole" layer on top of that.
-        const calculated = cell?.calculated;
-        const calcLine = document.createElement("div");
-        calcLine.className = "compare-cell-calculated";
-        calcLine.textContent = !calculated
-          ? "–"
-          : calculated.average === null
-            ? `${t2.resultsHiddenCell} (${calculated.option_count})`
-            : `${calculated.average} (${calculated.option_count})`;
-        calcLine.title = t2.calculatedFromMeasures(calculated?.option_count || 0);
-        td.append(calcLine);
-
-        const stakeholder = cell?.stakeholder;
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "systems-explorer-rate-btn compare-cell-stakeholder";
-        btn.textContent = !stakeholder
-          ? t2.stakeholderAssessment
-          : stakeholder.average === null
-            ? `${t2.resultsHiddenCell} (${stakeholder.rating_count})`
-            : `${stakeholder.average} (${stakeholder.rating_count})`;
-        btn.title = t.rateThis;
-        const popoverHost = el("div", "rating-popover-host");
-        popoverHost.style.display = "none";
-        btn.addEventListener("click", () => {
-          const show = popoverHost.style.display === "none";
-          document.querySelectorAll(".rating-popover-host").forEach((h) => (h.style.display = "none"));
-          popoverHost.style.display = show ? "" : "none";
-          if (show && !popoverHost.childElementCount) {
-            popoverHost.append(
-              buildRatingPopover(t, t2, stakeholder, async (score, justification) => {
-                await api(`/pathways/${encodeURIComponent(p.pathway_id)}/comparisons`, {
-                  method: "POST",
-                  body: JSON.stringify({ criterion, score, justification: justification || undefined }),
-                });
-                await renderCompare(content, lang, t, t2, caseId, curator);
-              })
-            );
-          }
-        });
-        td.append(btn, popoverHost);
-        tr.append(td);
-      });
-      tbody.append(tr);
-    });
-    table.append(tbody);
-    wrapper.append(table);
-    section.append(wrapper);
-    content.append(section);
-  }
-
-  // Consensus & disagreement -- derived purely from the recorded Vision
-  // Element votes below, never an invented/AI-generated summary (spec).
-  const consensusSection = el("section", "systems-explorer-panel");
-  consensusSection.append(el("h3", null, t2.consensusTitle));
-  const visionData = await api(`/cases/${encodeURIComponent(caseId)}/vision-elements`).catch(() => ({ items: [] }));
-  const scored = visionData.items
-    .filter((v) => v.status !== "merged" && v.agree_count + v.disagree_count >= 2)
-    .map((v) => ({ v, ratio: v.agree_count / (v.agree_count + v.disagree_count) }));
-  const strong = scored.filter((s) => s.ratio >= 0.75).map((s) => s.v);
-  const mixed = scored.filter((s) => s.ratio >= 0.4 && s.ratio < 0.75).map((s) => s.v);
-  const disputed = scored.filter((s) => s.ratio < 0.4).map((s) => s.v);
-  if (!scored.length) {
-    consensusSection.append(el("p", "systems-explorer-empty", t2.noAssessmentYet));
-  } else {
-    const buildGroup = (label, items) => {
-      if (!items.length) return;
-      consensusSection.append(el("b", null, label));
-      const list = el("ul", "systems-explorer-case-list");
-      items.forEach((v) => {
-        const li = document.createElement("li");
-        li.textContent = `${v.body} (${v.agree_count} / ${v.disagree_count})`;
-        list.append(li);
-      });
-      consensusSection.append(list);
-    };
-    buildGroup(t2.strongAlignment, strong);
-    buildGroup(t2.mixedViews, mixed);
-    buildGroup(t2.furtherDiscussionNeeded, disputed);
-  }
-  content.append(consensusSection);
-}
-
-// ---------------------------------------------------------------------------
-// Step 8: Preferred or Combined Pathway Direction + full trace
-// ---------------------------------------------------------------------------
-
-async function renderOutcome(content, lang, t, t2, caseId, curator, { append = false } = {}) {
-  if (!append) content.innerHTML = "";
-  const [pathwaysData, sharedVisionData, tocData] = await Promise.all([
-    api(`/cases/${encodeURIComponent(caseId)}/pathways`),
-    api(`/cases/${encodeURIComponent(caseId)}/shared-vision`).catch(() => ({ sharedVision: null })),
-    api(`/cases/${encodeURIComponent(caseId)}/theory-of-change`).catch(() => ({ theoryOfChange: null })),
-  ]);
-  const direction = pathwaysData.items.find((p) => p.status === "preferred" || p.status === "combined");
-
-  const outcomeSection = el("section", "systems-explorer-panel");
-  outcomeSection.append(el("h3", null, t2.combineTitle));
-  if (direction) {
-    outcomeSection.append(el("h4", null, lang === "el" ? direction.title_el : direction.title_en));
-    const summary = lang === "el" ? direction.direction_summary_el : direction.direction_summary_en;
-    if (summary) outcomeSection.append(el("p", null, summary));
-    if (direction.combined_from?.length) {
-      const sources = pathwaysData.items.filter((p) => direction.combined_from.includes(p.id));
-      const row = el("p", "systems-explorer-empty-inline");
-      row.textContent = `${t2.combineSourcesLabel}: ${sources.map((s) => (lang === "el" ? s.title_el : s.title_en)).join(", ")}`;
-      outcomeSection.append(row);
-    }
-
-    // The final direction must remain traceable to the co-creation process
-    // that produced it (spec: "connect it to stakeholder assessment,
-    // comments, selected options, Shared Vision, Theory of Change").
-    const rationale = el("div", "impact-case-bucket");
-    rationale.append(el("b", null, t2.decisionRationaleTitle));
-    const rationaleList = el("ul", "systems-explorer-case-list");
-    const sv = sharedVisionData.sharedVision;
-    if (sv) {
-      const li = document.createElement("li");
-      li.textContent = `${t2.basedOn} ${t2.sharedVisionPublished}: ${lang === "el" ? sv.summary_el : sv.summary_en}`;
-      rationaleList.append(li);
-    }
-    const toc = tocData.theoryOfChange;
-    const desiredFuture = toc ? (lang === "el" ? toc.desired_future_el : toc.desired_future_en) : "";
-    if (desiredFuture) {
-      const li = document.createElement("li");
-      li.textContent = `${t2.basedOn} ${t.tocDesiredFuture}: ${desiredFuture}`;
-      rationaleList.append(li);
-    }
-    if (direction.options.length) {
-      const li = document.createElement("li");
-      li.textContent = `${t2.basedOn} ${t2.selectOptionsLabel}: ${direction.options.map((o) => (lang === "el" ? o.title_el : o.title_en)).join(", ")}`;
-      rationaleList.append(li);
-    }
-    rationale.append(rationaleList);
-    outcomeSection.append(rationale);
-  } else {
-    outcomeSection.append(el("p", "systems-explorer-empty", t2.outcomeEmpty));
-  }
-  if (curator && pathwaysData.items.length >= 1) {
-    const combineBtn = el("button", "btn primary", t2.markCombined);
-    combineBtn.type = "button";
-    combineBtn.addEventListener("click", () => {
-      const targetId = window.prompt(
-        `${t2.combineSourcesLabel} (id):\n` + pathwaysData.items.map((p, i) => `${i + 1}. ${lang === "el" ? p.title_el : p.title_en}`).join("\n")
-      );
-      const index = Number(targetId) - 1;
-      const target = pathwaysData.items[index];
-      if (!target) return;
-      const summary = window.prompt(t2.directionSummaryLabel) || "";
-      api(`/pathways/${encodeURIComponent(target.id)}/combine`, {
-        method: "POST",
-        body: JSON.stringify({ sourcePathwayIds: pathwaysData.items.map((p) => p.id), directionSummaryEl: summary, directionSummaryEn: summary }),
-      })
-        .then(() => renderOutcome(content, lang, t, t2, caseId, curator))
-        .catch((error) => showToast({ type: "error", title: t.createdError, message: error.message }));
-    });
-    outcomeSection.append(combineBtn);
-  }
-  content.append(outcomeSection);
-
-  const traceSection = el("section", "systems-explorer-panel");
-  traceSection.append(el("h3", null, t2.outcomeTrace));
-  const journey = await api(`/cases/${encodeURIComponent(caseId)}/journey`);
-  if (!journey.items.length) {
-    traceSection.append(el("p", "systems-explorer-empty", t2.outcomeTraceEmpty));
-  } else {
-    const timeline = el("ol", "systems-explorer-timeline");
-    journey.items.forEach((entry) => {
-      const li = document.createElement("li");
-      const label = t2.historyActions[entry.action] || entry.action;
-      const date = new Date(entry.created_at).toLocaleString(lang === "el" ? "el-GR" : "en-GB");
-      li.innerHTML = `<b></b><span class="systems-explorer-timeline-meta"></span>`;
-      li.querySelector("b").textContent = label;
-      li.querySelector(".systems-explorer-timeline-meta").textContent = `${entry.actor_name} · ${date}`;
-      timeline.append(li);
-    });
-    traceSection.append(timeline);
-  }
-  content.append(traceSection);
-}

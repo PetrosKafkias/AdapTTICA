@@ -32,7 +32,7 @@ async function toPublicPathway(db, row, userId) {
   const [linkedSystems, options, evaluation, myEvaluationRow] = await Promise.all([
     db.all(`select s.id, s.key, s.name from pathway_linked_systems pls join systems s on s.id = pls.system_id where pls.pathway_id = ?`, row.id),
     db.all(
-      `select po.sort_order, po.category, o.id, o.title from pathway_options po join adaptation_options o on o.id = po.option_id
+      `select po.sort_order, po.category, o.id, o.title, o.time_horizon from pathway_options po join adaptation_options o on o.id = po.option_id
        where po.pathway_id = ? order by po.sort_order`,
       row.id
     ),
@@ -67,7 +67,14 @@ async function toPublicPathway(db, row, userId) {
     transformative_potential_el: get("transformative_potential").el || "",
     transformative_potential_en: get("transformative_potential").en || "",
     linked_systems: linkedSystems.map((s) => ({ id: s.id, key: s.key, name_el: JSON.parse(s.name).el, name_en: JSON.parse(s.name).en })),
-    options: options.map((o) => ({ id: o.id, title_el: JSON.parse(o.title).el, title_en: JSON.parse(o.title).en, sort_order: o.sort_order, category: o.category || null })),
+    options: options.map((o) => ({
+      id: o.id,
+      title_el: JSON.parse(o.title).el,
+      title_en: JSON.parse(o.title).en,
+      sort_order: o.sort_order,
+      category: o.category || null,
+      time_horizon: o.time_horizon || "",
+    })),
     status: row.status,
     combined_from: row.combined_from ? JSON.parse(row.combined_from) : [],
     direction_summary_el: row.direction_summary ? JSON.parse(row.direction_summary).el || "" : "",

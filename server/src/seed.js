@@ -604,6 +604,111 @@ async function ensureConnectedJourney(db, { adminId, organisationId }) {
   );
   await db.run("insert or ignore into pathway_options (pathway_id, option_id, sort_order) values (?, ?, 0)", pathwayId, optionId);
   for (const systemId of IMPACTS.flood.linked) await db.run("insert or ignore into pathway_linked_systems (pathway_id, system_id) values (?, ?)", pathwayId, systemId);
+
+  // A couple more demo pathways, each built from different PESPKA measures,
+  // so Evaluate Pathways / Pathway Ranking have more than one row to
+  // actually compare out of the box.
+  const pathway2Id = "30000000-0000-4000-8000-000000000005";
+  const pathway3Id = "30000000-0000-4000-8000-000000000006";
+  await db.run(
+    `insert or ignore into pathways
+       (id, case_id, title, short_description, time_horizon, primary_system_id, relevant_hazards, relevant_impacts, status, created_by)
+     values (?, ?, ?, ?, '2045', ?, ?, ?, 'under_discussion', ?)`,
+    pathway2Id,
+    CONNECTED_CASE_ID,
+    JSON.stringify({ el: "Διαδρομή 2 — Διαχείριση ζήτησης νερού", en: "Pathway 2 — Water demand management" }),
+    JSON.stringify({
+      el: "Εξοικονόμηση και επαναχρησιμοποίηση νερού σε συνδυασμό με φυσικές λύσεις διήθησης.",
+      en: "Water conservation and reuse combined with nature-based infiltration.",
+    }),
+    SYSTEM_IDS.built,
+    JSON.stringify(["floods"]),
+    JSON.stringify(IMPACTS.flood.title),
+    adminId
+  );
+  await db.run(
+    `insert or ignore into pathways
+       (id, case_id, title, short_description, time_horizon, primary_system_id, relevant_hazards, relevant_impacts, status, created_by)
+     values (?, ?, ?, ?, '2035', ?, ?, ?, 'under_discussion', ?)`,
+    pathway3Id,
+    CONNECTED_CASE_ID,
+    JSON.stringify({ el: "Διαδρομή 3 — Κανονιστικό πλαίσιο & ποιότητα νερού", en: "Pathway 3 — Governance & water quality" }),
+    JSON.stringify({
+      el: "Ενίσχυση κανονιστικού πλαισίου και επέκταση επαναχρησιμοποίησης επεξεργασμένου νερού.",
+      en: "Strengthened regulatory framework and expanded reuse of treated water.",
+    }),
+    SYSTEM_IDS.built,
+    JSON.stringify(["floods"]),
+    JSON.stringify(IMPACTS.flood.title),
+    adminId
+  );
+  await db.run(
+    "insert or ignore into pathway_options (pathway_id, option_id, sort_order) values (?, ?, 0), (?, ?, 1), (?, ?, 2)",
+    pathway2Id, "40000000-0000-4000-8000-000000000004",
+    pathway2Id, "40000000-0000-4000-8000-000000000002",
+    pathway2Id, optionId
+  );
+  await db.run(
+    "insert or ignore into pathway_options (pathway_id, option_id, sort_order) values (?, ?, 0), (?, ?, 1), (?, ?, 2)",
+    pathway3Id, "40000000-0000-4000-8000-000000000005",
+    pathway3Id, "40000000-0000-4000-8000-000000000003",
+    pathway3Id, "40000000-0000-4000-8000-000000000002"
+  );
+
+  // Demo evaluations from three different stakeholders per pathway, so the
+  // comparison matrix and automatic ranking both look like a real
+  // in-progress workshop rather than an empty table.
+  const evaluators = [adminId, tocParticipant?.id, tocRepresentative?.id].filter(Boolean);
+  const EVALUATIONS = [
+    {
+      pathwayId,
+      values: [
+        { risk_reduction: "high", feasibility: "medium", cost: "medium", co_benefits: "high", transformative_potential: "high", flexibility: "medium" },
+        { risk_reduction: "high", feasibility: "medium", cost: "medium", co_benefits: "high", transformative_potential: "medium", flexibility: "medium" },
+        { risk_reduction: "high", feasibility: "low", cost: "medium", co_benefits: "high", transformative_potential: "high", flexibility: "medium" },
+      ],
+    },
+    {
+      pathwayId: pathway2Id,
+      values: [
+        { risk_reduction: "medium", feasibility: "high", cost: "low", co_benefits: "medium", transformative_potential: "medium", flexibility: "high" },
+        { risk_reduction: "medium", feasibility: "high", cost: "low", co_benefits: "medium", transformative_potential: "low", flexibility: "high" },
+        { risk_reduction: "low", feasibility: "high", cost: "low", co_benefits: "medium", transformative_potential: "medium", flexibility: "high" },
+      ],
+    },
+    {
+      pathwayId: pathway3Id,
+      values: [
+        { risk_reduction: "high", feasibility: "high", cost: "high", co_benefits: "high", transformative_potential: "medium", flexibility: "high" },
+        { risk_reduction: "high", feasibility: "high", cost: "medium", co_benefits: "high", transformative_potential: "medium", flexibility: "high" },
+        { risk_reduction: "high", feasibility: "high", cost: "high", co_benefits: "medium", transformative_potential: "medium", flexibility: "high" },
+      ],
+    },
+  ];
+  for (const { pathwayId: pid, values } of EVALUATIONS) {
+    for (const [index, userId] of evaluators.entries()) {
+      const v = values[index] || values[0];
+      await db.run(
+        `insert into pathway_evaluations
+           (id, pathway_id, user_id, risk_reduction, feasibility, cost, co_benefits, transformative_potential, flexibility)
+         values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+         on conflict(pathway_id, user_id) do update set
+           risk_reduction = excluded.risk_reduction, feasibility = excluded.feasibility, cost = excluded.cost,
+           co_benefits = excluded.co_benefits, transformative_potential = excluded.transformative_potential,
+           flexibility = excluded.flexibility`,
+        crypto.randomUUID(),
+        pid,
+        userId,
+        v.risk_reduction,
+        v.feasibility,
+        v.cost,
+        v.co_benefits,
+        v.transformative_potential,
+        v.flexibility
+      );
+    }
+  }
+
   for (const [index, step] of ["futures", "vision", "toc", "options", "pathways", "compare", "outcome"].entries()) {
     await db.run(
       `insert into case_step_state (case_id, step, status, opened_by, opened_at)

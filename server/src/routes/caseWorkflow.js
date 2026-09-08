@@ -723,6 +723,7 @@ async function toPublicFuture(db, row) {
     case_id: row.case_id,
     author_id: row.created_by,
     author_name: row.author_name || "",
+    author_role: row.author_role || "",
     title_el: get("title").el,
     title_en: get("title").en,
     description_el: get("description").el || "",
@@ -751,7 +752,8 @@ async function toPublicFuture(db, row) {
   };
 }
 
-const FUTURE_SELECT = "select f.*, u.full_name as author_name from alternative_futures f join users u on u.id = f.created_by";
+const FUTURE_SELECT =
+  "select f.*, u.full_name as author_name, cm.role as author_role from alternative_futures f join users u on u.id = f.created_by left join case_members cm on cm.case_id = f.case_id and cm.user_id = f.created_by";
 
 caseWorkflowRouter.get(
   "/futures",
@@ -1013,6 +1015,7 @@ async function toPublicVisionElement(db, row) {
     future_id: row.future_id,
     author_id: row.author_id,
     author_name: row.author_name || "",
+    author_role: row.author_role || "",
     title_el: row.title_el || "",
     title_en: row.title_en || "",
     description_el: row.description_el || "",
@@ -1044,7 +1047,8 @@ caseWorkflowRouter.get(
       params.push(req.query.futureId);
     }
     const rows = await req.db.all(
-      `select ve.*, u.full_name as author_name from vision_elements ve join users u on u.id = ve.author_id
+      `select ve.*, u.full_name as author_name, cm.role as author_role from vision_elements ve join users u on u.id = ve.author_id
+       left join case_members cm on cm.case_id = ve.case_id and cm.user_id = ve.author_id
        where ${conditions.join(" and ")} order by ve.created_at`,
       ...params
     );
@@ -1096,7 +1100,7 @@ caseWorkflowRouter.post(
     );
     await audit(req.db, { actorId: req.user.id, action: "propose_vision_element", entityType: "vision_element", entityId: id, metadata: { caseId: req.params.id } });
     const row = await req.db.get(
-      "select ve.*, u.full_name as author_name from vision_elements ve join users u on u.id = ve.author_id where ve.id = ?",
+      "select ve.*, u.full_name as author_name, cm.role as author_role from vision_elements ve join users u on u.id = ve.author_id left join case_members cm on cm.case_id = ve.case_id and cm.user_id = ve.author_id where ve.id = ?",
       id
     );
     res.status(201).json({ data: { visionElement: await toPublicVisionElement(req.db, row) } });
@@ -1163,7 +1167,7 @@ caseWorkflowRouter.post(
       });
     }
     const row = await req.db.get(
-      "select ve.*, u.full_name as author_name from vision_elements ve join users u on u.id = ve.author_id where ve.id = ?",
+      "select ve.*, u.full_name as author_name, cm.role as author_role from vision_elements ve join users u on u.id = ve.author_id left join case_members cm on cm.case_id = ve.case_id and cm.user_id = ve.author_id where ve.id = ?",
       req.params.elementId
     );
     res.status(201).json({ data: { visionElement: await toPublicVisionElement(req.db, row) } });
@@ -1188,7 +1192,7 @@ caseWorkflowRouter.post(
       parsed.data.value
     );
     const row = await req.db.get(
-      "select ve.*, u.full_name as author_name from vision_elements ve join users u on u.id = ve.author_id where ve.id = ?",
+      "select ve.*, u.full_name as author_name, cm.role as author_role from vision_elements ve join users u on u.id = ve.author_id left join case_members cm on cm.case_id = ve.case_id and cm.user_id = ve.author_id where ve.id = ?",
       req.params.elementId
     );
     res.json({ data: { visionElement: await toPublicVisionElement(req.db, row) } });
@@ -1254,7 +1258,7 @@ caseWorkflowRouter.patch(
       req.params.elementId
     );
     const row = await req.db.get(
-      "select ve.*, u.full_name as author_name from vision_elements ve join users u on u.id = ve.author_id where ve.id = ?",
+      "select ve.*, u.full_name as author_name, cm.role as author_role from vision_elements ve join users u on u.id = ve.author_id left join case_members cm on cm.case_id = ve.case_id and cm.user_id = ve.author_id where ve.id = ?",
       req.params.elementId
     );
     res.json({ data: { visionElement: await toPublicVisionElement(req.db, row) } });
@@ -1308,7 +1312,7 @@ caseWorkflowRouter.post(
       });
     }
     const row = await req.db.get(
-      "select ve.*, u.full_name as author_name from vision_elements ve join users u on u.id = ve.author_id where ve.id = ?",
+      "select ve.*, u.full_name as author_name, cm.role as author_role from vision_elements ve join users u on u.id = ve.author_id left join case_members cm on cm.case_id = ve.case_id and cm.user_id = ve.author_id where ve.id = ?",
       source.id
     );
     res.json({ data: { visionElement: await toPublicVisionElement(req.db, row) } });
@@ -1943,9 +1947,8 @@ caseWorkflowRouter.post(
   asyncRoute(async (req, res) => {
     req.user = await requireUser(req);
     await requireCaseAccess(req, req.params.id);
-    const option = await req.db.get("select id, shortlisted from adaptation_options where id = ? and case_id = ?", req.params.optionId, req.params.id);
+    const option = await req.db.get("select id from adaptation_options where id = ? and case_id = ?", req.params.optionId, req.params.id);
     if (!option) return fail(res, "not_found", "Option not found.");
-    if (!option.shortlisted) return fail(res, "validation_error", "Only shortlisted options can be assessed.");
     const parsed = optionAssessmentSchema.safeParse(req.body || {});
     if (!parsed.success) return fail(res, "validation_error", "Please correct the highlighted fields.");
     const body = parsed.data;
@@ -2021,28 +2024,18 @@ caseWorkflowRouter.patch(
         highlighted: z.boolean().optional(),
         groupLabel: z.string().trim().nullable().optional(),
         readyForPathway: z.boolean().optional(),
-        shortlisted: z.boolean().optional(),
       })
       .safeParse(req.body || {});
     if (!parsed.success) return fail(res, "validation_error", "Please correct the highlighted fields.");
-    const { highlighted, groupLabel, readyForPathway, shortlisted } = parsed.data;
+    const { highlighted, groupLabel, readyForPathway } = parsed.data;
     await req.db.run(
       `update adaptation_options set highlighted = coalesce(?, highlighted), group_label = coalesce(?, group_label),
-         ready_for_pathway = coalesce(?, ready_for_pathway), shortlisted = coalesce(?, shortlisted) where id = ?`,
+         ready_for_pathway = coalesce(?, ready_for_pathway) where id = ?`,
       highlighted === undefined ? null : highlighted ? 1 : 0,
       groupLabel === undefined ? null : groupLabel,
       readyForPathway === undefined ? null : readyForPathway ? 1 : 0,
-      shortlisted === undefined ? null : shortlisted ? 1 : 0,
       req.params.optionId
     );
-    if (shortlisted !== undefined) {
-      await audit(req.db, {
-        actorId: req.user.id,
-        action: shortlisted ? "shortlist_adaptation_option" : "unshortlist_adaptation_option",
-        entityType: "adaptation_option",
-        entityId: req.params.optionId,
-      });
-    }
     const row = await req.db.get(
       "select o.*, u.full_name as author_name from adaptation_options o join users u on u.id = o.author_id where o.id = ?",
       req.params.optionId
