@@ -5682,74 +5682,13 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 }
 
 /* ---------------------------------------------------------------------------
-   Prioritisation: the participant's own choice, then everyone's answer, then
-   what the three different actions on this screen actually mean.
+   Prioritisation: the participant's own choice, then, once submitted, how
+   everyone else answered shown inline at the bottom of each own choice.
    --------------------------------------------------------------------------- */
-.case-prioritisation-results {
-  margin-top: 26px;
-  padding-top: 22px;
-  border-top: 1px solid #e7edf2;
-}
-.case-prioritisation-results h4,
 .case-interaction-legend h4 {
   margin: 0 0 6px;
   font-size: 15px;
   color: #0b3967;
-}
-.case-prioritisation-participation {
-  margin: 0 0 14px;
-  font-size: 13px;
-  color: #486173;
-}
-.case-prioritisation-result-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 12px;
-}
-.case-prioritisation-result-list li {
-  display: grid;
-  gap: 6px;
-}
-.case-prioritisation-result-head {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: space-between;
-  align-items: baseline;
-  font-size: 14px;
-  color: #486173;
-}
-.case-prioritisation-result-figure {
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  color: #0b3967;
-}
-.case-prioritisation-results .case-prioritisation-bar {
-  display: block;
-  height: 8px;
-  border-radius: 999px;
-  background: #eef2f6;
-  overflow: hidden;
-}
-.case-prioritisation-results .case-prioritisation-bar > span {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: #008fa6;
-  transition: width 320ms ease;
-}
-.case-prioritisation-leader {
-  margin: 14px 0 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #0b3967;
-}
-.case-prioritisation-feeds {
-  margin: 6px 0 0;
-  font-size: 13px;
-  color: #486173;
 }
 
 .case-interaction-legend {

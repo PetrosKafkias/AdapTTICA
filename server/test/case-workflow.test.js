@@ -114,7 +114,9 @@ describe("case study co-creation workflow", () => {
     expect(prioritised.status).toBe(200);
     const priorities = await participant.get(`/api/v1/cases/${caseId}/prioritisation`);
     expect(priorities.body.data.myRanking).toEqual([future.id]);
-    expect(priorities.body.data.items[0].first_place_count).toBe(1);
+    // A single-future case has no relative priority to show (max possible
+    // score is 0), so this collapses to 0% rather than being undefined.
+    expect(priorities.body.data.items[0].priority_score_percent).toBe(0);
     expect(priorities.body.data.items[0].description_en).toBe("A fast contribution form");
     expect(priorities.body.data.totalSubmitters).toBe(1);
 
@@ -439,17 +441,22 @@ describe("alternative futures ranking", () => {
     const afterBoth = await participantA.get(`/api/v1/cases/${caseId}/prioritisation`);
     expect(afterBoth.body.data.myRanking).toEqual([first, second]);
     expect(afterBoth.body.data.totalSubmitters).toBe(2);
+    // Borda-style score across every rank position, not just who put it
+    // first: split 1st/2nd between the two futures nets an identical,
+    // middling collective score for both.
     const firstFuture = afterBoth.body.data.items.find((item) => item.id === first);
     const secondFuture = afterBoth.body.data.items.find((item) => item.id === second);
-    expect(firstFuture.first_place_count).toBe(1);
-    expect(secondFuture.first_place_count).toBe(1);
+    expect(firstFuture.priority_score_percent).toBe(50);
+    expect(secondFuture.priority_score_percent).toBe(50);
 
     // Resubmitting replaces the previous ranking rather than accumulating.
     const rankAAgain = await participantA.post(`/api/v1/cases/${caseId}/prioritisation`).send({ order: [second, first] });
     expect(rankAAgain.status).toBe(200);
     const afterUpdate = await participantA.get(`/api/v1/cases/${caseId}/prioritisation`);
     expect(afterUpdate.body.data.totalSubmitters).toBe(2);
-    expect(afterUpdate.body.data.items.find((item) => item.id === second).first_place_count).toBe(2);
+    // Both submitters now agree "second" is #1, so it takes the full score.
+    expect(afterUpdate.body.data.items.find((item) => item.id === second).priority_score_percent).toBe(100);
+    expect(afterUpdate.body.data.items.find((item) => item.id === first).priority_score_percent).toBe(0);
 
     const duplicateOrder = await participantA.post(`/api/v1/cases/${caseId}/prioritisation`).send({ order: [first, first] });
     expect(duplicateOrder.status).toBe(400);

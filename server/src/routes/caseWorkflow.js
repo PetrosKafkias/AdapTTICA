@@ -313,13 +313,18 @@ caseWorkflowRouter.get(
         req.params.id
       ),
     ]);
-    // Rank #1 counts per future, used for the "how others prioritised"
-    // distribution.
-    const firstPlaceRows = await req.db.all(
-      "select future_id, count(*) as c from future_priority_rankings where case_id = ? and rank_position = 1 group by future_id",
+    // "How others prioritised it" as a Borda-style aggregate across every
+    // submitted rank position (not just who put it first) -- an item
+    // consistently ranked 2nd-3rd should read as broadly liked, not the
+    // same 0% as one everyone ranks last. Points per submission = N minus
+    // its position (1st = N-1 points, last = 0), averaged across
+    // submitters, then normalised to a 0-100% share of the max possible.
+    const avgRankRows = await req.db.all(
+      "select future_id, avg(rank_position) as avg_rank from future_priority_rankings where case_id = ? group by future_id",
       req.params.id
     );
-    const firstPlaceByFuture = Object.fromEntries(firstPlaceRows.map((row) => [row.future_id, Number(row.c)]));
+    const avgRankByFuture = Object.fromEntries(avgRankRows.map((row) => [row.future_id, Number(row.avg_rank)]));
+    const maxScore = Math.max(futures.length - 1, 1);
     res.json({
       data: {
         myRanking: mine.map((row) => row.future_id),
@@ -327,13 +332,15 @@ caseWorkflowRouter.get(
         items: futures.map((future) => {
           const title = JSON.parse(future.title || "{}");
           const description = JSON.parse(future.description || "{}");
+          const avgRank = avgRankByFuture[future.id];
+          const score = avgRank === undefined ? 0 : futures.length - avgRank;
           return {
             id: future.id,
             title_el: title.el || "",
             title_en: title.en || "",
             description_el: description.el || "",
             description_en: description.en || "",
-            first_place_count: firstPlaceByFuture[future.id] || 0,
+            priority_score_percent: avgRank === undefined ? 0 : Math.round((score / maxScore) * 100),
           };
         }),
       },

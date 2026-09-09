@@ -144,11 +144,7 @@ const T2 = {
     forumVoteUpdated: "Η ψήφος σας ενημερώθηκε.",
     prioritisationTitle: "Ιεράρχηση πιθανών μελλόντων",
     prioritisationIntro: "Σύρετε για να κατατάξετε τα πιθανά μέλλοντα με βάση τη σημασία τους για εσάς. Μετράει μόνο η τελική σειρά. Το αποτέλεσμα μεταφέρεται στο Βήμα 2 — Κοινό Όραμα.",
-    prioritisationResultTitle: "Πώς ιεράρχησαν οι υπόλοιποι",
-    prioritisationResultEmpty: "Κανείς δεν έχει ιεραρχήσει ακόμη. Το αποτέλεσμα θα εμφανιστεί εδώ μόλις υποβληθεί η πρώτη ιεράρχηση.",
-    prioritisationParticipation: (n) => `${n} ${n === 1 ? "συμμετέχων έχει" : "συμμετέχοντες έχουν"} ιεραρχήσει · ποσοστό όσων το κατέταξαν 1ο`,
-    prioritisationLeads: (title) => `Προηγείται: ${title}`,
-    prioritisationFeeds: "Αυτό το αποτέλεσμα μεταφέρεται στο Βήμα 2 — Κοινό Όραμα.",
+    prioritisationScoreShare: (percentage) => `Συλλογική προτεραιότητα: ${percentage}%`,
     prioritisationMoveUp: "Μετακίνηση προς τα πάνω",
     prioritisationMoveDown: "Μετακίνηση προς τα κάτω",
     interactionsTitle: "Τρεις διαφορετικές ενέργειες",
@@ -311,11 +307,7 @@ const T2 = {
     forumVoteUpdated: "Your vote was updated.",
     prioritisationTitle: "Rank the possible futures",
     prioritisationIntro: "Drag to rank the possible futures by how important they are to you. Only the final order counts. The result carries into Step 2 — Shared Vision.",
-    prioritisationResultTitle: "How others ranked it",
-    prioritisationResultEmpty: "Nobody has ranked yet. The result will appear here as soon as the first ranking is submitted.",
-    prioritisationParticipation: (n) => `${n} participant${n === 1 ? "" : "s"} have ranked · share who placed it #1`,
-    prioritisationLeads: (title) => `Leading: ${title}`,
-    prioritisationFeeds: "This result carries into Step 2 — Shared Vision.",
+    prioritisationScoreShare: (percentage) => `Collective priority: ${percentage}%`,
     prioritisationMoveUp: "Move up",
     prioritisationMoveDown: "Move down",
     interactionsTitle: "Three different actions",
@@ -1764,7 +1756,12 @@ async function renderPrioritisation(content, lang, t, t2, caseId, { append = fal
   let itemsById = {};
   let hasSubmitted = false;
   let savedOrderKey = "";
+  let totalSubmitters = 0;
 
+  // How everyone else ranked it: a bar + percentage inside each answer,
+  // pinned to the bottom of its copy column -- only revealed once this
+  // participant has submitted their own ranking, same "vote first, see the
+  // result" pattern used for hidden comparison results elsewhere.
   function renderList() {
     list.innerHTML = "";
     if (!order.length) {
@@ -1782,6 +1779,16 @@ async function renderPrioritisation(content, lang, t, t2, caseId, { append = fal
       row.querySelector(".case-prioritisation-rank-copy strong").textContent = lang === "el" ? item.title_el : item.title_en;
       const description = lang === "el" ? item.description_el : item.description_en;
       if (description) row.querySelector(".case-prioritisation-rank-copy span").textContent = description;
+      if (hasSubmitted && totalSubmitters > 0) {
+        const percentage = item.priority_score_percent;
+        const copy = row.querySelector(".case-prioritisation-rank-copy");
+        copy.append(el("span", "case-prioritisation-result", t2.prioritisationScoreShare(percentage)));
+        const bar = el("span", "case-prioritisation-bar");
+        const fill = document.createElement("span");
+        fill.style.width = `${percentage}%`;
+        bar.append(fill);
+        copy.append(bar);
+      }
       row.querySelector(".case-prioritisation-rank-up").disabled = index === 0;
       row.querySelector(".case-prioritisation-rank-down").disabled = index === order.length - 1;
       row.querySelector(".case-prioritisation-rank-up").addEventListener("click", () => moveItem(index, index - 1));
@@ -1826,6 +1833,7 @@ async function renderPrioritisation(content, lang, t, t2, caseId, { append = fal
     const data = await api(`/cases/${encodeURIComponent(caseId)}/prioritisation`);
     itemsById = Object.fromEntries(data.items.map((item) => [item.id, item]));
     hasSubmitted = data.myRanking.length > 0;
+    totalSubmitters = data.totalSubmitters;
     order = hasSubmitted ? [...data.myRanking] : data.items.map((item) => item.id);
     savedOrderKey = hasSubmitted ? order.join(",") : "";
     renderList();
@@ -1846,7 +1854,11 @@ async function renderPrioritisation(content, lang, t, t2, caseId, { append = fal
       savedOrderKey = data.myRanking.join(",");
       status.textContent = `✓ ${t2.prioritisationSaved}`;
       showToast({ type: "success", title: t2.prioritisationSubmitted });
+      const refreshed = await api(`/cases/${encodeURIComponent(caseId)}/prioritisation`);
+      itemsById = Object.fromEntries(refreshed.items.map((item) => [item.id, item]));
+      totalSubmitters = refreshed.totalSubmitters;
       updateSubmitState();
+      renderList();
     } catch (error) {
       submit.disabled = false;
       showToast({ type: "error", title: t.createdError, message: error.message });
