@@ -3132,6 +3132,7 @@ async function renderEvaluatePathways(content, lang, t, t2, caseId) {
     // focused on entering and reading the matrix.
     const formsSection = el("section", "systems-explorer-panel");
     formsSection.append(el("h3", null, p3.evaluateStep));
+    const formsList = el("div", "vision-elements-container");
     pathways.forEach((p) => {
       const card = el("article", "vision-element-card option-card");
       card.append(el("h4", null, lang === "el" ? p.title_el : p.title_en));
@@ -3153,8 +3154,9 @@ async function renderEvaluatePathways(content, lang, t, t2, caseId) {
         );
       });
       card.append(toggleBtn);
-      formsSection.append(card);
+      formsList.append(card);
     });
+    formsSection.append(formsList);
     body.append(formsSection);
   };
   await reload();

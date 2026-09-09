@@ -2711,7 +2711,7 @@ aside.affine-sidebar:has(.affine-collapse.affine-collapse-labelled) {
 .vision-elements-container,
 .alternative-futures-list {
   display: grid;
-  gap: 12px;
+  gap: 24px;
   margin: 16px 0 14px;
 }
 
